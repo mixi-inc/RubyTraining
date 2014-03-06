@@ -1,6 +1,6 @@
 ---
-:orm: datamapper
-:test: none
+:orm: activerecord
+:test: rspec
 :mock: none
 :script: none
 :renderer: slim

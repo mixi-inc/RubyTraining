@@ -1,5 +1,6 @@
 module Mosscow
   class App < Padrino::Application
+    use ActiveRecord::ConnectionAdapters::ConnectionManagement
     register Padrino::Rendering
     register Padrino::Mailer
     register Padrino::Helpers
@@ -7,7 +8,7 @@ module Mosscow
     enable :sessions
 
     get '/' do
-      'Hello World'
+      'Hello Moscow!'
     end
 
     ##

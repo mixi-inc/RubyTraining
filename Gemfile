@@ -15,16 +15,14 @@ gem 'rake'
 
 # Component requirements
 gem 'slim'
-gem 'dm-sqlite-adapter'
-gem 'dm-validations'
-gem 'dm-timestamps'
-gem 'dm-migrations'
-gem 'dm-constraints'
-gem 'dm-aggregates'
-gem 'dm-types'
-gem 'dm-core'
+gem 'activerecord', '>= 3.1', :require => 'active_record'
+gem 'mysql2'
 
 # Test requirements
+group :development, :test do
+  gem 'rspec', '~> 3.0.0.beta'
+  gem 'rack-test', :require => 'rack/test'
+end
 
 # Padrino Stable Gem
 gem 'padrino', '0.12.0'
