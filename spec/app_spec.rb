@@ -25,12 +25,35 @@ describe 'app.rb' do
   end
 
   context "POST /todo" do
-    context "given no parameters" do
-      it 'returns status 400' do
-        post '/todo'
 
+    context "given valid parameters" do
+      before do
+        post '/todo', '{"done":true, "order":1, "title":"hoge"}'
+      end
+
+      it 'returns status 201' do
+        last_response.status.should eq 201
+        last_response.body.should eq '{}'
+      end
+    end
+
+    context "given no parameters" do
+      before do
+        post '/todo'
+      end
+      it 'returns status 400' do
         last_response.status.should eq 400
       end
     end
+
+    context "given invalid json" do
+      before do
+        post '/todo', 'hoge'
+      end
+      it 'returns status 400' do
+        last_response.status.should eq 400
+      end
+    end
+
   end
 end
