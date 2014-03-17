@@ -33,6 +33,7 @@ post '/todo' do
   done = params[:done]
   order = params[:order]
   title = params[:title]
+  response.status = 201
   JSON.dump({})
 end
 
