@@ -2,6 +2,9 @@ require 'sinatra'
 require "sinatra/activerecord"
 require 'json'
 
+set :static, true
+set :public_folder, 'public'
+
 # require all models
 Dir[File.dirname(__FILE__)+"/model/*.rb"].each {|file| require file }
 
