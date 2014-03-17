@@ -1,21 +1,18 @@
-RACK_ENV = 'test' unless defined?(RACK_ENV)
-require File.expand_path(File.dirname(__FILE__) + "/../config/boot")
+require 'rspec'
+require 'rack/test'
 
-RSpec.configure do |conf|
-  conf.include Rack::Test::Methods
-  conf.color_enabled = true
-end
+require File.join(File.dirname(__FILE__), '..', 'app', 'app.rb')
 
-# You can use this method to custom specify a Rack app
-# you want rack-test to invoke:
-#
-#   app Mosscow::App
-#   app Mosscow::App.tap { |a| }
-#   app(Mosscow::App) do
-#     set :foo, :bar
-#   end
-#
-def app(app = nil, &blk)
-  @app ||= block_given? ? app.instance_eval(&blk) : app
-  @app ||= Padrino.application
+RSpec.configure do |config|
+  config.before(:all) do
+    # test用DBに接続
+    ActiveRecord::Base.configurations = YAML.load_file('config.yml')['database']
+    ActiveRecord::Base.establish_connection('test')
+  end
+
+  ENV['RACK_ENV'] ||= 'test'
+
+  config.after(:each) do
+    ActiveRecord::Base.connection.close
+  end
 end

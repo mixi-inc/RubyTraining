@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+ruby '2.1.0'
+
 # Distribute your app as a gem
 # gemspec
 
@@ -14,23 +16,13 @@ source 'https://rubygems.org'
 gem 'rake'
 
 # Component requirements
-gem 'slim'
-gem 'activerecord', '>= 3.1', :require => 'active_record'
-gem 'mysql2'
+gem 'sinatra'
+gem "sinatra-activerecord"
+gem "sqlite3"
 
 # Test requirements
 group :development, :test do
-  gem 'rspec', '~> 3.0.0.beta'
+  gem 'rspec', '~> 2.14.1'
   gem 'rack-test', :require => 'rack/test'
 end
 
-# Padrino Stable Gem
-gem 'padrino', '0.12.0'
-
-# Or Padrino Edge
-# gem 'padrino', :github => 'padrino/padrino-framework'
-
-# Or Individual Gems
-# %w(core gen helpers cache mailer admin).each do |g|
-#   gem 'padrino-' + g, '0.12.0'
-# end
