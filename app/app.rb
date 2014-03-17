@@ -31,11 +31,11 @@ end
 
 post '/todo' do
 
-  # anti-DRYなオレオレvalidationヤバい!
-  def symbolize(args)
+  # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
+  def convert_hash_key_from_string_into_symbol_recursively(args)
     case args
       when Hash
-        args.inject({}){ |hash, (k, v)| hash[lambda{|k| k = k.to_sym if k.is_a?(String); k;  }.call(k)] = symbolize(v); hash}
+        args.inject({}){ |hash, (k, v)| hash[lambda{|k| k = k.to_sym if k.is_a?(String); k;  }.call(k)] = convert_hash_key_from_string_into_symbol_recursively(v); hash}
       else
         args
     end
@@ -43,7 +43,7 @@ post '/todo' do
 
   params = ''
   begin
-    params = symbolize(JSON.parse(request.body.read))
+    params = convert_hash_key_from_string_into_symbol_recursively(JSON.parse(request.body.read))
   rescue
     response.status = 400
     return JSON.dump({ message: 'set valid JSON for request raw body.'})
