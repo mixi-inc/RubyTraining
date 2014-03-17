@@ -10,7 +10,7 @@ describe 'app.rb' do
   context "GET /" do
     it 'returns hello message' do
       get '/'
-      last_response.status.should be 200
+      last_response.status.should eq 200
       last_response.body.should eq 'Hello, Moscow!'
     end
   end
@@ -19,16 +19,18 @@ describe 'app.rb' do
     it 'returns json object' do
       get '/todo'
 
-      last_response.status.should be 200
+      last_response.status.should eq 200
       JSON.parse(last_response.body).should have(2).items
     end
   end
 
   context "POST /todo" do
-    it 'returns status 201' do
-      post '/todo'
+    context "given no parameters" do
+      it 'returns status 400' do
+        post '/todo'
 
-      last_response.status.should be 201
+        last_response.status.should eq 400
+      end
     end
   end
 end

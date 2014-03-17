@@ -30,7 +30,43 @@ get '/todo' do
 end
 
 post '/todo' do
-  done = params[:done]
+
+  # anti-DRYなオレオレvalidationヤバい!
+  def symbolize(args)
+    case args
+      when Hash
+        args.inject({}){ |hash, (k, v)| hash[lambda{|k| k = k.to_sym if k.is_a?(String); k;  }.call(k)] = symbolize(v); hash}
+      else
+        args
+    end
+  end
+
+  params = symbolize(JSON.parse(request.body.read))
+
+  p params
+  %w{done order title}.each do |key_string|
+    unless params.has_key?(key_string.to_sym)
+      response.status = 400
+      return JSON.dump({ message:'Set appropriate parameters.'})
+    end
+
+    unless params[:done] == true or params[:done] == false
+      response.status = 400
+      return JSON.dump({ message:'parameter "done" must be false or true.'})
+    end
+
+    unless params[:order].is_a?(Integer)
+      response.status = 400
+      return JSON.dump({ message:'parameter "order" must be an integer.'})
+    end
+
+    unless params[:title].is_a?(String)
+      response.status = 400
+      return JSON.dump({ message:'parameter "title" must be a string.'})
+    end
+  end
+
+  done  = params[:done]
   order = params[:order]
   title = params[:title]
   response.status = 201
