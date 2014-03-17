@@ -17,7 +17,8 @@ gem 'rake'
 
 # Component requirements
 gem 'sinatra'
-gem 'activerecord'
+gem "sinatra-activerecord"
+gem "sqlite3"
 
 # Test requirements
 group :development, :test do
