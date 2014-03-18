@@ -93,7 +93,7 @@ post '/todo' do
 end
 
 # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
-# block引数には、lambdaオブジェクトを受け取り、keyをcamelCase<=>snake_caseに変換します
+# block引数には、lambdaオブジェクトを受け取り、keyを変換するのに使用します。基本的に to_snake, to_camelを渡すことを想定しています
 def formatter(args, block)
   case args
     when Hash
