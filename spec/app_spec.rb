@@ -17,7 +17,7 @@ describe 'app.rb' do
 
   context "GET /todo" do
     before do
-      post '/todo', '{"done":true, "order":1, "title":"hoge"}'
+      post '/todo', '{"isDone":true, "order":1, "taksTitle":"hoge"}'
     end
     it 'returns json object' do
       get '/todo'
@@ -36,7 +36,7 @@ describe 'app.rb' do
 
       it 'returns status 201' do
         last_response.status.should eq 201
-        JSON.parse(last_response.body).should include("done"=>true, "order"=>1, "title"=>"hoge")
+        JSON.parse(last_response.body).should include("isDone"=>true, "order"=>1, "taskTitle"=>"hoge")
       end
     end
 
