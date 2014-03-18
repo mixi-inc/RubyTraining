@@ -8,3 +8,6 @@ vendor/gems/*
 *.db
 .*.sw*
 .idea/*
+
+/.bundle/
+
