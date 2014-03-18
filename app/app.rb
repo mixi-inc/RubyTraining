@@ -69,7 +69,7 @@ post '/todo' do
   %w{done order title}.each do |key_string|
     unless params.has_key?(key_string.to_sym)
       response.status = 400
-      return JSON.dump({ message:'Set appropriate parameters.'})
+      return JSON.dump({ message:'set appropriate parameters.'})
     end
   end
 
