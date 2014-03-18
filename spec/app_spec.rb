@@ -37,23 +37,53 @@ describe 'app.rb' do
       end
     end
 
-    context "given no parameters" do
+    shared_examples_for 'invalid case' do |params, message|
       before do
-        post '/todo'
+        post '/todo', params
       end
-      it 'returns status 400' do
+
+      it 'returns 400 and error message' do
         last_response.status.should eq 400
+        JSON.parse(last_response.body)["message"].should eq message
       end
     end
 
-    context "given invalid json" do
-      before do
-        post '/todo', 'hoge'
-      end
-      it 'returns status 400' do
-        last_response.status.should eq 400
+    context 'given no parameters' do
+      it_should_behave_like 'invalid case', nil, 'set valid JSON for request raw body.'
+    end
+
+    context 'given invalid json' do
+      it_should_behave_like 'invalid case', '{"moge":fuge}', 'set valid JSON for request raw body.'
+    end
+
+    context 'given inadequate parameters' do
+      it_should_behave_like 'invalid case', '{}', 'set appropriate parameters.'
+    end
+
+    context 'given invalid value to "done" param' do
+      it_should_behave_like 'invalid case', '{"done":"hoge", "order":1, "title":"hoge"}', 'parameter "done" must be false or true.'
+    end
+
+    context 'given invalid value to "order" param' do
+      it_should_behave_like 'invalid case', '{"done":false, "order":"str", "title":"hoge"}', 'parameter "order" must be an integer.'
+    end
+
+    context 'given invalid value to "title" param' do
+      it_should_behave_like 'invalid case', '{"done":false, "order":1, "title":1}', 'parameter "title" must be a string.'
+    end
+
+  end
+
+  context 'GET /400, 404, 500' do
+    shared_examples_for 'errors' do |status|
+      it "returns #{status}" do
+        get "/#{status}"
+        last_response.status.should eq status
       end
     end
 
+    it_should_behave_like 'errors', 400
+    it_should_behave_like 'errors', 404
+    it_should_behave_like 'errors', 500
   end
 end

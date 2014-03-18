@@ -1,16 +1,33 @@
 require 'sinatra'
 require 'sinatra/activerecord'
 require 'json'
+require 'haml'
 
 # require all models
 require_relative 'models/init'
 
 set :static, true
 set :public_folder, 'public'
+set :views, File.dirname(__FILE__) + '/views'
 
 before do
   set :database_file, 'config/database.yml'
   ActiveRecord::Base.establish_connection(ENV['RACK_ENV'])
+end
+
+get '/404' do
+  response.status = 404
+  haml :not_found
+end
+
+get '/500' do
+  response.status = 500
+  haml :internal_server_error
+end
+
+get '/400' do
+  response.status = 400
+  haml :bad_request
 end
 
 get '/' do
@@ -60,7 +77,7 @@ post '/todo' do
   %w{done order title}.each do |key_string|
     unless params.has_key?(key_string.to_sym)
       response.status = 400
-      return JSON.dump({ message:'Set appropriate parameters.'})
+      return JSON.dump({ message:'set appropriate parameters.'})
     end
   end
 
