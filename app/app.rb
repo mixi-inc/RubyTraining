@@ -58,10 +58,10 @@ post '/todo' do
 
   # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
   # さらに、keyがCamelCaseの場合、snake_caseに変換します。
-  def convert_hash_key_from_string_into_symbol_recursively(args)
+  def convert_hash_key_from_string_into_symbol_recursively(args, block)
     case args
       when Hash
-        args.inject({}){ |hash, (k, v)| hash[lambda{|k| k = to_snake(k).to_sym if k.is_a?(String); k;  }.call(k)] = convert_hash_key_from_string_into_symbol_recursively(v); hash}
+        args.inject({}){ |hash, (k, v)| hash[lambda{|k| k = block.call(k).to_sym if k.is_a?(String); k;  }.call(k)] = convert_hash_key_from_string_into_symbol_recursively(v, block); hash}
       else
         args
     end
@@ -69,7 +69,7 @@ post '/todo' do
 
   params = ''
   begin
-    params = convert_hash_key_from_string_into_symbol_recursively(JSON.parse(request.body.read))
+    params = convert_hash_key_from_string_into_symbol_recursively(JSON.parse(request.body.read), to_snake)
   rescue
     response.status = 400
     return JSON.dump({ message: 'set valid JSON for request raw body.'})
@@ -99,7 +99,8 @@ post '/todo' do
 
   todo = Todo.create(params)
   response.status = 201
-  JSON.dump(todo.as_json)
+  body = convert_hash_key_from_string_into_symbol_recursively(todo.as_json, to_camel)
+  JSON.dump(body)
 end
 
 def to_snake(string)
@@ -107,6 +108,10 @@ def to_snake(string)
       gsub(/([a-z\d])([A-Z])/, '\1_\2').
       tr('-', '_').
       downcase
+end
+
+def to_camel(string)
+  string.classify.sub(/^(.)/){ |matched| matched.downcase }
 end
 
 after do

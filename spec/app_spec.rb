@@ -97,4 +97,12 @@ describe 'app.rb' do
     end
   end
 
+  describe 'to_camel' do
+    it 'convert snake case into camel case' do
+      to_camel('_snake_case').should eq 'snakeCase'
+      to_camel('snake_case').should eq 'snakeCase'
+      to_camel('snake____case').should eq 'snakeCase'
+    end
+  end
+
 end
