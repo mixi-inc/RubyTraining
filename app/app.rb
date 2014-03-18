@@ -36,7 +36,7 @@ end
 
 get '/todo' do
   todos = Todo.all
-  JSON.dump(todos.as_json)
+  JSON.dump(formatter(todos.as_json, lambda(&method(:to_camel))))
 end
 
 delete '/todo/:id' do
@@ -51,26 +51,16 @@ put '/todo/:id' do
   todo.done = !todo.done
   todo.save!
   response.status=200
-  JSON.dump(todo.as_json)
+  JSON.dump(formatter(todo.as_json, lambda(&method(:to_camel))))
 end
 
 post '/todo' do
 
-  # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
-  # block引数には、lambdaオブジェクトを受け取り、keyをcamelCase<=>snake_caseに変換します
-  def convert_hash_key_from_string_into_symbol_recursively(args, block)
-    case args
-      when Hash
-        args.inject({}){ |hash, (k, v)| hash[lambda{|k| k = block.call(k).to_sym if k.is_a?(String); k;  }.call(k)] = convert_hash_key_from_string_into_symbol_recursively(v, block); hash}
-      else
-        args
-    end
-  end
-
   params = ''
   begin
-    params = convert_hash_key_from_string_into_symbol_recursively(JSON.parse(request.body.read), lambda(&method(:to_snake)))
+    params = formatter(JSON.parse(request.body.read), lambda(&method(:to_snake)))
   rescue => e
+    p e.backtrace
     response.status = 400
     return JSON.dump({ message: 'set valid JSON for request raw body.'})
   end
@@ -99,10 +89,19 @@ post '/todo' do
 
   todo = Todo.create(params)
   response.status = 201
-  body = convert_hash_key_from_string_into_symbol_recursively(todo.as_json, lambda(&method(:to_camel)))
-  JSON.dump(body)
+  JSON.dump(formatter(todo.as_json, lambda(&method(:to_camel))))
 end
 
+# hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
+# block引数には、lambdaオブジェクトを受け取り、keyをcamelCase<=>snake_caseに変換します
+def formatter(args, block)
+  case args
+    when Hash
+      args.inject({}){ |hash, (k, v)| hash[lambda{|k| k = block.call(k).to_sym if k.is_a?(String); k;  }.call(k)] = formatter(v, block); hash}
+    else
+      args
+  end
+end
 
 def to_snake(string)
   string.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').
