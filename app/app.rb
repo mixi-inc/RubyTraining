@@ -1,9 +1,11 @@
 require 'sinatra'
 require "sinatra/activerecord"
 require 'json'
+require 'haml'
 
 set :static, true
 set :public_folder, 'public'
+set :views, File.dirname(__FILE__) + '/views'
 
 # require all models
 Dir[File.dirname(__FILE__)+"/model/*.rb"].each {|file| require file }
@@ -15,58 +17,21 @@ end
 
 get '/404' do
   response.status = 404
+  haml :not_found
 end
 
 get '/500' do
   response.status = 500
-  response.body = <<"EOS"
-  <html>
-<head>
-    <title>500 Internal Server Error</title>
-</head>
-<body>
-<h1>500 Internal Server Error</h1>
-<p>
-    <img src="images/500.jpg">
-</p>
-</body>
-</html>
-EOS
+  haml :internal_server_error
 end
 
 get '/400' do
   response.status = 400
-  response.body = <<"EOS"
-  <html>
-<head>
-    <title>400 Bad Request</title>
-</head>
-<body>
-<h1>400 Bad Request</h1>
-<p>
-    <img src="images/400.jpg" >
-</p>
-</body>
-</html>
-EOS
+  haml :bad_request
 end
 
 get '/' do
   'Hello, Moscow!'
-end
-
-not_found do
-  response.body = <<"EOS"
-  <html>
-<head>
-    <title>404 Not Found</title>
-</head>
-<body>
-<h1>404 Not Found</h1>
-<p style="font-size:32pt;font-weight:bold;">:あああみつかりませんすいませんすいません:(；ﾞﾟ'ωﾟ')::(；ﾞﾟ'ωﾟ'):</p>
-</body>
-</html>
-EOS
 end
 
 get '/todo' do
