@@ -1,7 +1,0 @@
-database:
-  development:
-    adapter: sqlite3
-    database: sinatra_development.db
-  test:
-    adapter: sqlite3
-    database: sinatra_test.db
