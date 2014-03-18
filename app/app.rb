@@ -57,7 +57,7 @@ end
 post '/todo' do
 
   # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
-  # block引数には、lambdaオブジェクトを受け取り、keyを変換します
+  # block引数には、lambdaオブジェクトを受け取り、keyをcamelCase<=>snake_caseに変換します
   def convert_hash_key_from_string_into_symbol_recursively(args, block)
     case args
       when Hash
