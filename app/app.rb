@@ -36,23 +36,24 @@ end
 
 get '/todo' do
   JSON.dump([{
-                 :done => true,
+                 :isDone => true,
                  :order => 1,
-                 :title => "done task"
+                 :taskTitle => "done task"
              },{
-                 :done => false,
+                 :isDone => false,
                  :order => 2,
-                 :title => "not done task"
+                 :taskTitle => "not done task"
              }])
 end
 
 post '/todo' do
 
   # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
+  # さらに、keyがCamelCaseの場合、snake_caseに変換します。
   def convert_hash_key_from_string_into_symbol_recursively(args)
     case args
       when Hash
-        args.inject({}){ |hash, (k, v)| hash[lambda{|k| k = k.to_sym if k.is_a?(String); k;  }.call(k)] = convert_hash_key_from_string_into_symbol_recursively(v); hash}
+        args.inject({}){ |hash, (k, v)| hash[lambda{|k| k = to_snake(k).to_sym if k.is_a?(String); k;  }.call(k)] = convert_hash_key_from_string_into_symbol_recursively(v); hash}
       else
         args
     end
@@ -66,14 +67,14 @@ post '/todo' do
     return JSON.dump({ message: 'set valid JSON for request raw body.'})
   end
 
-  %w{done order title}.each do |key_string|
+  %w{is_done order task_title}.each do |key_string|
     unless params.has_key?(key_string.to_sym)
       response.status = 400
       return JSON.dump({ message:'set appropriate parameters.'})
     end
   end
 
-  unless params[:done] == true or params[:done] == false
+  unless params[:is_done] == true or params[:is_done] == false
     response.status = 400
     return JSON.dump({ message:'parameter "done" must be false or true.'})
   end
@@ -83,16 +84,23 @@ post '/todo' do
     return JSON.dump({ message:'parameter "order" must be an integer.'})
   end
 
-  unless params[:title].is_a?(String)
+  unless params[:task_title].is_a?(String)
     response.status = 400
     return JSON.dump({ message:'parameter "title" must be a string.'})
   end
 
-  done  = params[:done]
-  order = params[:order]
-  title = params[:title]
+  is_done    = params[:is_done]
+  order      = params[:order]
+  task_title = params[:task_title]
   response.status = 201
   JSON.dump({})
+end
+
+def to_snake(string)
+  string.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').
+      gsub(/([a-z\d])([A-Z])/, '\1_\2').
+      tr('-', '_').
+      downcase
 end
 
 after do

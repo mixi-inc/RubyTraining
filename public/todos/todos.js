@@ -9,21 +9,21 @@ $(function(){
   // Todo Model
   // ----------
 
-  // Our basic **Todo** model has `title`, `order`, and `done` attributes.
+  // Our basic **Todo** model has `taskTitle`, `order`, and `isDone` attributes.
   var Todo = Backbone.Model.extend({
       
     // Default attributes for the todo item.
     defaults: function() {
       return {
-        title: "empty todo...",
+        taskTitle: "empty todo...",
         order: Todos.nextOrder(),
-        done: false
+        isDone: false
       };
     },
 
-    // Toggle the `done` state of this todo item.
+    // Toggle the `isDone` state of this todo item.
     toggle: function() {
-      this.save({done: !this.get("done")});
+      this.save({isDone: !this.get("isDone")});
     }
 
   });
@@ -39,13 +39,13 @@ $(function(){
     url: "/todo",
 
     // Filter down the list of all todo items that are finished.
-    done: function() {
-      return this.where({done: true});
+    isDone: function() {
+      return this.where({isDone: true});
     },
 
     // Filter down the list to only todo items that are still not finished.
     remaining: function() {
-      return this.where({done: false});
+      return this.where({isDone: false});
     },
 
     // We keep the Todos in sequential order, despite being saved by unordered
@@ -92,15 +92,15 @@ $(function(){
       this.listenTo(this.model, 'destroy', this.remove);
     },
 
-    // Re-render the titles of the todo item.
+    // Re-render the taskTitles of the todo item.
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
-      this.$el.toggleClass('done', this.model.get('done'));
+      this.$el.toggleClass('isDone', this.model.get('isDone'));
       this.input = this.$('.edit');
       return this;
     },
 
-    // Toggle the `"done"` state of the model.
+    // Toggle the `"isDone"` state of the model.
     toggleDone: function() {
       this.model.toggle();
     },
@@ -117,7 +117,7 @@ $(function(){
       if (!value) {
         this.clear();
       } else {
-        this.model.save({title: value});
+        this.model.save({taskTitle: value});
         this.$el.removeClass("editing");
       }
     },
@@ -175,13 +175,13 @@ $(function(){
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
     render: function() {
-      var done = Todos.done().length;
+      var isDone = Todos.isDone().length;
       var remaining = Todos.remaining().length;
 
       if (Todos.length) {
         this.main.show();
         this.footer.show();
-        this.footer.html(this.statsTemplate({done: done, remaining: remaining}));
+        this.footer.html(this.statsTemplate({isDone: isDone, remaining: remaining}));
       } else {
         this.main.hide();
         this.footer.hide();
@@ -208,19 +208,19 @@ $(function(){
       if (e.keyCode != 13) return;
       if (!this.input.val()) return;
 
-      Todos.create({title: this.input.val()});
+      Todos.create({taskTitle: this.input.val()});
       this.input.val('');
     },
 
-    // Clear all done todo items, destroying their models.
+    // Clear all isDone todo items, destroying their models.
     clearCompleted: function() {
-      _.invoke(Todos.done(), 'destroy');
+      _.invoke(Todos.isDone(), 'destroy');
       return false;
     },
 
     toggleAllComplete: function () {
-      var done = this.allCheckbox.checked;
-      Todos.each(function (todo) { todo.save({'done': done}); });
+      var isDone = this.allCheckbox.checked;
+      Todos.each(function (todo) { todo.save({'isDone': isDone}); });
     }
 
   });
