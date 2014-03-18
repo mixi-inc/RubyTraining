@@ -1,18 +1,18 @@
 require 'sinatra'
-require "sinatra/activerecord"
+require 'sinatra/activerecord'
 require 'json'
 require 'haml'
+
+# require all models
+require_relative 'models/todo'
 
 set :static, true
 set :public_folder, 'public'
 set :views, File.dirname(__FILE__) + '/views'
-
-# require all models
-Dir[File.dirname(__FILE__)+"/model/*.rb"].each {|file| require file }
+set :database_file, 'config/database.yml'
 
 before do
-  ActiveRecord::Base.configurations = YAML.load_file('config.yml')['database']
-  ActiveRecord::Base.establish_connection('development')
+  ActiveRecord::Base.establish_connection(ENV['RACK_ENV'])
 end
 
 get '/404' do
@@ -35,15 +35,23 @@ get '/' do
 end
 
 get '/todo' do
-  JSON.dump([{
-                 :isDone => true,
-                 :order => 1,
-                 :taskTitle => "done task"
-             },{
-                 :isDone => false,
-                 :order => 2,
-                 :taskTitle => "not done task"
-             }])
+  todos = Todo.all
+  JSON.dump(todos.as_json)
+end
+
+delete '/todo/:id' do
+  todo = Todo.where(:id=>params[:id]).first
+  todo.destroy
+  response.status=204
+  nil
+end
+
+put '/todo/:id' do
+  todo = Todo.where(:id=>params[:id]).first
+  todo.done = !todo.done
+  todo.save!
+  response.status=200
+  JSON.dump(todo.as_json)
 end
 
 post '/todo' do
@@ -89,11 +97,9 @@ post '/todo' do
     return JSON.dump({ message:'parameter "title" must be a string.'})
   end
 
-  is_done    = params[:is_done]
-  order      = params[:order]
-  task_title = params[:task_title]
+  todo = Todo.create(params)
   response.status = 201
-  JSON.dump({})
+  JSON.dump(todo.as_json)
 end
 
 def to_snake(string)
