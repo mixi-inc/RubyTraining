@@ -13,8 +13,60 @@ before do
   ActiveRecord::Base.establish_connection('development')
 end
 
+get '/404' do
+  response.status = 404
+end
+
+get '/500' do
+  response.status = 500
+  response.body = <<"EOS"
+  <html>
+<head>
+    <title>500 Internal Server Error</title>
+</head>
+<body>
+<h1>500 Internal Server Error</h1>
+<p>
+    <img src="images/500.jpg">
+</p>
+</body>
+</html>
+EOS
+end
+
+get '/400' do
+  response.status = 400
+  response.body = <<"EOS"
+  <html>
+<head>
+    <title>400 Bad Request</title>
+</head>
+<body>
+<h1>400 Bad Request</h1>
+<p>
+    <img src="images/400.jpg" >
+</p>
+</body>
+</html>
+EOS
+end
+
 get '/' do
   'Hello, Moscow!'
+end
+
+not_found do
+  response.body = <<"EOS"
+  <html>
+<head>
+    <title>404 Not Found</title>
+</head>
+<body>
+<h1>404 Not Found</h1>
+<p style="font-size:32pt;font-weight:bold;">:あああみつかりませんすいませんすいません:(；ﾞﾟ'ωﾟ')::(；ﾞﾟ'ωﾟ'):</p>
+</body>
+</html>
+EOS
 end
 
 get '/todo' do
