@@ -1,9 +1,11 @@
 require 'sinatra'
 require "sinatra/activerecord"
 require 'json'
+require 'haml'
 
 set :static, true
 set :public_folder, 'public'
+set :views, File.dirname(__FILE__) + '/views'
 
 # require all models
 Dir[File.dirname(__FILE__)+"/model/*.rb"].each {|file| require file }
@@ -11,6 +13,21 @@ Dir[File.dirname(__FILE__)+"/model/*.rb"].each {|file| require file }
 before do
   ActiveRecord::Base.configurations = YAML.load_file('config.yml')['database']
   ActiveRecord::Base.establish_connection('development')
+end
+
+get '/404' do
+  response.status = 404
+  haml :not_found
+end
+
+get '/500' do
+  response.status = 500
+  haml :internal_server_error
+end
+
+get '/400' do
+  response.status = 400
+  haml :bad_request
 end
 
 get '/' do
