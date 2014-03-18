@@ -4,14 +4,14 @@ require 'json'
 require 'haml'
 
 # require all models
-require_relative 'models/init'
+require_relative 'models/todo'
 
 set :static, true
 set :public_folder, 'public'
 set :views, File.dirname(__FILE__) + '/views'
+set :database_file, 'config/database.yml'
 
 before do
-  set :database_file, 'config/database.yml'
   ActiveRecord::Base.establish_connection(ENV['RACK_ENV'])
 end
 
