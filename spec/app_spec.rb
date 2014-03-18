@@ -17,7 +17,7 @@ describe 'app.rb' do
 
   context "GET /todo" do
     before do
-      post '/todo', '{"isDone":true, "order":1, "taksTitle":"hoge"}'
+      post '/todo', '{"isDone":true, "order":1, "taskTitle":"hoge"}'
     end
     it 'returns json object' do
       get '/todo'
