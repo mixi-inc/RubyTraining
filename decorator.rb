@@ -6,8 +6,13 @@ class Decorator
   end
 
   def call(env)
+    if env['CONTENT_TYPE'] == 'application/json'
+      env['rack.input'] = StringIO.new(JSON.dump(formatter(JSON.parse(env['rack.input'].read), :to_snake)))
+    end
+
+    p env
     res = @app.call(env)
-    p res
+
     content_size = 0
     if res[1]['Content-Type'] == 'application/json;charset=utf-8'
       res[2] = res[2].inject([]) do |array, json|
@@ -17,7 +22,7 @@ class Decorator
       end
       res[1]['Content-Length'] = content_size.to_s
     end
-    p res
+
     res
   end
 
@@ -27,8 +32,6 @@ class Decorator
   def formatter(args, format)
 
     case_changer = lambda(&method(format))
-    # to_snakeの場合、さらにsymbolに変換する
-    case_changer = lambda{ |x| lambda(&method(format)).call(x).to_sym } if format == :to_snake
 
     key_converter = lambda do |key|
       key = case_changer.call(key) if key.is_a?(String)
@@ -47,6 +50,13 @@ class Decorator
 
   def to_camel(string)
     string.gsub(/_+([a-z])/){ |matched| matched.tr("_", '').upcase }.sub(/^(.)/){ |matched| matched.downcase }
+  end
+
+  def to_snake(string)
+    string.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').
+        gsub(/([a-z\d])([A-Z])/, '\1_\2').
+        tr('-', '_').
+        downcase
   end
 
 end
