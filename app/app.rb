@@ -36,9 +36,7 @@ end
 
 get '/todo' do
   todos = Todo.all
-  json = todos.as_json
-  body = formatter(json, :to_camel)
-  JSON.dump(body)
+  JSON.dump(formatter(todos.as_json, :to_camel))
 end
 
 delete '/todo/:id' do
