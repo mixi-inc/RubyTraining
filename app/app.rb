@@ -36,7 +36,7 @@ end
 
 get '/todo' do
   todos = Todo.all
-  JSON.dump(formatter(todos.as_json, 'to_camel'))
+  JSON.dump(formatter(todos.as_json, :to_snake))
 end
 
 delete '/todo/:id' do
@@ -51,14 +51,14 @@ put '/todo/:id' do
   todo.done = !todo.done
   todo.save!
   response.status=200
-  JSON.dump(formatter(todo.as_json, 'to_camel'))
+  JSON.dump(formatter(todo.as_json, :to_camel))
 end
 
 post '/todo' do
 
   params = ''
   begin
-    params = formatter(JSON.parse(request.body.read), 'to_snake')
+    params = formatter(JSON.parse(request.body.read), :to_snake)
   rescue => e
     p e.backtrace
     response.status = 400
@@ -89,20 +89,14 @@ post '/todo' do
 
   todo = Todo.create(params)
   response.status = 201
-  JSON.dump(formatter(todo.as_json, 'to_camel'))
+  JSON.dump(formatter(todo.as_json, :to_camel))
 end
 
 # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
 # format引数に to_snake, to_camelを渡すと、応じたフォーマットに変換します
 def formatter(args, format)
 
-  case_changer = lambda{ |x| x } # デフォルトでは、そのまま返す
-  case format
-    when 'to_snake'
-      case_changer = lambda(&method(:to_snake))
-    when 'to_camel'
-      case_changer = lambda(&method(:to_camel))
-  end
+  case_changer = lambda(&method(format))
 
   key_converter = lambda do |k|
     k = case_changer.call(k).to_sym if k.is_a?(String)
