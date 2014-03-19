@@ -36,7 +36,7 @@ end
 
 get '/todo' do
   todos = Todo.all
-  JSON.dump(formatter(todos.as_json, :to_snake))
+  JSON.dump(formatter(todos.as_json, :to_camel))
 end
 
 delete '/todo/:id' do
@@ -48,7 +48,7 @@ end
 
 put '/todo/:id' do
   todo = Todo.where(:id=>params[:id]).first
-  todo.done = !todo.done
+  todo.is_done = !todo.is_done
   todo.save!
   response.status=200
   JSON.dump(formatter(todo.as_json, :to_camel))
@@ -96,16 +96,20 @@ end
 # format引数に :to_snake, :to_camelを渡すと、応じたフォーマットに変換します
 def formatter(args, format)
 
-  case_changer  = lambda(&method(format))
+  case_changer = lambda(&method(format))
+  # to_snakeの場合、さらにsymbolに変換する
+  case_changer = lambda{ |x| lambda(&method(format)).call(x).to_sym } if format == :to_snake
 
   key_converter = lambda do |key|
-    key = case_changer.call(key).to_sym if key.is_a?(String)
+    key = case_changer.call(key) if key.is_a?(String)
     key
   end
 
   case args
     when Hash
       args.inject({}){ |hash, (key, value)| hash[key_converter.call(key)] = formatter(value, format); hash}
+    when Array
+      args.inject([]){ |array, value| array << formatter(value, format) }
     else
       args
   end
