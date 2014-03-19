@@ -17,7 +17,7 @@ describe 'app.rb' do
 
   context "GET /todo" do
     before do
-      post '/todo', '{"done":true, "order":1, "title":"hoge"}'
+      post '/todo', '{"isDone":true, "order":1, "taskTitle":"hoge"}'
     end
     it 'returns json object' do
       get '/todo'
@@ -31,12 +31,12 @@ describe 'app.rb' do
 
     context "given valid parameters" do
       before do
-        post '/todo', '{"done":true, "order":1, "title":"hoge"}'
+        post '/todo', '{"isDone":true, "order":1, "taskTitle":"hoge"}'
       end
 
       it 'returns status 201' do
         last_response.status.should eq 201
-        JSON.parse(last_response.body).should include("done"=>true, "order"=>1, "title"=>"hoge")
+        JSON.parse(last_response.body).should include("isDone"=>true, "order"=>1, "taskTitle"=>"hoge")
       end
     end
 
@@ -64,15 +64,15 @@ describe 'app.rb' do
     end
 
     context 'given invalid value to "done" param' do
-      it_should_behave_like 'invalid case', '{"done":"hoge", "order":1, "title":"hoge"}', 'parameter "done" must be false or true.'
+      it_should_behave_like 'invalid case', '{"isDone":"hoge", "order":1, "taskTitle":"hoge"}', 'parameter "done" must be false or true.'
     end
 
     context 'given invalid value to "order" param' do
-      it_should_behave_like 'invalid case', '{"done":false, "order":"str", "title":"hoge"}', 'parameter "order" must be an integer.'
+      it_should_behave_like 'invalid case', '{"isDone":false, "order":"str", "taskTitle":"hoge"}', 'parameter "order" must be an integer.'
     end
 
     context 'given invalid value to "title" param' do
-      it_should_behave_like 'invalid case', '{"done":false, "order":1, "title":1}', 'parameter "title" must be a string.'
+      it_should_behave_like 'invalid case', '{"isDone":false, "order":1, "taskTitle":1}', 'parameter "title" must be a string.'
     end
 
   end
@@ -89,4 +89,20 @@ describe 'app.rb' do
     it_should_behave_like 'errors', 404
     it_should_behave_like 'errors', 500
   end
+
+  describe 'to_snake' do
+    it 'convert camel case into snake case' do
+      to_snake('CamelCase').should eq 'camel_case'
+      to_snake('CAMELCase').should eq 'camel_case'
+    end
+  end
+
+  describe 'to_camel' do
+    it 'convert snake case into camel case' do
+      to_camel('_snake_case').should eq 'snakeCase'
+      to_camel('snake_case').should eq 'snakeCase'
+      to_camel('snake____case').should eq 'snakeCase'
+    end
+  end
+
 end

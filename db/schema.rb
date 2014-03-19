@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140318031051) do
+ActiveRecord::Schema.define(version: 20140318101245) do
 
   create_table "todos", force: true do |t|
-    t.text    "title"
+    t.text    "task_title"
     t.integer "order"
-    t.boolean "done"
+    t.boolean "is_done"
   end
 
 end

@@ -36,7 +36,7 @@ end
 
 get '/todo' do
   todos = Todo.all
-  JSON.dump(todos.as_json)
+  JSON.dump(formatter(todos.as_json, :to_snake))
 end
 
 delete '/todo/:id' do
@@ -51,37 +51,28 @@ put '/todo/:id' do
   todo.done = !todo.done
   todo.save!
   response.status=200
-  JSON.dump(todo.as_json)
+  JSON.dump(formatter(todo.as_json, :to_camel))
 end
 
 post '/todo' do
 
-  # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
-  def convert_hash_key_from_string_into_symbol_recursively(args)
-    case args
-      when Hash
-        args.inject({}){ |hash, (k, v)| hash[lambda{|k| k = k.to_sym if k.is_a?(String); k;  }.call(k)] = convert_hash_key_from_string_into_symbol_recursively(v); hash}
-      else
-        args
-    end
-  end
-
   params = ''
   begin
-    params = convert_hash_key_from_string_into_symbol_recursively(JSON.parse(request.body.read))
-  rescue
+    params = formatter(JSON.parse(request.body.read), :to_snake)
+  rescue => e
+    p e.backtrace
     response.status = 400
     return JSON.dump({ message: 'set valid JSON for request raw body.'})
   end
 
-  %w{done order title}.each do |key_string|
+  %w{is_done order task_title}.each do |key_string|
     unless params.has_key?(key_string.to_sym)
       response.status = 400
       return JSON.dump({ message:'set appropriate parameters.'})
     end
   end
 
-  unless params[:done] == true or params[:done] == false
+  unless params[:is_done] == true or params[:is_done] == false
     response.status = 400
     return JSON.dump({ message:'parameter "done" must be false or true.'})
   end
@@ -91,14 +82,44 @@ post '/todo' do
     return JSON.dump({ message:'parameter "order" must be an integer.'})
   end
 
-  unless params[:title].is_a?(String)
+  unless params[:task_title].is_a?(String)
     response.status = 400
     return JSON.dump({ message:'parameter "title" must be a string.'})
   end
 
   todo = Todo.create(params)
   response.status = 201
-  JSON.dump(todo.as_json)
+  JSON.dump(formatter(todo.as_json, :to_camel))
+end
+
+# hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
+# format引数に :to_snake, :to_camelを渡すと、応じたフォーマットに変換します
+def formatter(args, format)
+
+  case_changer  = lambda(&method(format))
+
+  key_converter = lambda do |key|
+    key = case_changer.call(key).to_sym if key.is_a?(String)
+    key
+  end
+
+  case args
+    when Hash
+      args.inject({}){ |hash, (key, value)| hash[key_converter.call(key)] = formatter(value, format); hash}
+    else
+      args
+  end
+end
+
+def to_snake(string)
+  string.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').
+      gsub(/([a-z\d])([A-Z])/, '\1_\2').
+      tr('-', '_').
+      downcase
+end
+
+def to_camel(string)
+  string.gsub(/_+([a-z])/){ |matched| matched.tr("_", '').upcase }.sub(/^(.)/){ |matched| matched.downcase }
 end
 
 after do

@@ -50,16 +50,16 @@
 
   <script type="text/template" id="item-template">
     <div class="view">
-      <input class="toggle" type="checkbox" <%= done ? 'checked="checked"' : '' %> />
-      <label><%- title %></label>
+      <input class="toggle" type="checkbox" <%= isDone ? 'checked="checked"' : '' %> />
+      <label><%- taskTitle %></label>
       <a class="destroy"></a>
     </div>
-    <input class="edit" type="text" value="<%- title %>" />
+    <input class="edit" type="text" value="<%- taskTitle %>" />
   </script>
 
   <script type="text/template" id="stats-template">
-    <% if (done) { %>
-      <a id="clear-completed">Clear <%= done %> completed <%= done == 1 ? 'item' : 'items' %></a>
+    <% if (isDone) { %>
+      <a id="clear-completed">Clear <%= isDone %> completed <%= isDone == 1 ? 'item' : 'items' %></a>
     <% } %>
     <div class="todo-count"><b><%= remaining %></b> <%= remaining == 1 ? 'item' : 'items' %> left</div>
   </script>
