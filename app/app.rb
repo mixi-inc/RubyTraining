@@ -93,14 +93,14 @@ post '/todo' do
 end
 
 # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
-# format引数に to_snake, to_camelを渡すと、応じたフォーマットに変換します
+# format引数に :to_snake, :to_camelを渡すと、応じたフォーマットに変換します
 def formatter(args, format)
 
-  case_changer = lambda(&method(format))
+  case_changer  = lambda(&method(format))
 
-  key_converter = lambda do |k|
-    k = case_changer.call(k).to_sym if k.is_a?(String)
-    k
+  key_converter = lambda do |key|
+    key = case_changer.call(key).to_sym if key.is_a?(String)
+    key
   end
 
   case args
