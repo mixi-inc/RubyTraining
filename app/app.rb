@@ -13,30 +13,35 @@ set :database_file, 'config/database.yml'
 
 before do
   ActiveRecord::Base.establish_connection(ENV['RACK_ENV'])
+  content_type 'application/json'
 end
 
 get '/404' do
   response.status = 404
+  content_type 'text/html'
   haml :not_found
 end
 
 get '/500' do
   response.status = 500
+  content_type 'text/html'
   haml :internal_server_error
 end
 
 get '/400' do
   response.status = 400
+  content_type 'text/html'
   haml :bad_request
 end
 
 get '/' do
+  content_type 'text/plain'
   'Hello, Moscow!'
 end
 
 get '/todo' do
   todos = Todo.all
-  JSON.dump(formatter(todos.as_json, :to_camel))
+  JSON.dump(todos.as_json)
 end
 
 delete '/todo/:id' do
@@ -51,7 +56,7 @@ put '/todo/:id' do
   todo.is_done = !todo.is_done
   todo.save!
   response.status=200
-  JSON.dump(formatter(todo.as_json, :to_camel))
+  JSON.dump(todo.as_json)
 end
 
 post '/todo' do
@@ -89,7 +94,7 @@ post '/todo' do
 
   todo = Todo.create(params)
   response.status = 201
-  JSON.dump(formatter(todo.as_json, :to_camel))
+  JSON.dump(todo.as_json)
 end
 
 # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
@@ -120,10 +125,6 @@ def to_snake(string)
       gsub(/([a-z\d])([A-Z])/, '\1_\2').
       tr('-', '_').
       downcase
-end
-
-def to_camel(string)
-  string.gsub(/_+([a-z])/){ |matched| matched.tr("_", '').upcase }.sub(/^(.)/){ |matched| matched.downcase }
 end
 
 after do
