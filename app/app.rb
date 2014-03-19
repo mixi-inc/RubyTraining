@@ -119,7 +119,7 @@ def to_snake(string)
 end
 
 def to_camel(string)
-  string.classify.sub(/^(.)/){ |matched| matched.downcase }
+  string.gsub(/_+([a-z])/){ |matched| matched.tr("_", '').upcase }.sub(/^(.)/){ |matched| matched.downcase }
 end
 
 after do
