@@ -115,14 +115,14 @@ describe 'app.rb' do
     let(:symbolized_snake_array){ [ symbolized_snake_hash, symbolized_snake_hash, symbolized_snake_hash ] }
 
     context 'given :to_camel' do
-      it 'converts arrays and hashes into camel case, and keys should be a string.' do
+      it 'converts keys of hashes in an array and hashes into camel case, and also the keys should be a string.' do
         formatter(snake_hash,  :to_camel).should eq camel_hash
         formatter(snake_array, :to_camel).should eq camel_array
       end
     end
 
     context 'given :to_snake' do
-      it 'converts arrays and hashes into snake case, snd keys should be a symbol.' do
+      it 'converts keys of hashes in an array and hashes into snake case, and also the keys should be a symbol.' do
         formatter(camel_hash,  :to_snake).should eq symbolized_snake_hash
         formatter(camel_array, :to_snake).should eq symbolized_snake_array
       end
