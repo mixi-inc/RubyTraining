@@ -1,6 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/activerecord'
-require 'sinatra/reloader' if development?
+require 'sinatra/reloader'
 require 'json'
 require 'haml'
 
@@ -14,6 +14,10 @@ class Mosscow < Sinatra::Base
   set :public_folder, 'public'
   set :views, File.dirname(__FILE__) + '/views'
   set :database_file, 'config/database.yml'
+
+  configure :development do
+    register Sinatra::Reloader
+  end
 
   before do
     ActiveRecord::Base.establish_connection(ENV['RACK_ENV'])
