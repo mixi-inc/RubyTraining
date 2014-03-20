@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/reloader' if development?
