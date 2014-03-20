@@ -25,16 +25,20 @@ class CamelSnakeExchanger
 
   private
   def to_camel_string(string)
-    string.gsub(/_+([a-z])/){ |matched| matched.tr("_", '').upcase }.
+    string.gsub(/(".+"):/) do |matched|
+      matched.gsub(/_+([a-z])/){ |matched| matched.tr("_", '').upcase }.
         gsub(/"(.)/){ |matched| matched.downcase }.
         gsub(/_"/, '"')
+    end
   end
 
   def to_snake_string(string)
-    string.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').
+    string.gsub(/(".+"):/) do |matched|
+      matched.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').
         gsub(/([a-z\d])([A-Z])/, '\1_\2').
         tr('-', '_').
         downcase
+    end
   end
 
 end

@@ -26,10 +26,10 @@ describe CamelSnakeExchanger do
   describe 'to_camel_string' do
     it 'converts stringified hashes and arrays' do
       jsons = [
-        '{"is_done":true,"snake_case":1,"task_title":"task"}',
-        '{"is_done_":true,"_snake___case":1,"task_title_":"task"}'
+        '{"is_done":true,"snake_case":1,"task_title":"_task_title_"}',
+        '{"is_done_":true,"_snake___case":1,"task_title_":"_task_title_"}'
       ]
-      expected = '{"isDone":true,"snakeCase":1,"taskTitle":"task"}'
+      expected = '{"isDone":true,"snakeCase":1,"taskTitle":"_task_title_"}'
 
       jsons.each do |string|
         app.send(:to_camel_string, string).should eq expected
@@ -39,8 +39,8 @@ describe CamelSnakeExchanger do
 
   describe 'to_snake_string' do
     it 'converts stringified hashes and arrays' do
-      got = '{"isDone":true,"snakeCase":1,"taskTitle":"task"}'
-      expected = '{"is_done":true,"snake_case":1,"task_title":"task"}'
+      got = '{"isDone":true,"snakeCase":1,"taskTitle":"taskTitle"}'
+      expected = '{"is_done":true,"snake_case":1,"task_title":"taskTitle"}'
 
       app.send(:to_snake_string, got).should eq expected
     end
