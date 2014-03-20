@@ -1,5 +1,3 @@
-require 'json'
-
 class CamelSnakeExchanger
   def initialize(app)
     @app = app
@@ -7,7 +5,7 @@ class CamelSnakeExchanger
 
   def call(env)
     if env['CONTENT_TYPE'] == 'application/json'
-      env['rack.input'] = StringIO.new(JSON.dump(formatter(JSON.parse(env['rack.input'].read), :to_snake)))
+      env['rack.input'] = StringIO.new(to_snake_string(env['rack.input'].read))
     end
 
     res = @app.call(env)
@@ -15,7 +13,7 @@ class CamelSnakeExchanger
     content_size = 0
     if res[1]['Content-Type'] =~ /application\/json/
       res[2] = res[2].inject([]) do |array, json|
-        json = JSON.dump(formatter(JSON.parse(json), :to_camel))
+        json = to_camel_string(json)
         content_size += json.bytesize
         array << json
       end
@@ -26,34 +24,13 @@ class CamelSnakeExchanger
   end
 
   private
-  # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
-  # format引数に :to_snake, :to_camelを渡すと、応じたフォーマットに変換します
-  def formatter(args, format)
-
-    case_changer = lambda(&method(format))
-
-    key_converter = lambda do |key|
-      key = case_changer.call(key) if key.is_a?(String)
-      key
-    end
-
-    case args
-      when Hash
-        args.inject({}){ |hash, (key, value)| hash[key_converter.call(key)] = formatter(value, format); hash}
-      when Array
-        args.inject([]){ |array, value| array << formatter(value, format) }
-      else
-        args
-    end
-  end
-
-  def to_camel(string)
+  def to_camel_string(string)
     string.gsub(/_+([a-z])/){ |matched| matched.tr("_", '').upcase }.
-        sub(/^(.)/){ |matched| matched.downcase }.
-        sub(/_$/, '')
+        gsub(/"(.)/){ |matched| matched.downcase }.
+        gsub(/_"/, '"')
   end
 
-  def to_snake(string)
+  def to_snake_string(string)
     string.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').
         gsub(/([a-z\d])([A-Z])/, '\1_\2').
         tr('-', '_').
