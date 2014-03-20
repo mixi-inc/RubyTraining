@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/activerecord'
+require 'sinatra/reloader' if development?
 require 'json'
 require 'haml'
 
