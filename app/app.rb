@@ -23,23 +23,21 @@ class Mosscow < Sinatra::Base
 
   before do
     ActiveRecord::Base.establish_connection(ENV['RACK_ENV'])
+    content_type 'text/html'
   end
 
   get '/404' do
     response.status = 404
-    content_type 'text/html'
     haml :not_found
   end
 
   get '/500' do
     response.status = 500
-    content_type 'text/html'
     haml :internal_server_error
   end
 
   get '/400' do
     response.status = 400
-    content_type 'text/html'
     haml :bad_request
   end
 
