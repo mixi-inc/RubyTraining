@@ -1,7 +1,7 @@
 require 'json'
 require_relative '../spec_helper'
 
-describe Decorator do
+describe CamelSnakeExchanger do
   include Rack::Test::Methods
 
   class MockedApp < Sinatra::Base
@@ -11,7 +11,7 @@ describe Decorator do
   end
 
   def app
-    @app ||= Decorator.new(MockedApp)
+    @app ||= CamelSnakeExchanger.new(MockedApp)
   end
 
   describe 'call' do

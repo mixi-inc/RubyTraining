@@ -1,6 +1,6 @@
 require 'json'
 
-class Decorator
+class CamelSnakeExchanger
   def initialize(app)
     @app = app
   end
