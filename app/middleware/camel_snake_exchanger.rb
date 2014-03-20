@@ -6,26 +6,36 @@ class CamelSnakeExchanger
   end
 
   def call(env)
-    if env['CONTENT_TYPE'] == 'application/json'
-      env['rack.input'] = StringIO.new(JSON.dump(formatter(JSON.parse(env['rack.input'].read), :to_snake)))
-    end
+    rewirte_request_body_to_snake(env)
 
-    res = @app.call(env)
+    response = @app.call(env)
 
-    content_size = 0
-    if res[1]['Content-Type'] =~ /application\/json/
-      res[2] = res[2].inject([]) do |array, json|
-        json = JSON.dump(formatter(JSON.parse(json), :to_camel))
-        content_size += json.bytesize
-        array << json
-      end
-      res[1]['Content-Length'] = content_size.to_s
-    end
-
-    res
+    rewrite_response_body_to_camel(response)
   end
 
   private
+  def rewirte_request_body_to_snake env
+    if env['CONTENT_TYPE'] == 'application/json'
+      input = env['rack.input'].read
+      env['rack.input'] = StringIO.new(JSON.dump(formatter(JSON.parse(input), :to_snake)))
+    end
+  end
+
+  def rewrite_response_body_to_camel response
+    response_header = response[1]
+    response_body = response[2]
+
+    if response_header['Content-Type'] =~ /application\/json/
+      response_body.map!{|chunk|
+        JSON.dump(formatter(JSON.parse(chunk), :to_camel))        
+      }
+      response_header['Content-Length'] = 
+        response_body.inject(0){|s, i| s + i.bytesize }.to_s
+    end
+
+    response
+  end
+
   # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
   # format引数に :to_snake, :to_camelを渡すと、応じたフォーマットに変換します
   def formatter(args, format)
