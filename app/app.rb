@@ -28,7 +28,7 @@ class Mosscow < Sinatra::Base
 
   helpers do
     def json_halt status, object
-      halt status, {'Content-Type' => 'text/plain'}, JSON.dump(object)
+      halt status, {'Content-Type' => 'application/json'}, JSON.dump(object)
     end
   end
 
