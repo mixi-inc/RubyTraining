@@ -26,19 +26,22 @@ class Mosscow < Sinatra::Base
     content_type 'text/html'
   end
 
+  helpers do
+    def json_halt status, object
+      halt status, {'Content-Type' => 'application/json'}, JSON.dump(object)
+    end
+  end
+
   get '/404' do
-    response.status = 404
-    haml :not_found
+    halt 404, haml(:not_found)
   end
 
   get '/500' do
-    response.status = 500
-    haml :internal_server_error
+    halt 500, haml(:internal_server_error)
   end
 
   get '/400' do
-    response.status = 400
-    haml :bad_request
+    halt 400, haml(:bad_request)
   end
 
   get '/' do
@@ -73,31 +76,26 @@ class Mosscow < Sinatra::Base
       params = JSON.parse(request.body.read)
     rescue => e
       p e.backtrace
-      response.status = 400
-      return JSON.dump({ message: 'set valid JSON for request raw body.'})
+      json_halt 400, { message: 'set valid JSON for request raw body.'}
     end
 
     %w{is_done order task_title}.each do |key_string|
       unless params.has_key?(key_string)
-        response.status = 400
         p params
-        return JSON.dump({ message:'set appropriate parameters.'})
+        json_halt 400, { message:'set appropriate parameters.'}
       end
     end
 
     unless params['is_done'] == true or params['is_done'] == false
-      response.status = 400
-      return JSON.dump({ message:'parameter "done" must be false or true.'})
+      json_halt 400, { message:'parameter "done" must be false or true.'}
     end
 
     unless params['order'].is_a?(Integer)
-      response.status = 400
-      return JSON.dump({ message:'parameter "order" must be an integer.'})
+      json_halt 400, { message:'parameter "order" must be an integer.'}
     end
 
     unless params['task_title'].is_a?(String)
-      response.status = 400
-      return JSON.dump({ message:'parameter "title" must be a string.'})
+      json_halt 400, { message:'parameter "title" must be a string.'}
     end
 
     todo = Todo.create(params)
