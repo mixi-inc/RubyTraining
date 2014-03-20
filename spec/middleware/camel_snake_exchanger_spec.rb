@@ -23,6 +23,50 @@ describe CamelSnakeExchanger do
     end
   end
 
+  describe 'rewirte_request/response' do
+    let(:camel){ {"taskTitle" => "hoge"} }
+    let(:snake){ {"task_title" => "hoge"} }
+
+    it 'rewrite request with content_type == json' do
+      mock_env_json = { 
+        'CONTENT_TYPE' => 'application/json', 
+        'rack.input' => StringIO.new(JSON.dump(camel))
+      }
+      app.send(:rewirte_request_body_to_snake, mock_env_json)
+      JSON.parse(mock_env_json['rack.input'].read).should eq snake
+    end
+
+    it 'not rewrite request with another content_type' do
+      mock_env_json = { 
+        'CONTENT_TYPE' => 'text/html', 
+        'rack.input' => StringIO.new(JSON.dump(camel))
+      }
+      app.send(:rewirte_request_body_to_snake, mock_env_json)
+      JSON.parse(mock_env_json['rack.input'].read).should eq camel
+    end
+
+    it 'rewrite response with content_type == json' do
+      mock_response = [
+                       200,
+                       { 'Content-Type' => 'application/json' },
+                       [ JSON.dump(snake) ]
+                      ]
+      response = app.send(:rewrite_response_body_to_camel, mock_response)
+      JSON.parse(response[2][0]).should eq camel
+      response[1]['Content-Length'].to_i.should eq JSON.dump(camel).bytesize
+    end
+
+    it 'not rewrite response with another content_type' do
+      mock_response = [
+                       200,
+                       { 'Content-Type' => 'text/html' },
+                       [ JSON.dump(snake) ]
+                      ]
+      response = app.send(:rewrite_response_body_to_camel, mock_response)
+      JSON.parse(response[2][0]).should eq snake
+    end
+  end
+
   describe 'to_snake' do
     it 'convert camel case into snake case' do
       app.send(:to_snake, 'CamelCase').should eq 'camel_case'
