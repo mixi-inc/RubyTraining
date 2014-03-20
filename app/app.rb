@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'sinatra/activerecord'
 require 'sinatra/reloader'
+require 'sinatra/json'
 require 'json'
 require 'haml'
 
@@ -9,6 +10,7 @@ require_relative 'models/todo'
 
 class Mosscow < Sinatra::Base
   register Sinatra::ActiveRecordExtension
+  helpers Sinatra::JSON
 
   set :static, true
   set :public_folder, 'public'
@@ -21,24 +23,21 @@ class Mosscow < Sinatra::Base
 
   before do
     ActiveRecord::Base.establish_connection(ENV['RACK_ENV'])
-    content_type 'application/json'
+    content_type 'text/html'
   end
 
   get '/404' do
     response.status = 404
-    content_type 'text/html'
     haml :not_found
   end
 
   get '/500' do
     response.status = 500
-    content_type 'text/html'
     haml :internal_server_error
   end
 
   get '/400' do
     response.status = 400
-    content_type 'text/html'
     haml :bad_request
   end
 
@@ -49,7 +48,7 @@ class Mosscow < Sinatra::Base
 
   get '/todo' do
     todos = Todo.all
-    JSON.dump(todos.as_json)
+    json todos
   end
 
   delete '/todo/:id' do
@@ -64,7 +63,7 @@ class Mosscow < Sinatra::Base
     todo.is_done = !todo.is_done
     todo.save!
     response.status=200
-    JSON.dump(todo.as_json)
+    json todo
   end
 
   post '/todo' do
@@ -103,7 +102,7 @@ class Mosscow < Sinatra::Base
 
     todo = Todo.create(params)
     response.status = 201
-    JSON.dump(todo.as_json)
+    json todo
   end
 
   after do

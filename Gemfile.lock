@@ -92,5 +92,6 @@ DEPENDENCIES
   rspec (~> 2.14.1)
   sinatra
   sinatra-activerecord
+  sinatra-contrib
   sinatra-reloader
   sqlite3
