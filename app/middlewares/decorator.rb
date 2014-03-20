@@ -10,11 +10,10 @@ class Decorator
       env['rack.input'] = StringIO.new(JSON.dump(formatter(JSON.parse(env['rack.input'].read), :to_snake)))
     end
 
-    p env
     res = @app.call(env)
 
     content_size = 0
-    if res[1]['Content-Type'] == 'application/json;charset=utf-8'
+    if res[1]['Content-Type'] =~ /application\/json/
       res[2] = res[2].inject([]) do |array, json|
         json = JSON.dump(formatter(JSON.parse(json), :to_camel))
         content_size += json.bytesize
@@ -49,7 +48,9 @@ class Decorator
   end
 
   def to_camel(string)
-    string.gsub(/_+([a-z])/){ |matched| matched.tr("_", '').upcase }.sub(/^(.)/){ |matched| matched.downcase }
+    string.gsub(/_+([a-z])/){ |matched| matched.tr("_", '').upcase }.
+        sub(/^(.)/){ |matched| matched.downcase }.
+        sub(/_$/, '')
   end
 
   def to_snake(string)

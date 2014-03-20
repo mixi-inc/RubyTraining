@@ -1,5 +1,5 @@
 require_relative 'app/app'
-require_relative 'decorator'
+require_relative 'app/middlewares/decorator'
 
 use Decorator
-run Sinatra::Application
+run Mosscow
