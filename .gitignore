@@ -10,4 +10,4 @@ vendor/gems/*
 .idea/*
 
 /.bundle/
-
+coverage/*
