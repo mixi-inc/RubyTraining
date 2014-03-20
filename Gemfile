@@ -25,6 +25,7 @@ gem 'haml'
 group :development, :test do
   gem 'rspec', '~> 2.14.1'
   gem 'rack-test', :require => 'rack/test'
+  gem 'sinatra-reloader'
   gem 'coveralls', require: false
 end
 
