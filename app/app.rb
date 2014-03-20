@@ -33,18 +33,15 @@ class Mosscow < Sinatra::Base
   end
 
   get '/404' do
-    response.status = 404
-    haml :not_found
+    halt 404, haml(:not_found)
   end
 
   get '/500' do
-    response.status = 500
-    haml :internal_server_error
+    halt 500, haml(:internal_server_error)
   end
 
   get '/400' do
-    response.status = 400
-    haml :bad_request
+    halt 400, haml(:bad_request)
   end
 
   get '/' do
