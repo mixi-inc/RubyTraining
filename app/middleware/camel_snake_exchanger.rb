@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'json'
 
 class CamelSnakeExchanger
@@ -6,14 +7,24 @@ class CamelSnakeExchanger
   end
 
   def call(env)
-    if env['CONTENT_TYPE'] == 'application/json'
-      env['rack.input'] = StringIO.new(JSON.dump(formatter(JSON.parse(env['rack.input'].read), :to_snake)))
-    end
+    handle_input(env)
 
     res = @app.call(env)
 
+    handle_output(res)
+  end
+
+  private
+  def handle_input env
+    if env['CONTENT_TYPE'] == 'application/json'
+      convert_input_to_snake(env)
+    end
+  end
+
+  def handle_output res
     content_size = 0
     if res[1]['Content-Type'] =~ /application\/json/
+      p res
       res[2] = res[2].inject([]) do |array, json|
         json = JSON.dump(formatter(JSON.parse(json), :to_camel))
         content_size += json.bytesize
@@ -21,11 +32,14 @@ class CamelSnakeExchanger
       end
       res[1]['Content-Length'] = content_size.to_s
     end
-
     res
   end
 
-  private
+  def convert_input_to_snake env
+    input = env['rack.input'].read
+    env['rack.input'] = StringIO.new(JSON.dump(formatter(JSON.parse(input), :to_snake)))
+  end
+
   # hashのkeyがstringの場合、symbolに変換します。hashが入れ子の場合も再帰的に変換します。
   # format引数に :to_snake, :to_camelを渡すと、応じたフォーマットに変換します
   def formatter(args, format)
