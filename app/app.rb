@@ -50,7 +50,7 @@ class Mosscow < Sinatra::Base
 
   get '/todo' do
     todos = Todo.all
-    json todos.as_json
+    json todos
   end
 
   delete '/todo/:id' do
@@ -65,7 +65,7 @@ class Mosscow < Sinatra::Base
     todo.is_done = !todo.is_done
     todo.save!
     response.status=200
-    json todo.as_json
+    json todo
   end
 
   post '/todo' do
@@ -104,7 +104,7 @@ class Mosscow < Sinatra::Base
 
     todo = Todo.create(params)
     response.status = 201
-    json todo.as_json
+    json todo
   end
 
   after do
