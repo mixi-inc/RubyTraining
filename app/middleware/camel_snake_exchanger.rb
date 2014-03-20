@@ -6,7 +6,7 @@ class CamelSnakeExchanger
   end
 
   def call(env)
-    rewirte_request_body_to_snake(env)
+    rewrite_request_body_to_snake(env)
 
     response = @app.call(env)
 
@@ -14,7 +14,7 @@ class CamelSnakeExchanger
   end
 
   private
-  def rewirte_request_body_to_snake env
+  def rewrite_request_body_to_snake env
     if env['CONTENT_TYPE'] == 'application/json'
       input = env['rack.input'].read
       env['rack.input'] = StringIO.new(JSON.dump(formatter(JSON.parse(input), :to_snake)))

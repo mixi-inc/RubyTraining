@@ -23,7 +23,7 @@ describe CamelSnakeExchanger do
     end
   end
 
-  describe 'rewirte_request/response' do
+  describe 'rewrite_request/response' do
     let(:camel){ {"taskTitle" => "hoge"} }
     let(:snake){ {"task_title" => "hoge"} }
 
@@ -32,7 +32,7 @@ describe CamelSnakeExchanger do
         'CONTENT_TYPE' => 'application/json', 
         'rack.input' => StringIO.new(JSON.dump(camel))
       }
-      app.send(:rewirte_request_body_to_snake, mock_env_json)
+      app.send(:rewrite_request_body_to_snake, mock_env_json)
       JSON.parse(mock_env_json['rack.input'].read).should eq snake
     end
 
@@ -41,7 +41,7 @@ describe CamelSnakeExchanger do
         'CONTENT_TYPE' => 'text/html', 
         'rack.input' => StringIO.new(JSON.dump(camel))
       }
-      app.send(:rewirte_request_body_to_snake, mock_env_json)
+      app.send(:rewrite_request_body_to_snake, mock_env_json)
       JSON.parse(mock_env_json['rack.input'].read).should eq camel
     end
 
