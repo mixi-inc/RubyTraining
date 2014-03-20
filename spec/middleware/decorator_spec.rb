@@ -32,10 +32,9 @@ describe Decorator do
 
   describe 'to_camel' do
     it 'convert snake case into camel case' do
-      app.send(:to_camel, '_snake_case'  ).should eq 'snakeCase'
-      app.send(:to_camel, 'snake_case'   ).should eq 'snakeCase'
-      app.send(:to_camel, 'snake____case').should eq 'snakeCase'
-      app.send(:to_camel, 'snake_case_'  ).should eq 'snakeCase'
+      %w{ _snake_case snake_case snake___case snake_case_ }.each do |word|
+        app.send(:to_camel, word ).should eq 'snakeCase'
+      end
     end
   end
 
