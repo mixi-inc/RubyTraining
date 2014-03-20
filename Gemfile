@@ -19,6 +19,7 @@ gem 'rake'
 gem 'sinatra'
 gem 'sinatra-activerecord'
 gem 'sinatra-reloader'
+gem 'sinatra-contrib'
 gem 'sqlite3'
 gem 'haml'
 
