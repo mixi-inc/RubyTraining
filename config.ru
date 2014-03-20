@@ -1,3 +1,5 @@
 require_relative 'app/app'
+require_relative 'app/middleware/camel_snake_exchanger'
 
-run Sinatra::Application
+use Decorator
+run Mosscow

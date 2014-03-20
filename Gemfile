@@ -18,6 +18,7 @@ gem 'rake'
 # Component requirements
 gem 'sinatra'
 gem 'sinatra-activerecord'
+gem 'sinatra-reloader'
 gem 'sqlite3'
 gem 'haml'
 
@@ -25,7 +26,6 @@ gem 'haml'
 group :development, :test do
   gem 'rspec', '~> 2.14.1'
   gem 'rack-test', :require => 'rack/test'
-  gem 'sinatra-reloader'
   gem 'coveralls', require: false
 end
 
