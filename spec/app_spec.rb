@@ -1,10 +1,10 @@
-require 'spec_helper'
+require_relative 'spec_helper'
 
 describe 'app.rb' do
   include Rack::Test::Methods
 
   def app
-    Sinatra::Application
+    Mosscow
   end
 
   context "GET /" do
@@ -17,7 +17,7 @@ describe 'app.rb' do
 
   context "GET /todo" do
     before do
-      post '/todo', '{"isDone":true, "order":1, "taskTitle":"hoge"}'
+      post '/todo', '{"is_done":true, "order":1, "task_title":"hoge"}'
     end
     it 'returns json object' do
       get '/todo'
@@ -31,12 +31,12 @@ describe 'app.rb' do
 
     context "given valid parameters" do
       before do
-        post '/todo', '{"isDone":true, "order":1, "taskTitle":"hoge"}'
+        post '/todo', '{"is_done":true, "order":1, "task_title":"hoge"}'
       end
 
       it 'returns status 201' do
         last_response.status.should eq 201
-        JSON.parse(last_response.body).should include("isDone"=>true, "order"=>1, "taskTitle"=>"hoge")
+        JSON.parse(last_response.body).should include("is_done"=>true, "order"=>1, "task_title"=>"hoge")
       end
     end
 
@@ -64,15 +64,15 @@ describe 'app.rb' do
     end
 
     context 'given invalid value to "done" param' do
-      it_should_behave_like 'invalid case', '{"isDone":"hoge", "order":1, "taskTitle":"hoge"}', 'parameter "done" must be false or true.'
+      it_should_behave_like 'invalid case', '{"is_done":"hoge", "order":1, "task_title":"hoge"}', 'parameter "done" must be false or true.'
     end
 
     context 'given invalid value to "order" param' do
-      it_should_behave_like 'invalid case', '{"isDone":false, "order":"str", "taskTitle":"hoge"}', 'parameter "order" must be an integer.'
+      it_should_behave_like 'invalid case', '{"is_done":false, "order":"str", "task_title":"hoge"}', 'parameter "order" must be an integer.'
     end
 
     context 'given invalid value to "title" param' do
-      it_should_behave_like 'invalid case', '{"isDone":false, "order":1, "taskTitle":1}', 'parameter "title" must be a string.'
+      it_should_behave_like 'invalid case', '{"is_done":false, "order":1, "task_title":1}', 'parameter "title" must be a string.'
     end
 
   end
