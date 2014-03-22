@@ -14,14 +14,15 @@ class CamelSnakeExchanger
   end
 
   private
-  def rewrite_request_body_to_snake env
+
+  def rewrite_request_body_to_snake(env)
     if env['CONTENT_TYPE'] == 'application/json'
       input = env['rack.input'].read
       env['rack.input'] = StringIO.new(JSON.dump(formatter(JSON.parse(input), :to_snake)))
     end
   end
 
-  def rewrite_response_body_to_camel response
+  def rewrite_response_body_to_camel(response)
     response_header = response[1]
     response_body = response[2]
 

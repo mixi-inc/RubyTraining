@@ -5,48 +5,22 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Blocks:
-  Enabled: false
-
-# Offense count: 5
-Documentation:
-  Enabled: false
-
-# Offense count: 1
-EmptyLinesAroundAccessModifier:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-IndentArray:
-  Enabled: false
-
 # Offense count: 16
 LineLength:
-  Max: 140
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-MethodDefParentheses:
-  Enabled: false
+  Max: 150
 
 # Offense count: 1
 # Configuration parameters: CountComments.
 MethodLength:
   Max: 13
 
+# Offense count: 5
+Documentation:
+  Enabled: false
+
 # Offense count: 1
 # Cop supports --auto-correct.
-NumericLiterals:
-  MinDigits: 15
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: PreferredDelimiters.
-PercentLiteralDelimiters:
+Blocks:
   Enabled: false
 
 # Offense count: 1
@@ -54,10 +28,6 @@ PercentLiteralDelimiters:
 # Configuration parameters: AllowAsExpressionSeparator.
 Semicolon:
   Enabled: false
-
-# --------------------------
-# Rules below are pending.
-# --------------------------
 
 # Offense count: 2
 # Configuration parameters: Methods.

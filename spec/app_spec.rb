@@ -1,6 +1,9 @@
+require 'json'
 require_relative 'spec_helper'
 
 describe 'app.rb' do
+  let(:expected){ { 'is_done' => true, 'order' => 1, 'task_title' => 'hoge' } }
+
   include Rack::Test::Methods
 
   def app
@@ -17,7 +20,7 @@ describe 'app.rb' do
 
   context 'GET /todo' do
     before do
-      post '/todo', '{"is_done":true, "order":1, "task_title":"hoge"}'
+      post '/todo', JSON.dump(expected)
     end
     it 'returns json object' do
       get '/todo'
@@ -31,12 +34,12 @@ describe 'app.rb' do
 
     context 'given valid parameters' do
       before do
-        post '/todo', '{"is_done":true, "order":1, "task_title":"hoge"}'
+        post '/todo', JSON.dump(expected)
       end
 
       it 'returns status 201' do
         last_response.status.should eq 201
-        JSON.parse(last_response.body).should include('is_done' => true, 'order' => 1, 'task_title' => 'hoge')
+        JSON.parse(last_response.body).should include(expected)
       end
     end
 
@@ -51,28 +54,14 @@ describe 'app.rb' do
       end
     end
 
-    context 'given no parameters' do
-      it_should_behave_like 'invalid case', nil, 'set valid JSON for request raw body.'
-    end
-
-    context 'given invalid json' do
-      it_should_behave_like 'invalid case', '{"moge":fuge}', 'set valid JSON for request raw body.'
-    end
-
-    context 'given inadequate parameters' do
-      it_should_behave_like 'invalid case', '{}', 'set appropriate parameters.'
-    end
-
-    context 'given invalid value to "done" param' do
-      it_should_behave_like 'invalid case', '{"is_done":"hoge", "order":1, "task_title":"hoge"}', 'parameter "done" must be false or true.'
-    end
-
-    context 'given invalid value to "order" param' do
-      it_should_behave_like 'invalid case', '{"is_done":false, "order":"str", "task_title":"hoge"}', 'parameter "order" must be an integer.'
-    end
-
-    context 'given invalid value to "title" param' do
-      it_should_behave_like 'invalid case', '{"is_done":false, "order":1, "task_title":1}', 'parameter "title" must be a string.'
+    [
+      [ nil,            'set valid JSON for request raw body.'],
+      ['{"moge":fuge}', 'set valid JSON for request raw body.'],
+      ['{}',            'set appropriate parameters.'         ],
+      ['{"is_done":"hoge", "order":1, "task_title":"hoge"}',    'parameter "done" must be false or true.'],
+      ['{"is_done":false, "order":"str", "task_title":"hoge"}', 'parameter "order" must be an integer.'  ]
+    ].each do |params, message|
+      it_should_behave_like 'invalid case', params, message
     end
 
   end

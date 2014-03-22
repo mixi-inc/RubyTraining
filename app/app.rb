@@ -27,7 +27,7 @@ class Mosscow < Sinatra::Base
   end
 
   helpers do
-    def json_halt status, object
+    def json_halt(status, object)
       halt status, { 'Content-Type' => 'application/json' }, JSON.dump(object)
     end
   end
@@ -79,7 +79,7 @@ class Mosscow < Sinatra::Base
       json_halt 400,  message: 'set valid JSON for request raw body.'
     end
 
-    %w{is_done order task_title}.each do |key_string|
+    %w(is_done order task_title).each do |key_string|
       unless params.key?(key_string)
         p params
         json_halt 400,  message:'set appropriate parameters.'

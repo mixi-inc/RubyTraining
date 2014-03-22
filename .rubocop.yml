@@ -1,5 +1,9 @@
 inherit_from: rubocop-todo.yml
 
+AllCops:
+  Excludes:
+    - !ruby/regexp /\/db\/schema\.rb$/
+
 # configs clearly to be false
 
 AsciiComments:
