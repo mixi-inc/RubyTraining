@@ -1,0 +1,14 @@
+inherit_from: rubocop-todo.yml
+
+# configs clearly to be false
+
+AsciiComments:
+  Enabled: false
+
+# configs ambiguously to be false
+
+# Offense count: 2
+# Configuration parameters: IndentWhenRelativeTo, SupportedStyles, IndentOneStep.
+CaseIndentation:
+  Enabled: false
+

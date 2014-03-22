@@ -55,14 +55,14 @@ class Mosscow < Sinatra::Base
   end
 
   delete '/todo/:id' do
-    todo = Todo.where(:id=>params[:id]).first
+    todo = Todo.where(id: params[:id]).first
     todo.destroy
     response.status=204
     nil
   end
 
   put '/todo/:id' do
-    todo = Todo.where(:id=>params[:id]).first
+    todo = Todo.where(id: params[:id]).first
     todo.is_done = !todo.is_done
     todo.save!
     response.status=200
@@ -76,26 +76,26 @@ class Mosscow < Sinatra::Base
       params = JSON.parse(request.body.read)
     rescue => e
       p e.backtrace
-      json_halt 400, { message: 'set valid JSON for request raw body.'}
+      json_halt 400,  message: 'set valid JSON for request raw body.'
     end
 
     %w{is_done order task_title}.each do |key_string|
-      unless params.has_key?(key_string)
+      unless params.key?(key_string)
         p params
-        json_halt 400, { message:'set appropriate parameters.'}
+        json_halt 400,  message:'set appropriate parameters.'
       end
     end
 
-    unless params['is_done'] == true or params['is_done'] == false
-      json_halt 400, { message:'parameter "done" must be false or true.'}
+    unless params['is_done'] == true || params['is_done'] == false
+      json_halt 400,  message:'parameter "done" must be false or true.'
     end
 
     unless params['order'].is_a?(Integer)
-      json_halt 400, { message:'parameter "order" must be an integer.'}
+      json_halt 400,  message:'parameter "order" must be an integer.'
     end
 
     unless params['task_title'].is_a?(String)
-      json_halt 400, { message:'parameter "title" must be a string.'}
+      json_halt 400,  message:'parameter "title" must be a string.'
     end
 
     todo = Todo.create(params)

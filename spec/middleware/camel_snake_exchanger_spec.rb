@@ -47,9 +47,9 @@ describe CamelSnakeExchanger do
 
     it 'rewrite response with content_type == json' do
       mock_response = [
-                       200,
-                       { 'Content-Type' => 'application/json' },
-                       [ JSON.dump(snake) ]
+        200,
+        { 'Content-Type' => 'application/json' },
+        [ JSON.dump(snake) ]
                       ]
       response = app.send(:rewrite_response_body_to_camel, mock_response)
       JSON.parse(response[2][0]).should eq camel
@@ -58,9 +58,9 @@ describe CamelSnakeExchanger do
 
     it 'not rewrite response with another content_type' do
       mock_response = [
-                       200,
-                       { 'Content-Type' => 'text/html' },
-                       [ JSON.dump(snake) ]
+        200,
+        { 'Content-Type' => 'text/html' },
+        [ JSON.dump(snake) ]
                       ]
       response = app.send(:rewrite_response_body_to_camel, mock_response)
       JSON.parse(response[2][0]).should eq snake
