@@ -55,6 +55,10 @@ PercentLiteralDelimiters:
 Semicolon:
   Enabled: false
 
+# --------------------------
+# Rules below are pending.
+# --------------------------
+
 # Offense count: 2
 # Configuration parameters: Methods.
 SingleLineBlockParams:
@@ -65,56 +69,13 @@ SingleLineBlockParams:
 SpaceAfterColon:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-SpaceAfterComma:
-  Enabled: false
-
-# Offense count: 7
-# Cop supports --auto-correct.
-SpaceAroundOperators:
-  Enabled: false
-
 # Offense count: 12
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 SpaceBeforeBlockBraces:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
-SpaceInsideBlockBraces:
-  Enabled: false
-
 # Offense count: 8
 # Cop supports --auto-correct.
 SpaceInsideBrackets:
-  Enabled: false
-
-# Offense count: 15
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SupportedStyles.
-SpaceInsideHashLiteralBraces:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-SpaceInsideParens:
-  Enabled: false
-
-# Offense count: 32
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-StringLiterals:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-TrailingBlankLines:
-  Enabled: false
-
-# Offense count: 6
-# Cop supports --auto-correct.
-TrailingWhitespace:
   Enabled: false

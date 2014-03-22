@@ -15,7 +15,7 @@ describe CamelSnakeExchanger do
   end
 
   describe 'call' do
-    let(:json){ {isDone:true,order:1,taskTitle:"hoge"} }
+    let(:json){ { isDone:true, order:1, taskTitle:'hoge' } }
 
     it 'receives and returns camelCased json' do
       post '/post', JSON.dump(json)
@@ -24,12 +24,12 @@ describe CamelSnakeExchanger do
   end
 
   describe 'rewrite_request/response' do
-    let(:camel){ {"taskTitle" => "hoge"} }
-    let(:snake){ {"task_title" => "hoge"} }
+    let(:camel){ { 'taskTitle' => 'hoge' } }
+    let(:snake){ { 'task_title' => 'hoge' } }
 
     it 'rewrite request with content_type == json' do
-      mock_env_json = { 
-        'CONTENT_TYPE' => 'application/json', 
+      mock_env_json = {
+        'CONTENT_TYPE' => 'application/json',
         'rack.input' => StringIO.new(JSON.dump(camel))
       }
       app.send(:rewrite_request_body_to_snake, mock_env_json)
@@ -37,8 +37,8 @@ describe CamelSnakeExchanger do
     end
 
     it 'not rewrite request with another content_type' do
-      mock_env_json = { 
-        'CONTENT_TYPE' => 'text/html', 
+      mock_env_json = {
+        'CONTENT_TYPE' => 'text/html',
         'rack.input' => StringIO.new(JSON.dump(camel))
       }
       app.send(:rewrite_request_body_to_snake, mock_env_json)
@@ -77,14 +77,14 @@ describe CamelSnakeExchanger do
   describe 'to_camel' do
     it 'convert snake case into camel case' do
       %w{ _snake_case snake_case snake___case snake_case_ }.each do |word|
-        app.send(:to_camel, word ).should eq 'snakeCase'
+        app.send(:to_camel, word).should eq 'snakeCase'
       end
     end
   end
 
   describe 'formatter' do
-    let!(:snake_hash){ {"is_done" => "hoge", "order" => 1, "task_title" => "title" } }
-    let!(:camel_hash){ {"isDone"  => "hoge", "order" => 1, "taskTitle"  => "title" } }
+    let!(:snake_hash){ { 'is_done' => 'hoge', 'order' => 1, 'task_title' => 'title' } }
+    let!(:camel_hash){ { 'isDone'  => 'hoge', 'order' => 1, 'taskTitle'  => 'title' } }
     let(:snake_array){ [ snake_hash, snake_hash, snake_hash ] }
     let(:camel_array){ [ camel_hash, camel_hash, camel_hash ] }
 

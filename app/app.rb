@@ -28,7 +28,7 @@ class Mosscow < Sinatra::Base
 
   helpers do
     def json_halt status, object
-      halt status, {'Content-Type' => 'application/json'}, JSON.dump(object)
+      halt status, { 'Content-Type' => 'application/json' }, JSON.dump(object)
     end
   end
 
@@ -57,7 +57,7 @@ class Mosscow < Sinatra::Base
   delete '/todo/:id' do
     todo = Todo.where(id: params[:id]).first
     todo.destroy
-    response.status=204
+    response.status = 204
     nil
   end
 
@@ -65,7 +65,7 @@ class Mosscow < Sinatra::Base
     todo = Todo.where(id: params[:id]).first
     todo.is_done = !todo.is_done
     todo.save!
-    response.status=200
+    response.status = 200
     json todo
   end
 

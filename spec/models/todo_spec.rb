@@ -5,4 +5,3 @@ describe 'Todo' do
     it { should_not be_nil }
   end
 end
-

@@ -27,10 +27,10 @@ class CamelSnakeExchanger
 
     if response_header['Content-Type'] =~ /application\/json/
       response_body.map!{|chunk|
-        JSON.dump(formatter(JSON.parse(chunk), :to_camel))        
+        JSON.dump(formatter(JSON.parse(chunk), :to_camel))
       }
-      response_header['Content-Length'] = 
-        response_body.reduce(0){|s, i| s + i.bytesize }.to_s
+      response_header['Content-Length'] =
+        response_body.reduce(0){ |s, i| s + i.bytesize }.to_s
     end
 
     response
@@ -48,7 +48,7 @@ class CamelSnakeExchanger
 
     case args
       when Hash
-        args.reduce({}){ |hash, (key, value)| hash[key_converter.call(key)] = formatter(value, format); hash}
+        args.reduce({}){ |hash, (key, value)| hash[key_converter.call(key)] = formatter(value, format); hash }
       when Array
         args.reduce([]){ |array, value| array << formatter(value, format) }
       else
@@ -57,7 +57,7 @@ class CamelSnakeExchanger
   end
 
   def to_camel(string)
-    string.gsub(/_+([a-z])/){ |matched| matched.tr("_", '').upcase }
+    string.gsub(/_+([a-z])/){ |matched| matched.tr('_', '').upcase }
         .sub(/^(.)/){ |matched| matched.downcase }
         .sub(/_$/, '')
   end

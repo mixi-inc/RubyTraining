@@ -7,7 +7,7 @@ describe 'app.rb' do
     Mosscow
   end
 
-  context "GET /" do
+  context 'GET /' do
     it 'returns hello message' do
       get '/'
       last_response.status.should eq 200
@@ -15,7 +15,7 @@ describe 'app.rb' do
     end
   end
 
-  context "GET /todo" do
+  context 'GET /todo' do
     before do
       post '/todo', '{"is_done":true, "order":1, "task_title":"hoge"}'
     end
@@ -27,16 +27,16 @@ describe 'app.rb' do
     end
   end
 
-  context "POST /todo" do
+  context 'POST /todo' do
 
-    context "given valid parameters" do
+    context 'given valid parameters' do
       before do
         post '/todo', '{"is_done":true, "order":1, "task_title":"hoge"}'
       end
 
       it 'returns status 201' do
         last_response.status.should eq 201
-        JSON.parse(last_response.body).should include("is_done"=>true, "order"=>1, "task_title"=>"hoge")
+        JSON.parse(last_response.body).should include('is_done' => true, 'order' => 1, 'task_title' => 'hoge')
       end
     end
 
@@ -47,7 +47,7 @@ describe 'app.rb' do
 
       it 'returns 400 and error message' do
         last_response.status.should eq 400
-        JSON.parse(last_response.body)["message"].should eq message
+        JSON.parse(last_response.body)['message'].should eq message
       end
     end
 
