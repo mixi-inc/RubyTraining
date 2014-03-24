@@ -63,7 +63,9 @@ class Mosscow < Sinatra::Base
 
   put '/todo/:id' do
     todo = Todo.where(id: params[:id]).first
-    todo.is_done = !todo.is_done
+    params = JSON.parse(request.body.read)
+    todo.is_done = params['is_done']
+    todo.task_title = params['task_title']
     todo.save!
     response.status = 200
     json todo

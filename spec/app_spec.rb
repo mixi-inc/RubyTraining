@@ -3,6 +3,7 @@ require_relative 'spec_helper'
 
 describe 'app.rb' do
   let(:expected){ { 'is_done' => true, 'order' => 1, 'task_title' => 'hoge' } }
+  let(:updated){ { 'is_done' => false, 'order' => 1, 'task_title' => 'fuga' } }
 
   include Rack::Test::Methods
 
@@ -62,6 +63,28 @@ describe 'app.rb' do
       ['{"is_done":false, "order":"str", "task_title":"hoge"}', 'parameter "order" must be an integer.'  ]
     ].each do |params, message|
       it_should_behave_like 'invalid case', params, message
+    end
+
+  end
+
+  context 'PUT /todo' do
+
+    context 'given valid parameters' do
+      before do
+        post '/todo', JSON.dump(expected)
+        get '/todo'
+        source = JSON.parse(last_response.body)[0]
+        updated['id'] = source['id']
+        put "/todo/#{source['id']}", JSON.dump(updated)
+      end
+
+      it 'returns status 200' do
+        last_response.status.should eq 200
+      end
+
+      it 'updates todo' do
+        JSON.parse(last_response.body).should include updated
+      end
     end
 
   end
