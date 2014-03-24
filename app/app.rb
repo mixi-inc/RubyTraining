@@ -32,6 +32,13 @@ class Mosscow < Sinatra::Base
     def json_halt(status, object)
       halt status, { 'Content-Type' => 'application/json' }, JSON.dump(object)
     end
+
+    def parse_request(request)
+      JSON.parse(request.body.read)
+    rescue => e
+      p e.backtrace unless ENV['RACK_ENV'] == 'test'
+      json_halt 400,  message: 'set valid JSON for request raw body.'
+    end
   end
 
   get '/404' do
@@ -69,7 +76,7 @@ class Mosscow < Sinatra::Base
 
   put '/todo/:id' do
     todo = Todo.where(id: params[:id]).first
-    params = JSON.parse(request.body.read)
+    params = parse_request(request)
     todo.is_done = params['is_done']
     todo.task_title = params['task_title']
     if todo.valid?
@@ -82,14 +89,7 @@ class Mosscow < Sinatra::Base
   end
 
   post '/todo' do
-    params = nil
-    begin
-      params = JSON.parse(request.body.read)
-    rescue => e
-      p e.backtrace unless ENV['RACK_ENV'] == 'test'
-      json_halt 400,  message: 'set valid JSON for request raw body.'
-    end
-
+    params = parse_request(request)
     todo = Todo.new(task_title: params['task_title'],
                     is_done: params['is_done'],
                     order: params['order'])
