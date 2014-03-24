@@ -15,6 +15,7 @@ class Mosscow < Sinatra::Base
   set :static, true
   set :public_folder, 'public'
   set :views, File.dirname(__FILE__) + '/views'
+  set :show_exceptions, false # temporary
   set :database_file, 'config/database.yml'
 
   configure :development do
@@ -42,6 +43,10 @@ class Mosscow < Sinatra::Base
 
   get '/400' do
     halt 400, haml(:bad_request)
+  end
+
+  get '/error' do
+    fail
   end
 
   get '/' do
