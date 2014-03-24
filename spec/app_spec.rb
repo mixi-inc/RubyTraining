@@ -49,7 +49,7 @@ describe 'app.rb' do
         post '/todo', params
       end
 
-      it 'returns 400 and error message' do
+      it 'and returns 400 and error message' do
         last_response.status.should eq 400
         last_response.body.should match(message)
       end
@@ -61,7 +61,7 @@ describe 'app.rb' do
       ['{}',            'set appropriate parameters.'         ],
       ['{"is_done":false, "order":"str", "task_title":"hoge"}', 'must be an integer.'  ]
     ].each do |params, message|
-      it_should_behave_like 'invalid case', params, message
+      context("given #{params}"){ it_should_behave_like 'invalid case', params, message }
     end
 
   end
