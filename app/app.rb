@@ -16,7 +16,7 @@ class Mosscow < Sinatra::Base
   set :public_folder, 'public'
   set :views, File.dirname(__FILE__) + '/views'
   set :raise_errors, true
-  set :show_exceptions, false # delete here when you want to see a backtrace
+  set :show_exceptions, true # set false here when you do NOT want to see a backtrace
   set :database_file, 'config/database.yml'
 
   configure :development do
