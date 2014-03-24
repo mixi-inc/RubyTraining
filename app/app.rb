@@ -32,6 +32,13 @@ class Mosscow < Sinatra::Base
     def json_halt(status, object)
       halt status, { 'Content-Type' => 'application/json' }, JSON.dump(object)
     end
+
+    def parse_request(request)
+      JSON.parse(request.body.read)
+    rescue => e
+      p e.backtrace unless ENV['RACK_ENV'] == 'test'
+      json_halt 400,  message: 'set valid JSON for request raw body.'
+    end
   end
 
   get '/404' do
@@ -69,46 +76,30 @@ class Mosscow < Sinatra::Base
 
   put '/todo/:id' do
     todo = Todo.where(id: params[:id]).first
-    params = JSON.parse(request.body.read)
+    params = parse_request(request)
     todo.is_done = params['is_done']
     todo.task_title = params['task_title']
-    todo.save!
-    response.status = 200
-    json todo
+    if todo.valid?
+      todo.save!
+      response.status = 200
+      json todo
+    else
+      json_halt 400, message: todo.errors.messages
+    end
   end
 
   post '/todo' do
-
-    params = ''
-    begin
-      params = JSON.parse(request.body.read)
-    rescue => e
-      p e.backtrace unless ENV['RACK_ENV'] == 'test'
-      json_halt 400,  message: 'set valid JSON for request raw body.'
+    params = parse_request(request)
+    todo = Todo.new(task_title: params['task_title'],
+                    is_done: params['is_done'],
+                    order: params['order'])
+    if todo.valid?
+      todo.save!
+      response.status = 201
+      json todo
+    else
+      json_halt 400, message: todo.errors.messages
     end
-
-    %w(is_done order task_title).each do |key_string|
-      unless params.key?(key_string)
-        p params
-        json_halt 400,  message:'set appropriate parameters.'
-      end
-    end
-
-    unless params['is_done'] == true || params['is_done'] == false
-      json_halt 400,  message:'parameter "done" must be false or true.'
-    end
-
-    unless params['order'].is_a?(Integer)
-      json_halt 400,  message:'parameter "order" must be an integer.'
-    end
-
-    unless params['task_title'].is_a?(String)
-      json_halt 400,  message:'parameter "title" must be a string.'
-    end
-
-    todo = Todo.create(params)
-    response.status = 201
-    json todo
   end
 
   after do

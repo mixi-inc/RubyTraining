@@ -49,9 +49,9 @@ describe 'app.rb' do
         post '/todo', params
       end
 
-      it 'returns 400 and error message' do
+      it 'and returns 400 and error message' do
         last_response.status.should eq 400
-        JSON.parse(last_response.body)['message'].should eq message
+        last_response.body.should match(message)
       end
     end
 
@@ -59,11 +59,9 @@ describe 'app.rb' do
       [ nil,            'set valid JSON for request raw body.'],
       ['{"moge":fuge}', 'set valid JSON for request raw body.'],
       ['{}',            'set appropriate parameters.'         ],
-      ['{"is_done":"hoge", "order":1, "task_title":"hoge"}',    'parameter "done" must be false or true.'],
-      ['{"is_done":false, "order":"str", "task_title":"hoge"}', 'parameter "order" must be an integer.'  ],
-      ['{"is_done":false, "order":1, "task_title":1.2}',        'parameter "title" must be a string.'    ]
+      ['{"is_done":false, "order":"str", "task_title":"hoge"}', 'must be an integer.'  ]
     ].each do |params, message|
-      it_should_behave_like 'invalid case', params, message
+      context("given #{params}"){ it_should_behave_like 'invalid case', params, message }
     end
 
   end
