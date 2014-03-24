@@ -83,7 +83,7 @@ class Mosscow < Sinatra::Base
     begin
       params = JSON.parse(request.body.read)
     rescue => e
-      p e.backtrace
+      p e.backtrace unless ENV['RACK_ENV'] == 'test'
       json_halt 400,  message: 'set valid JSON for request raw body.'
     end
 
