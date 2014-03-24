@@ -60,7 +60,8 @@ describe 'app.rb' do
       ['{"moge":fuge}', 'set valid JSON for request raw body.'],
       ['{}',            'set appropriate parameters.'         ],
       ['{"is_done":"hoge", "order":1, "task_title":"hoge"}',    'parameter "done" must be false or true.'],
-      ['{"is_done":false, "order":"str", "task_title":"hoge"}', 'parameter "order" must be an integer.'  ]
+      ['{"is_done":false, "order":"str", "task_title":"hoge"}', 'parameter "order" must be an integer.'  ],
+      ['{"is_done":false, "order":1, "task_title":1.2}',        'parameter "title" must be a string.'    ]
     ].each do |params, message|
       it_should_behave_like 'invalid case', params, message
     end
@@ -97,9 +98,16 @@ describe 'app.rb' do
       end
     end
 
-    it_should_behave_like 'errors', 400
-    it_should_behave_like 'errors', 404
-    it_should_behave_like 'errors', 500
+    [400, 404, 500].each do |status|
+      it_should_behave_like 'errors', status
+    end
+  end
+
+  context 'GET /error' do
+    it 'returns 500' do
+      get '/error'
+      last_response.status.should eq 500
+    end
   end
 
 end

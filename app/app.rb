@@ -15,6 +15,8 @@ class Mosscow < Sinatra::Base
   set :static, true
   set :public_folder, 'public'
   set :views, File.dirname(__FILE__) + '/views'
+  set :raise_errors, true
+  set :show_exceptions, true # set false here when you do NOT want to see a backtrace
   set :database_file, 'config/database.yml'
 
   configure :development do
@@ -42,6 +44,10 @@ class Mosscow < Sinatra::Base
 
   get '/400' do
     halt 400, haml(:bad_request)
+  end
+
+  get '/error' do
+    fail
   end
 
   get '/' do
