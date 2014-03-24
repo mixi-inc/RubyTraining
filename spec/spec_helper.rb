@@ -10,4 +10,7 @@ require File.join(File.dirname(__FILE__), '..', 'app', 'middleware', 'camel_snak
 
 RSpec.configure do |config|
   ENV['RACK_ENV'] ||= 'test'
+
+  # let RSpec be quiet while tests are running
+  ActiveRecord::Base.logger = nil
 end
