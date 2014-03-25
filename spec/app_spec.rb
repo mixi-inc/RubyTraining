@@ -103,8 +103,9 @@ describe 'app.rb' do
 
   context 'GET /error' do
     it 'returns 500' do
-      get '/error'
-      last_response.status.should eq 500
+      proc {
+        get '/error'
+      }.should raise_error(RuntimeError)
     end
   end
 
