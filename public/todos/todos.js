@@ -36,7 +36,7 @@ $(function(){
     // Reference to this collection's model.
     model: Todo,
 
-    url: "/todo",
+    url: "/api/todos",
 
     // Filter down the list of all todo items that are finished.
     isDone: function() {
