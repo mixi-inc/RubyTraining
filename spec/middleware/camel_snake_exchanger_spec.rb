@@ -1,7 +1,8 @@
 require 'json'
+require 'rack/camel_snake'
 require_relative '../spec_helper'
 
-describe CamelSnakeExchanger do
+describe Rack::CamelSnake do
   include Rack::Test::Methods
 
   class MockedApp < Sinatra::Base
@@ -11,7 +12,7 @@ describe CamelSnakeExchanger do
   end
 
   def app
-    @app ||= CamelSnakeExchanger.new(MockedApp)
+    @app ||= Rack::CamelSnake.new(MockedApp)
   end
 
   describe 'call' do

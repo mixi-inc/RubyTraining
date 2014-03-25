@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/junsumida/rack-camel_snake.git
+  revision: f62babaa94392fec11bf01bf05cd82700167b4b1
+  specs:
+    rack-camel_snake (0.0.3)
+      json
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -102,6 +109,7 @@ PLATFORMS
 DEPENDENCIES
   coveralls
   haml
+  rack-camel_snake!
   rack-test
   rake
   rspec (~> 2.14.1)
