@@ -6,7 +6,7 @@ describe 'Integration Test' do
   let(:camel_expected){ { 'isDone' => true, 'order' => 1, 'taskTitle' => 'hoge' }   }
 
   def post_todo(body)
-    post '/todo', JSON.dump(body), 'CONTENT_TYPE' => 'application/json'
+    post '/api/todos', JSON.dump(body), 'CONTENT_TYPE' => 'application/json'
   end
 
   before do
@@ -19,14 +19,14 @@ describe 'Integration Test' do
     @app ||= ErrorsHandler.new(Rack::CamelSnake.new(Mosscow))
   end
 
-  context 'GET /todo' do
+  context 'GET /api/todos' do
     it 'returns 200' do
-      get '/todo'
+      get '/api/todos'
       last_response.status.should eq 200
     end
   end
 
-  context 'POST /todo' do
+  context 'POST /api/todos' do
     it 'returns 201' do
       post_todo(camel_expected)
 
@@ -35,20 +35,20 @@ describe 'Integration Test' do
     end
   end
 
-  context 'PUT /todo/:id' do
+  context 'PUT /api/todos/:id' do
     let(:updated){ { 'isDone' => false, 'order' => 1, 'taskTitle' => 'moge' } }
     it 'returns 204' do
-      put '/todo/1', JSON.dump(updated), 'CONTENT_TYPE' => 'application/json'
+      put '/api/todos/1', JSON.dump(updated), 'CONTENT_TYPE' => 'application/json'
 
       JSON.parse(last_response.body).should include updated
     end
   end
 
-  context 'DELETE /todo' do
+  context 'DELETE /api/todos' do
     it 'returns 204' do
       post_todo(camel_expected)
 
-      delete '/todo/2'
+      delete '/api/todos/2'
       last_response.status.should eq 204
     end
   end

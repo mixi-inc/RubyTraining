@@ -62,19 +62,19 @@ class Mosscow < Sinatra::Base
     'Hello, Moscow!'
   end
 
-  get '/todo' do
+  get '/api/todos' do
     todos = Todo.all
     json todos
   end
 
-  delete '/todo/:id' do
+  delete '/api/todos/:id' do
     todo = Todo.where(id: params[:id]).first
     todo.destroy
     response.status = 204
     nil
   end
 
-  put '/todo/:id' do
+  put '/api/todos/:id' do
     todo = Todo.where(id: params[:id]).first
     params = parse_request(request)
     todo.is_done = params['is_done']
@@ -88,7 +88,7 @@ class Mosscow < Sinatra::Base
     end
   end
 
-  post '/todo' do
+  post '/api/todos' do
     params = parse_request(request)
     todo = Todo.new(task_title: params['task_title'],
                     is_done: params['is_done'],
