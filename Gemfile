@@ -13,7 +13,7 @@ ruby '2.1.0'
 # gem 'oj'
 
 # Project requirements
-gem 'rack'
+gem 'rake'
 
 # Component requirements
 gem 'sinatra'

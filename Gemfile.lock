@@ -53,6 +53,7 @@ GEM
     rack-test (0.6.2)
       rack (>= 1.0)
     rainbow (2.0.0)
+    rake (10.2.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rspec (2.14.1)
@@ -108,9 +109,9 @@ PLATFORMS
 DEPENDENCIES
   coveralls
   haml
-  rack
   rack-camel_snake!
   rack-test
+  rake
   rspec (~> 2.14.1)
   rubocop
   sinatra
