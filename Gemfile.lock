@@ -1,15 +1,15 @@
 GIT
-  remote: git@github.com:junsumida/rack-server_errors.git
-  revision: cff7fecfdca954211ee2716681edd654d60610b8
-  specs:
-    rack-server_errors (0.0.1)
-
-GIT
   remote: https://github.com/junsumida/rack-camel_snake.git
   revision: 7d42efa915a4d5eff2bc02e2567d84e0d9570201
   specs:
     rack-camel_snake (0.1.0)
       json
+
+GIT
+  remote: https://github.com/junsumida/rack-server_errors.git
+  revision: cff7fecfdca954211ee2716681edd654d60610b8
+  specs:
+    rack-server_errors (0.0.1)
 
 GEM
   remote: https://rubygems.org/
