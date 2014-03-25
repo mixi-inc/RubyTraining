@@ -1,3 +1,4 @@
+require 'rack/camel_snake'
 require_relative '../spec_helper'
 
 describe 'Integration Test' do
@@ -15,7 +16,7 @@ describe 'Integration Test' do
   include Rack::Test::Methods
 
   def app
-    @app ||= ErrorsHandler.new(CamelSnakeExchanger.new(Mosscow))
+    @app ||= ErrorsHandler.new(Rack::CamelSnake.new(Mosscow))
   end
 
   context 'GET /todo' do

@@ -22,6 +22,7 @@ gem 'sinatra-reloader'
 gem 'sinatra-contrib'
 gem 'sqlite3'
 gem 'haml'
+gem 'rack-camel_snake', :git => 'https://github.com/junsumida/rack-camel_snake.git'
 
 # Test requirements
 group :development, :test do
