@@ -61,3 +61,33 @@ TODOの閲覧・新規作成・削除が正しく行えること、これらを�
 
 ## 次は…？
 別の資料に続きます or ここに文章が増えます
+
+## おまけ
+
+### rubocop (コーディング規約適用ツール)
+
+[rubocop](https://github.com/bbatsov/rubocop)というコーディング規約の適用ツールがあります。
+(日本語だと、[こちらのQiitaの記事](http://qiita.com/yaotti/items/4f69a145a22f9c8f8333)が参考になります。)
+
+コマンドラインから直接実行する場合は、
+
+```
+# チェックのみ
+rubocop
+
+# 自動訂正付き
+rubocop -a
+```
+
+のようにすると実行可能です。
+
+デフォルトではオフにしていますが、`pull-request`中で使いたい場合は、
+config.ruの中の以下のコメントアウトを解除してください。
+
+```ruby
+  ENV['RACK_ENV'] ||= 'test'
+  # sh 'rubocop'
+  sh 'rspec'
+```
+
+
