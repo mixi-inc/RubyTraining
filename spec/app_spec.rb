@@ -19,23 +19,23 @@ describe 'app.rb' do
     end
   end
 
-  context 'GET /todo' do
+  context 'GET /api/todos' do
     before do
-      post '/todo', JSON.dump(expected)
+      post '/api/todos', JSON.dump(expected)
     end
     it 'returns json object' do
-      get '/todo'
+      get '/api/todos'
 
       last_response.status.should eq 200
       JSON.parse(last_response.body).should have(1).items
     end
   end
 
-  context 'POST /todo' do
+  context 'POST /api/todos' do
 
     context 'given valid parameters' do
       before do
-        post '/todo', JSON.dump(expected)
+        post '/api/todos', JSON.dump(expected)
       end
 
       it 'returns status 201' do
@@ -46,7 +46,7 @@ describe 'app.rb' do
 
     shared_examples_for 'invalid case' do |params, message|
       before do
-        post '/todo', params
+        post '/api/todos', params
       end
 
       it 'and returns 400 and error message' do
@@ -66,15 +66,15 @@ describe 'app.rb' do
 
   end
 
-  context 'PUT /todo' do
+  context 'PUT /api/todos' do
 
     context 'given valid parameters' do
       before do
-        post '/todo', JSON.dump(expected)
-        get '/todo'
+        post '/api/todos', JSON.dump(expected)
+        get '/api/todos'
         source = JSON.parse(last_response.body)[0]
         updated['id'] = source['id']
-        put "/todo/#{source['id']}", JSON.dump(updated)
+        put "/api/todos/#{source['id']}", JSON.dump(updated)
       end
 
       it 'returns status 200' do
