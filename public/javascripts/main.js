@@ -6,7 +6,7 @@ $(document).ready(function(){
 
     wrappingPoints.forEach(function(elementName){
         $(elementName).each(function(index){
-            $(this).nextUntil(elementName).wrapAll('<section class="hints"></section>');
+            $(this).nextUntil(elementName).wrapAll('<section></section>');
         });
     });
 

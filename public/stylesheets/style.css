@@ -44,7 +44,7 @@ h5:after {
     content: attr(data-content);
 }
 .main h3+section {
-    background: #f8f8f8;
+    background: #f6f6f6;
     padding: 10px;
 }
 .main h5+section {
