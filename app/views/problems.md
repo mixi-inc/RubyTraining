@@ -1,11 +1,10 @@
-# 2014 Ruby 研修問題
+# 2014 Ruby 研修
 
 ## 便利なリファレンス
 
 - [Sinatra Documentation](http://www.sinatrarb.com/intro-jp.html)
 - [RSpec 2.14 Built-in Matchers](https://www.relishapp.com/rspec/rspec-expectations/v/2-14/docs/built-in-matchers)
 - [Better Specs](http://betterspecs.org/jp/)
-</section>
 
 ## 問題
 
