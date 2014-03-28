@@ -1,0 +1,67 @@
+body {
+    background-color: #f6f6f6;
+    padding-top: 30px;
+}
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 20px;
+}
+h4 {
+    font-size: 16px;
+    font-weight: 700;
+}
+h5 {
+    font-size: 16px;
+}
+h5:hover {
+    cursor: pointer;
+    color: #2c44b6;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+h5:after {
+    font-size: 12px;
+    margin-left: 10px;
+    content: "(クリックするとヒントを表示)";
+}
+
+.main {
+    background-color: #fff;
+    border: 1px solid #CCC;
+    padding: 40px;
+}
+.main h3 {
+    margin-top: 18px;
+}
+.main h3:before {
+    content: attr(data-content);
+}
+.main h3+section {
+    background: #f6f6f6;
+    padding: 10px;
+}
+.main h5+section {
+    display: none;
+}
+
+.sidebar {
+    background-color: #fff;
+    border: 1px solid #CCC;
+    padding: 20px;
+    background: fixed;
+}
+.sidebar > h1 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.container {
+    width: 1100px;
+}

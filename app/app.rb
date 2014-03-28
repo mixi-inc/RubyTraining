@@ -4,6 +4,7 @@ require 'sinatra/reloader'
 require 'sinatra/json'
 require 'json'
 require 'haml'
+require 'redcarpet'
 
 # require all models
 require_relative 'models/todo'
@@ -41,12 +42,29 @@ class Mosscow < Sinatra::Base
     end
   end
 
+  get '/problems' do
+    haml :problems
+  end
+
   get '/404' do
-    halt 404, haml(:not_found)
+    redirect '404.html'
   end
 
   get '/500' do
-    halt 500, haml(:internal_server_error)
+    <<"EOS"
+    <html>
+      <head>
+        <title>500 Internal Server Error</title>
+      </head>
+      <body>
+        <h1>Internal Server Error</h1>
+        <img src='images/500.jpg'>
+        <p>
+        なんかだめでしたすみませんすみません:(；ﾞﾟ'ωﾟ')::(；ﾞﾟ'ωﾟ'):
+        </p>
+      </body>
+    </html>
+EOS
   end
 
   get '/400' do

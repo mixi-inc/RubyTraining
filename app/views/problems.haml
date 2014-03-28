@@ -1,0 +1,24 @@
+!!! 5
+%html
+  %head
+    %meta{'http-equiv' => 'content-type', 'content' => 'text/html', 'charset' => 'utf-8'}
+    %title 2014 Ruby研修 問題
+    %link{ rel: 'stylesheet', type: 'text/css', href: 'stylesheets/bootstrap.min.css'}
+    %link{ rel: 'stylesheet', type: 'text/css', href: 'stylesheets/bootstrap-responsive.min.css'}
+    %link{ rel: 'stylesheet', type: 'text/css', href: 'stylesheets/github.css'}
+    %link{ rel: 'stylesheet', type: 'text/css', href: 'stylesheets/style.css'}
+    %script{ src: 'https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'}
+    %script{ src: 'javascripts/bootstrap.min.js'}
+    %script{ src: 'javascripts/highlight.pack.js'}
+    %script{ src: 'javascripts/main.js'}
+    %script
+      hljs.initHighlightingOnLoad();
+  %body
+    .container-fluid
+      .row-fluid
+        .span3.sidebar
+          %h1
+            索引
+          %ol.question-list
+        .span9.main
+          ~ markdown(:problems, layout: false, fenced_code_blocks: true)

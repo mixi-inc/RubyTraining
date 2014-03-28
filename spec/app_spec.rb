@@ -89,15 +89,25 @@ describe 'app.rb' do
   end
 
   context 'GET /400, 404, 500' do
-    shared_examples_for 'errors' do |status|
-      it "returns #{status}" do
-        get "/#{status}"
-        last_response.status.should eq status
+    context 'given 400' do
+      it 'returns 400' do
+         get '/400'
+         last_response.status = 400
       end
     end
 
-    [400, 404, 500].each do |status|
-      it_should_behave_like 'errors', status
+    context 'given 404' do
+      it 'returns 302' do
+        get '/302'
+        last_response.status = 302
+      end
+    end
+
+    context 'given 500' do
+      it 'returns 200' do
+        get '/500'
+        last_response.status = 200;
+      end
     end
   end
 
