@@ -44,8 +44,10 @@ class Mosscow < Sinatra::Base
 
   get '/problems' do
 
-    text = File.open(File.join(File.dirname(__FILE__), '..', 'problems', 'markdown', 'markdown.md')).read
-    Redcarpet.new(text).to_html.html_safe
+    text     = File.open(File.join(File.dirname(__FILE__), '..', 'problems', 'markdown', 'problems.md')).read
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+
+    markdown.render(text)
   end
 
   get '/404' do
