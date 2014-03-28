@@ -16,6 +16,9 @@
   %body
     .container-fluid
       .row-fluid
-        .span3
+        .span3.sidebar
+          %h1
+            索引
+          %ol.question-list
         .span9.main
           ~ markdown(:problems, layout: false, fenced_code_blocks: true)
