@@ -4,6 +4,7 @@ require 'sinatra/reloader'
 require 'sinatra/json'
 require 'json'
 require 'haml'
+require 'redcarpet'
 
 # require all models
 require_relative 'models/todo'
@@ -39,6 +40,12 @@ class Mosscow < Sinatra::Base
       p e.backtrace unless ENV['RACK_ENV'] == 'test'
       json_halt 400,  message: 'set valid JSON for request raw body.'
     end
+  end
+
+  get '/problems' do
+
+    text = File.open(File.join(File.dirname(__FILE__), '..', 'problems', 'markdown', 'markdown.md')).read
+    Redcarpet.new(text).to_html.html_safe
   end
 
   get '/404' do

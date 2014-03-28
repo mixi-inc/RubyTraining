@@ -22,6 +22,7 @@ gem 'sinatra-reloader'
 gem 'sinatra-contrib'
 gem 'sqlite3'
 gem 'haml'
+gem 'redcarpet'
 gem 'rack-camel_snake', :git => 'https://github.com/junsumida/rack-camel_snake.git'
 gem 'rack-server_errors', :git => 'https://github.com/junsumida/rack-server_errors.git'
 
@@ -31,6 +32,5 @@ group :development, :test do
   gem 'rack-test', :require => 'rack/test'
   gem 'coveralls', require: false
   gem 'rubocop', require: false
-  gem 'redcarpet'
 end
 
