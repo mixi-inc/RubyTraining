@@ -1,0 +1,20 @@
+body {
+    background-color: #f6f6f6;
+    padding-top: 30px;
+}
+.main {
+    background-color: #fff;
+    border: 1px solid #CCC;
+    padding: 40px;
+}
+.container {
+    width: 1100px;
+}
+.nav-list {
+    font-size: 17px;
+}
+.nav-header {
+    font-size: 17px;
+    text-transform: none;
+    line-height: 30px;
+}
