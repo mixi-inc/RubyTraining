@@ -43,11 +43,6 @@ class Mosscow < Sinatra::Base
   end
 
   get '/problems' do
-
-    #text     = File.open(File.join(File.dirname(__FILE__), '..', 'problems', 'markdown', 'problems.md')).read
-    #markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
-
-    #markdown.render(text)
     haml :problems
   end
 
