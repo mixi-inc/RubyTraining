@@ -76,6 +76,7 @@ EOS
       fail
     rescue
       response.status = 500
+      content_type :json
       JSON.dump({message: 'unexpected error'})
     end
   end
@@ -96,6 +97,7 @@ EOS
       todo.destroy
     rescue
       response.status = 500
+      content_type :json
       return JSON.dump({message: 'unexpected error'})
     end
     response.status = 204
