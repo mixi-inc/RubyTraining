@@ -63,24 +63,34 @@ end
 
 ##### 1.
 
-blockとyieldをつかうと綺麗にかけます。
-
-##### 2.
-
-blockとyieldを忘れちゃった時は、CodeAcademyの15講をみてね^^
+blockとyieldをつかうと綺麗にかけます。<br>
+忘れちゃった時は、CodeAcademyの15講をみてね^^
 
 ### 例外を吸収するmiddlewareを作る (2)
 
-　(1)で作成したメソッドによって、同じ処理で例外を投げることができるようになりましたが、まだ予想外の箇所で例外が投げられた場合にそれをキャッチすることはできません。
+　(1)で作成したメソッドによって、同じ処理で例外を投げることができるようになりましたが、まだ予想外の箇所で例外が投げられた場合にそれをキャッチすることはできません。<br>
 　Sinatra上の全ての例外をキャッチできるように、(1)で行っている処理をRackのmiddlewareとして書き換えてください。
 
 #### ヒント
 
 ##### 1.
 
-middlewareの作り方
+Rack/middlewareについて:
+
+- [第25回　Rackとは何か（3）ミドルウェアのすすめ](http://gihyo.jp/dev/serial/01/ruby/0025)
+- [Rack Middleware](http://asciicasts.com/episodes/151-rack-middleware)
+- [A Quick Introduction to Rack](http://rubylearning.com/blog/a-quick-introduction-to-rack/)
 
 ### 例外を吸収するmiddlewareを作る (3)
 
 　(2)で例外を自動でキャッチする便利モジュールを作成しましたが、このままでは他のプロジェクトから使うことができません。
 　作成したmiddlewareをgemとして切り出し、自分のリポジトリに新しく追加し、Gemfileの参照先をそちらに向けてください。
+
+#### ヒント
+
+##### 1.
+
+gemの作り方:
+
+- [Bundlerでgemを作る](http://ja.asciicasts.com/episodes/245-new-gem-with-bundler)
+- [gemパッケージの作り方メモ。](http://yukihir0.hatenablog.jp/entry/20130107/1357557569)の1-9まで
