@@ -51,7 +51,15 @@ describe 'app.rb' do
 
       it 'and returns 400 and error message' do
         last_response.status.should eq 400
-        last_response.body.should match(message)
+        response_body = JSON.parse(last_response.body)
+
+        if !response_body['message']['task_title'].nil?
+          response_body['message']['task_title'][0].should eq message
+        elsif !response_body['message']['order'].nil?
+          response_body['message']['order'][0].should eq message
+        else
+          response_body['message'].should eq message
+        end
       end
     end
 
@@ -88,11 +96,37 @@ describe 'app.rb' do
 
   end
 
+  context 'DELETE /api/todos' do
+    let(:id)do
+       post '/api/todos', JSON.dump(expected)
+       JSON.parse(last_response.body)['id']
+    end
+
+    context 'given valid parameters' do
+      it 'returns 204' do
+        delete "/api/todos/#{id}"
+
+        last_response.status.should eq 204
+      end
+    end
+
+    context 'suppose AR.destroy fails' do
+      before do
+        Todo.any_instance.stub(:destroy){ fail }
+      end
+
+      it 'returns 500' do
+        delete "/api/todos/#{id}"
+        last_response.status.should eq 500
+      end
+    end
+  end
+
   context 'GET /400, 404, 500' do
     context 'given 400' do
       it 'returns 400' do
-         get '/400'
-         last_response.status = 400
+        get '/400'
+        last_response.status = 400
       end
     end
 
@@ -113,6 +147,7 @@ describe 'app.rb' do
 
   context 'GET /error' do
     it 'returns 500' do
+      pending('turn this on after you have done with middleware')
       proc {
         get '/error'
       }.should raise_error(RuntimeError)

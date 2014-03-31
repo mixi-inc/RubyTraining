@@ -30,15 +30,11 @@ class Mosscow < Sinatra::Base
   end
 
   helpers do
-    def json_halt(status, object)
-      halt status, { 'Content-Type' => 'application/json' }, JSON.dump(object)
-    end
-
     def parse_request(request)
       JSON.parse(request.body.read)
     rescue => e
       p e.backtrace unless ENV['RACK_ENV'] == 'test'
-      json_halt 400,  message: 'set valid JSON for request raw body.'
+      halt 400, {'Content-Type' => 'application/json'}, JSON.dump(message: 'set valid JSON for request raw body.')
     end
   end
 
@@ -72,7 +68,13 @@ EOS
   end
 
   get '/error' do
-    fail
+    begin
+      fail
+    rescue
+      response.status = 500
+      content_type :json
+      JSON.dump({message: 'unexpected error'})
+    end
   end
 
   get '/' do
@@ -87,7 +89,13 @@ EOS
 
   delete '/api/todos/:id' do
     todo = Todo.where(id: params[:id]).first
-    todo.destroy
+    begin
+      todo.destroy
+    rescue
+      response.status = 500
+      content_type :json
+      return JSON.dump({message: 'unexpected error'})
+    end
     response.status = 204
     nil
   end
@@ -102,7 +110,7 @@ EOS
       response.status = 200
       json todo
     else
-      json_halt 400, message: todo.errors.messages
+      halt 400, {'Content-Type' => 'application/json'}, JSON.dump(message: todo.errors.messages)
     end
   end
 
@@ -116,7 +124,7 @@ EOS
       response.status = 201
       json todo
     else
-      json_halt 400, message: todo.errors.messages
+      halt 400, {'Content-Type' => 'application/json'}, JSON.dump(message: todo.errors.messages)
     end
   end
 
