@@ -51,7 +51,15 @@ describe 'app.rb' do
 
       it 'and returns 400 and error message' do
         last_response.status.should eq 400
-        last_response.body.should match(message)
+        response_body = JSON.parse(last_response.body)
+
+        if !response_body['message']['task_title'].nil?
+          response_body['message']['task_title'][0].should eq message
+        elsif !response_body['message']['order'].nil?
+          response_body['message']['order'][0].should eq message
+        else
+          response_body['message'].should eq message
+        end
       end
     end
 
