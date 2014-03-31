@@ -88,6 +88,33 @@ describe 'app.rb' do
 
   end
 
+  context 'DELETE /api/todos' do
+    let(:id)do
+      post '/api/todos', JSON.dump(expected)
+      JSON.parse(last_response.body)['id']
+    end
+
+    context 'given valid parameters' do
+      it 'returns 204' do
+        delete "/api/todos/#{id}"
+
+        last_response.status.should eq 204
+      end
+    end
+
+    context 'suppose AR.destroy fails' do
+      before do
+        Todo.any_instance.stub(:destroy){ fail }
+      end
+
+      it 'raise RuntimeError' do
+        expect {
+          delete "/api/todos/#{id}"
+        }.to raise_error
+      end
+    end
+  end
+
   context 'GET /400, 404, 500' do
     shared_examples_for 'errors' do |status|
       it "returns #{status}" do
