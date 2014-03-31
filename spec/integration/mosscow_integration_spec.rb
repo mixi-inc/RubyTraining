@@ -1,6 +1,4 @@
 require 'rack/camel_snake'
-require 'rack/server_errors'
-require_relative '../spec_helper'
 
 describe 'Integration Test' do
   let(:snake_expected){ { 'is_done' => true, 'order' => 1, 'task_title' => 'hoge' } }
@@ -17,7 +15,7 @@ describe 'Integration Test' do
   include Rack::Test::Methods
 
   def app
-    @app ||= Rack::ServerErrors.new(Rack::CamelSnake.new(Mosscow))
+    @app ||= Rack::CamelSnake.new(Mosscow)
   end
 
   context 'GET /api/todos' do

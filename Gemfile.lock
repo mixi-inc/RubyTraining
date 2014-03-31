@@ -5,12 +5,6 @@ GIT
     rack-camel_snake (0.1.0)
       json
 
-GIT
-  remote: https://github.com/junsumida/rack-server_errors.git
-  revision: cff7fecfdca954211ee2716681edd654d60610b8
-  specs:
-    rack-server_errors (0.0.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -117,7 +111,6 @@ DEPENDENCIES
   coveralls
   haml
   rack-camel_snake!
-  rack-server_errors!
   rack-test
   rake
   redcarpet
