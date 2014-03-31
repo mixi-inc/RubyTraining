@@ -76,7 +76,7 @@ EOS
       fail
     rescue
       response.status = 500
-      JSON.dump({message: "unexpected error"})
+      JSON.dump({message: 'unexpected error'})
     end
   end
 
@@ -93,10 +93,10 @@ EOS
   delete '/api/todos/:id' do
     todo = Todo.where(id: params[:id]).first
     begin
-    todo.destroy
+      todo.destroy
     rescue
       response.status = 500
-      return JSON.dump({message: "unexpected error"})
+      return JSON.dump({message: 'unexpected error'})
     end
     response.status = 204
     nil
