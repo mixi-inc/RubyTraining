@@ -133,6 +133,7 @@ describe 'app.rb' do
 
   context 'GET /error' do
     it 'returns 500' do
+      pending('turn this on after you have done with middleware')
       proc {
         get '/error'
       }.should raise_error(RuntimeError)
