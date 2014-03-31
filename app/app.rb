@@ -72,7 +72,12 @@ EOS
   end
 
   get '/error' do
-    fail
+    begin
+      fail
+    rescue
+      response.status = 500
+      JSON.dump({message: "unexpected error"})
+    end
   end
 
   get '/' do
