@@ -88,6 +88,26 @@ describe 'app.rb' do
 
   end
 
+  context 'DELETE /api/todos' do
+    before do
+      post '/api/todos', JSON.dump(expected)
+      id = JSON.parse(last_response.body)['id']
+      delete "/api/todos/#{id}"
+    end
+
+    context 'given valid parameters' do
+      it 'returns 204' do
+        last_response.status = 204
+      end
+    end
+
+    context 'suppose AR.destroy fails' do
+      it 'returns 500' do
+        last_response.status = 500
+      end
+    end
+  end
+
   context 'GET /400, 404, 500' do
     context 'given 400' do
       it 'returns 400' do
