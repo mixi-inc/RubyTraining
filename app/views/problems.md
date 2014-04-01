@@ -94,3 +94,21 @@ gemの作り方:
 
 - [Bundlerでgemを作る](http://ja.asciicasts.com/episodes/245-new-gem-with-bundler)
 - [gemパッケージの作り方メモ。](http://yukihir0.hatenablog.jp/entry/20130107/1357557569)の1-9まで
+
+### 休憩:haltを便利メソッドに切り出す
+
+　haltが沢山散らばっていますが、ほとんど同じ処理をしているだけなので、まとめられるところをすべて、helper methodとして切り出してください。
+
+#### ヒント
+
+##### 1.
+
+Sinatraのhelper methodは以下のように定義することができます。
+
+```
+helpers do
+  def bar(name)
+    "#{name}bar"
+  end
+end
+```
