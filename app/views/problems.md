@@ -97,7 +97,23 @@ gemの作り方:
 
 ### 休憩:haltを便利メソッドに切り出す
 
-　haltが沢山散らばっていますが、ほとんど同じ処理をしているだけなので、まとめられるところをすべて、helper methodとして切り出してください。
+小休憩です。簡単な問題をやってみましょう :)
+
+app.rb内に以下のような箇所や、
+
+```ruby
+halt 400, {'Content-Type' => 'application/json'}, JSON.dump(message: todo.errors.messages)
+```
+
+以下のような箇所があると思います。
+
+```ruby
+response.status = 500
+content_type :json
+JSON.dump({message: 'unexpected error'})
+```
+
+どれも同じような処理をしているわけですが、毎回、`JSON.dump` とか `content_type :json` って書くの面倒ですよね。なので勝手に `JSON.dump` してくれる `json_halt` を作りましょう。
 
 #### ヒント
 
@@ -105,7 +121,7 @@ gemの作り方:
 
 Sinatraのhelper methodは以下のように定義することができます。
 
-```
+```ruby
 helpers do
   def bar(name)
     "#{name}bar"
