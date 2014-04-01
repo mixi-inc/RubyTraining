@@ -99,13 +99,7 @@ gemの作り方:
 
 小休憩です。簡単な問題をやってみましょう :)
 
-app.rb内に以下のような箇所や、
-
-```ruby
-halt 400, {'Content-Type' => 'application/json'}, JSON.dump(message: todo.errors.messages)
-```
-
-以下のような箇所があると思います。
+app.rb内に以下のような箇所がたくさんあります。
 
 ```ruby
 response.status = 500
@@ -113,7 +107,15 @@ content_type :json
 JSON.dump({message: 'unexpected error'})
 ```
 
-どれも同じような処理をしているわけですが、毎回、`JSON.dump` とか `content_type :json` って書くの面倒ですよね。なので勝手に `JSON.dump` してくれる `json_halt` を作りましょう。
+これは `halt` を使ってもっと短く書くことができます。例えば、app.rb にも以下のように記述されている箇所があります。
+
+```ruby
+halt 400, {'Content-Type' => 'application/json'}, JSON.dump(message: todo.errors.messages)
+```
+
+まずは `response.status = ...` となっている箇所を `halt` で書き直してください。
+
+次に、毎回 `JSON.dump` とか `content_type :json` って書くの面倒なので、JSON専用の `halt`, `json_halt` ヘルパーを作ってみてください。
 
 #### ヒント
 
