@@ -123,7 +123,7 @@ special!!
 アプリケーションを起動した後、別のターミナルで 
 
 ```
-$ bundle exec ruby app/attack.rb
+$ bundle exec ruby hard/attack.rb
 ```
 
 を実行してください。（無限ループでDoSするスクリプトです）
