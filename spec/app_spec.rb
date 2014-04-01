@@ -98,8 +98,8 @@ describe 'app.rb' do
 
   context 'DELETE /api/todos' do
     let(:id)do
-       post '/api/todos', JSON.dump(expected)
-       JSON.parse(last_response.body)['id']
+      post '/api/todos', JSON.dump(expected)
+      JSON.parse(last_response.body)['id']
     end
 
     context 'given valid parameters' do
