@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/junsumida/rack-camel_snake.git
-  revision: 7d42efa915a4d5eff2bc02e2567d84e0d9570201
+  revision: e43ca4bb6d2d2b9b0e71c08df481df5708948edc
   specs:
     rack-camel_snake (0.1.0)
       json
 
 GIT
   remote: https://github.com/junsumida/rack-server_errors.git
-  revision: cff7fecfdca954211ee2716681edd654d60610b8
+  revision: 04e677890e3f4624120aac13fad7d7bf400e8a8b
   specs:
     rack-server_errors (0.0.1)
 
@@ -31,7 +31,7 @@ GEM
       tzinfo (~> 0.3.37)
     arel (4.0.2)
     ast (1.1.0)
-    atomic (1.1.15)
+    atomic (1.1.16)
     backports (3.6.0)
     builder (3.1.4)
     coveralls (0.7.0)
@@ -48,7 +48,7 @@ GEM
     json (1.8.1)
     mime-types (2.2)
     minitest (4.7.5)
-    multi_json (1.9.0)
+    multi_json (1.9.2)
     parser (2.1.7)
       ast (~> 1.1)
       slop (~> 3.4, >= 3.4.5)
@@ -59,7 +59,7 @@ GEM
     rack-test (0.6.2)
       rack (>= 1.0)
     rainbow (2.0.0)
-    rake (10.2.0)
+    rake (10.2.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rspec (2.14.1)
@@ -70,7 +70,7 @@ GEM
     rspec-expectations (2.14.5)
       diff-lcs (>= 1.1.3, < 2.0)
     rspec-mocks (2.14.6)
-    rubocop (0.19.1)
+    rubocop (0.20.0)
       json (>= 1.7.7, < 2)
       parser (~> 2.1.7)
       powerpack (~> 0.0.6)
@@ -86,7 +86,7 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
-    sinatra-activerecord (1.4.0)
+    sinatra-activerecord (1.6.0)
       activerecord (>= 3.0)
       sinatra (~> 1.0)
     sinatra-contrib (1.4.2)
@@ -102,11 +102,11 @@ GEM
     sqlite3 (1.3.9)
     term-ansicolor (1.3.0)
       tins (~> 1.0)
-    thor (0.18.1)
-    thread_safe (0.2.0)
+    thor (0.19.1)
+    thread_safe (0.3.1)
       atomic (>= 1.1.7, < 2)
     tilt (1.4.1)
-    tins (1.0.0)
+    tins (1.0.1)
     tzinfo (0.3.39)
 
 PLATFORMS
