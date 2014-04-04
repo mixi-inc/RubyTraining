@@ -10,7 +10,6 @@
 
 ----
 
-
 ## この研修でやること
 
 - 前半（基礎）
@@ -33,6 +32,16 @@
 
 - あるイケてないWebアプリを改修して頂きます :)
 - 詳しくは後ほど
+
+---
+
+## 注意点
+
+文法などの基礎的な知識は既にある、という前提で進めます。
+
+https://www.codeschool.com/courses/try-ruby
+
+http://dotinstall.com/lessons/basic_ruby_v2
 
 ---
 
