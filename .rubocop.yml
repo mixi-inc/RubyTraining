@@ -2,6 +2,7 @@ inherit_from: rubocop-todo.yml
 
 AllCops:
   Exclude:
+    - !ruby/regexp /\/db\/migrate\/.*/
     - !ruby/regexp /\/db\/schema\.rb$/
     - !ruby/regexp /\/vendor\/.*/
 
