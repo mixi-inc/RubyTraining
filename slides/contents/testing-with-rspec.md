@@ -222,8 +222,8 @@ $ vim lib/calculator.rb
 
 ```
 class Calculator
-  def add(a,b)
-    a + b
+  def add(a, b)
+    5
   end
 end
 ```
@@ -250,7 +250,19 @@ Finished in 0.000315 seconds
 
 ---
 
-### Formatter
+### `lib/calculator.rb` のリファクタリング
+
+```
+class Calculator
+  def add(a, b)
+    a + b
+  end
+end
+```
+
+---
+
+### Formatter 変えて実行してみよう
 
 ```
 $ rspec spec/calculator_spec.rb --format doc
@@ -442,7 +454,7 @@ expect(:a => 1).to have_key(:a)
 ---
 
 
-### let / let!
+## let / let!
 
 [RSpec::Core::MemoizedHelpers](https://github.com/rspec/rspec-core/blob/master/lib/rspec/core/memoized_helpers.rb)
 
