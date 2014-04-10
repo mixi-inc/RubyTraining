@@ -148,6 +148,18 @@ JSON.dump(formatter(todos.as_json, :camel))
 
 sinatra/jsonは、sinatra-contribというgemに含まれています。
 
+##### 2.
+
+下記のようにすると`json`メソッドが使えるようになります。
+
+```ruby
+require 'sinatra/json' # 読み込み
+
+class App < Sinatra::Base
+  helpers Sinatra::JSON # 使えるように
+end
+```
+
 ### 小休憩(3)
 
 `put '/api/todos/:id'`と`post '/api/todos'`では、request.bodyを受け取ってJSONに変換するのに全く同じ処理をしています。
