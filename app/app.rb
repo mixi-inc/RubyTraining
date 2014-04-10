@@ -29,13 +29,42 @@ class Mosscow < Sinatra::Base
     content_type 'text/html'
   end
 
-  helpers do
-    def parse_request(request)
-      JSON.parse(request.body.read)
-    rescue => e
-      p e.backtrace unless ENV['RACK_ENV'] == 'test'
-      halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: 'set valid JSON for request raw body.')
+  module CamelSnakeConverter
+    def to_camel
+      gsub(/_+([a-z])/){ |matched| matched.tr('_', '').upcase }
+      .sub(/^(.)/){ |matched| matched.downcase }
+      .sub(/_$/, '')
     end
+
+    def to_snake
+      gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+      .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+      .tr('-', '_')
+      .downcase
+    end
+  end
+
+  String.send(:include, CamelSnakeConverter)
+
+  helpers do
+
+    def formatter(args, format)
+      if format == :camel
+        converter = lambda{ |key| key = key.to_camel if key.is_a?(String); key }
+      elsif format == :snake
+        converter = lambda{ |key| key = key.to_snake if key.is_a?(String); key }
+      end
+
+      case args
+        when Hash
+          args.reduce({}){ |hash, (key, value)| hash.merge(converter.call(key) => formatter(value, format)) }
+        when Array
+          args.reduce([]){ |array, value| array << formatter(value, format) }
+        else
+          args
+      end
+    end
+
   end
 
   get '/problems' do
@@ -84,7 +113,9 @@ EOS
 
   get '/api/todos' do
     todos = Todo.all
-    json todos
+
+    content_type :json
+    json formatter(todos.as_json, :camel)
   end
 
   delete '/api/todos/:id' do
@@ -102,27 +133,42 @@ EOS
 
   put '/api/todos/:id' do
     todo = Todo.where(id: params[:id]).first
-    params = parse_request(request)
+
+    begin
+      params = formatter(JSON.parse(request.body.read), :snake)
+    rescue => e
+      p e.backtrace unless ENV['RACK_ENV'] == 'test'
+      halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: 'set valid JSON for request raw body.')
+    end
+
     todo.is_done = params['is_done']
     todo.task_title = params['task_title']
     if todo.valid?
       todo.save!
       response.status = 200
-      json todo
+      content_type :json
+      JSON.dump(formatter(todo.as_json, :camel))
     else
       halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: todo.errors.messages)
     end
   end
 
   post '/api/todos' do
-    params = parse_request(request)
+    begin
+      params = formatter(JSON.parse(request.body.read), :snake)
+    rescue => e
+      p e.backtrace unless ENV['RACK_ENV'] == 'test'
+      halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: 'set valid JSON for request raw body.')
+    end
+
     todo = Todo.new(task_title: params['task_title'],
                     is_done: params['is_done'],
                     order: params['order'])
     if todo.valid?
       todo.save!
       response.status = 201
-      json todo
+      content_type :json
+      JSON.dump(formatter(todo.as_json, :camel))
     else
       halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: todo.errors.messages)
     end

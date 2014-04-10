@@ -2,8 +2,8 @@ require 'json'
 require_relative 'spec_helper'
 
 describe 'app.rb' do
-  let(:expected){ { 'is_done' => true, 'order' => 1, 'task_title' => 'hoge' } }
-  let(:updated){ { 'is_done' => false, 'order' => 1, 'task_title' => 'fuga' } }
+  let(:updated){  { 'isDone' => false, 'order' => 1, 'taskTitle' => 'fuga' } }
+  let(:expected){ { 'isDone' => true, 'order' => 1, 'taskTitle' => 'hoge' } }
 
   include Rack::Test::Methods
 
@@ -53,8 +53,8 @@ describe 'app.rb' do
         last_response.status.should eq 400
         response_body = JSON.parse(last_response.body)
 
-        if response_body['message']['task_title']
-          response_body['message']['task_title'][0].should eq message
+        if response_body['message']['taskTitle']
+          response_body['message']['taskTitle'][0].should eq message
         elsif response_body['message']['order']
           response_body['message']['order'][0].should eq message
         else
@@ -67,7 +67,7 @@ describe 'app.rb' do
       [ nil,            'set valid JSON for request raw body.'],
       ['{"moge":fuge}', 'set valid JSON for request raw body.'],
       ['{}',            'set appropriate parameters.'         ],
-      ['{"is_done":false, "order":"str", "task_title":"hoge"}', 'must be an integer.'  ]
+      ['{"isDone":false, "order":"str", "taskTitle":"hoge"}', 'must be an integer.'  ]
     ].each do |params, message|
       context("given #{params}"){ it_should_behave_like 'invalid case', params, message }
     end
