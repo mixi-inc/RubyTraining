@@ -59,6 +59,12 @@ it is designed to make Test-Driven Development a productive and enjoyable experi
 
 ---
 
+こんな感じ
+
+<img src="img/tdd.png">
+
+---
+
 ### BDD (Behaviour-Driven Development)
 
 基本的にはTDD
@@ -89,9 +95,11 @@ class TC_Bowling < Test::Unit::TestCase
   def setup
     @obj = Bowling.new
   end
+  
   def test_score
     assert_equal(0, @obj.score)
   end
+  
   def teardown
     @obj = nil
   end
@@ -163,13 +171,23 @@ RSpec の基礎的なところを
 
 ---
 
-> ### Calculator
+> ### StringCalculator
 > 
-> 2つの数を加算して返す **add** というメソッドを
-> 
-> 実装したいということにしましょう
-> 
-> まず spec を書いてみましょう
+> 文字列で入力される数字の加算結果を返す **add** というメソッドを実装したいということにしましょう
+>
+> 入力例 "1" or "2,4" or "3,4,6"
+
+<small>
+### spec
+
+(1) An empty string returns zero
+
+(2) A single number returns the value
+
+(3) Two numbers, comma delimited, returns the sum
+
+(4) Three numbers, delimited either way, returns the sum
+</small>
 
 ---
 
@@ -188,91 +206,272 @@ $ cd rspec-tutorial
 
 ### spec 書いて失敗してみる
 
-<small>コピペでOKです</small>
-
 ```
-$ vim spec/calculator_spec.rb
+$ vim spec/string_calculator_spec.rb
 ```
 
 ```
-describe Calculator do
-  let(:calc) { Calculator.new }
+require "string_calculator"
+describe StringCalculator do
   describe "#add" do
-    context "when arguments 2 and 3" do
-      it { expect(calc.add(2,3)).to eq 5 }
-    end
+  	it "returns the sum"
   end
 end
 ```
 
 ```
-$ rspec spec/calculator_spec.rb
-./spec/calculator_spec.rb:1: uninitialized constant Calculator
+$ rspec spec/string_calculator_spec.rb
+... cannot load such file -- string_calculator (LoadError)```
+---
+
+### pendingを確認
+
+```
+$ vim lib/string_calculator.rb
+```
+```
+class StringCalculator
+end
+```
+
+```
+$ rspec spec/string_calculator_spec.rb
+*
+Pending:
+  StringCalculator#add returns the sum
+    # Not yet implemented
+    # ./spec/string_calculator_spec.rb:5
+```
+
+---
+
+### 失敗するようにspec追記
+
+`spec/string_calculator_spec.rb`
+
+```
+require "string_calculator"
+describe StringCalculator do
+  let(:calc) { StringCalculator.new }
+  describe "#add" do
+    context "when argument is empty" do
+      it "returns 0 for empty" do
+        expect(calc.add("")).to eq 0
+      end
+    end
+  end
+end
+```
+
+---
+
+### 失敗する
+
+```
+$ rspec spec/string_calculator_spec.rb
+F
+
+Failures:
+
+  1) StringCalculator#add when argument is empty
+     Failure/Error: it { expect(calc.calculate("")).to eq 0 }
+     NameError:
+       undefined local variable or method `calc' for #<RSpec::Core::ExampleGroup::Nested_1::Nested_1::Nested_1:0x007f9aac051880>
+     # ./spec/string_calculator_spec.rb:6:in `block (4 levels) in <top (required)>'
+
+Finished in 0.00035 seconds
+1 example, 1 failure
 ```
 
 ---
 
 ### シンプルに実装しましょう
 
-<small>コピペでOKです</small>
 
 ```
-$ vim lib/calculator.rb
+$ vim lib/string_calculator.rb
 ```
 
 ```
-class Calculator
-  def add(a, b)
-    5
+class StringCalculator
+  def add str
+    0
   end
 end
 ```
 
 ---
 
-### `spec/calculator_spec.rb` で下記を追記
+### パスすることを確認
 
-<small>コピペでOKです</small>
-
-```
-require "calculator"
-```
-
-これで rspec 実行
+Green!
 
 ```
-$ rspec spec/calculator_spec.rb
+$ rspec spec/string_calculator_spec.rb
 .
-　
-Finished in 0.000315 seconds
+
+Finished in 0.00096 seconds
 1 example, 0 failures
 ```
 
 ---
 
-### `lib/calculator.rb` のリファクタリング
+### specを更に追記
 
 ```
-class Calculator
-  def add(a, b)
-    a + b
+require 'string_calculator'
+describe StringCalculator do
+  let(:calc) { StringCalculator.new }
+  describe "#add" do
+    context "when argument is empty" do
+      it "returns 0 for empty" do
+        expect(calc.add("")).to eq 0
+      end
+    end
+    context "when argument is single number" do
+      it "returns 1 for 1" do
+        expect(calc.add("1")).to eq 1
+      end
+    end
   end
 end
 ```
 
 ---
 
-### Formatter 変えて実行してみよう
+### 失敗します
+
+```
+$ rspec spec/string_calculator_spec.rb
+.F
+
+Failures:
+
+  1) StringCalculator#add when argument is single number returns 1 for 1
+     Failure/Error: expect(calc.add("1")).to eq 1
+
+       expected: 1
+            got: 0
+
+       (compared using ==)
+     # ./spec/string_calculator_spec.rb:15:in `block (4 levels) in <top (required)>'
+
+Finished in 0.00108 seconds
+2 examples, 1 failure
+
+Failed examples:
+
+rspec ./spec/string_calculator_spec.rb:14 # StringCalculator#add when argument is single number returns 1 for 1```
+
+---
+
+### `lib/string_calculator.rb` の修正
+
+```
+class StringCalculator
+  def add str
+    return 0 if str.empty?
+    1
+  end
+end
+```
+
+そしてGreen
+
+```
+$ rspec ./spec/string_calculator_spec.rb
+..
+
+Finished in 0.00099 seconds
+2 examples, 0 failures
+```
+
+---
+
+### また spec の追記
+
+```
++    context "when argument is two numbers (comma delimited)" do
++      it "returns 2 for 1,1" do
++        expect(calc.add("1,1")).to eq 2
++      end
++    end
+```
+
+実行結果は省略
+
+もちろん **失敗** するはずですね
+
+---
+
+### パスするように実装
+
+```
+class StringCalculator
+  def add str
+    return 0 if str.empty?
+    return 1 unless str.include?(",")
+    2
+  end
+end
+```
+
+実行結果は省略
+
+---
+
+### また同様に
+
+spec追加
+```
++    context "when argument is three numbers (comma delimited)" do
++      it "returns 3 for 1,1,1" do
++        expect(calc.add("1,1,1")).to eq 3
++      end
++    end
+```
+
+失敗する
+```
+$ rspec spec/string_calculator_spec.rb
+```
+
+実装追加でGreen!
+
+```
+class StringCalculator
+  def add str
+    return 0 if str.empty?
+    numbers = str.split(",")
+    return 1 if numbers.size == 1
+    return 2 if numbers.size == 2
+    3
+  end
+end
+```
+
+
+---
+
+### 閑話休題
+
+Formatter 変えて実行してみよう
 
 ```
 $ rspec spec/calculator_spec.rb --format doc
-Calculator
+StringCalculator
   #add
-    when arguments 2 and 3
-      should eq 5
-　　　
-Finished in 0.000379 seconds
-1 example, 0 failures
+    when argument is empty
+      returns 0 for empty
+    when argument is single number
+      returns 1 for 1
+    when argument is two numbers (comma delimited)
+      returns 2 for 1,1
+    when argument is three numbers (comma delimited)
+      returns 3 for 1,1,1
+
+Finished in 0.00181 seconds
+4 examples, 0 failures
 ```
 
 <small>
@@ -286,7 +485,95 @@ Finished in 0.000379 seconds
 
 ---
 
-## 補足
+### spec追加
+
+```
++      it "returns 2 for 2" do
++        expect(calc.add("2")).to eq 2
++      end
+```
+
+```
++      it "returns 2 for 1,2" do
++        expect(calc.add("1,2")).to eq 3
++      end
+```
+
+```
++      it "returns 3 for 1,2,3" do
++        expect(calc.add("1,2,3")).to eq 6
++      end
+```
+
+これで失敗を確認
+
+---
+
+### 実装追加
+
+```
+class StringCalculator
+  def add str
+    return 0 if str.empty?
+    numbers = str.split(",")
+    return numbers[0].to_i if numbers.size == 1
+    return numbers[0].to_i + numbers[1].to_i if numbers.size == 2
+    numbers[0].to_i + numbers[1].to_i + numbers[2].to_i
+  end
+end
+```
+
+specがパスすることを確認する
+
+---
+
+### リファクタリングする
+
+```
+class StringCalculator
+  def add str
+    return 0 if str.empty?
+    numbers = str.split(",").map {|x| x.to_i }
+    return numbers[0] if numbers.size == 1
+    return numbers[0] + numbers[1] if numbers.size == 2
+    numbers[0] + numbers[1] + numbers[2]
+  end
+end
+```
+
+もちろん Green を確認する
+
+---
+
+### もうちょいシンプルにできそう
+
+```
+class StringCalculator
+  def add str
+    return 0 if str.empty?
+    str.split(",").map(&:to_i).inject(:+)
+  end
+end
+```
+
+もちろん Green
+
+---
+
+### 続きはこの辺を参考に :)
+
+<small>
+
+http://www.peterprovost.org/blog/2012/05/02/kata-the-only-way-to-learn-tdd
+
+http://osherove.com/tdd-kata-1/
+
+http://vimeo.com/7961506
+</small>
+
+---
+
+## RSpec補足
 
 <small>
 http://betterspecs.org/jp/
