@@ -173,7 +173,7 @@ RSpec の基礎的なところを
 
 > ### StringCalculator
 > 
-> 文字列で入力される数字の加算結果を返す **add** というメソッドを実装したいということにしましょう
+> 文字列で入力される数字の加算結果を返す **add** というメソッドを実装しましょう
 >
 > 入力例 "1" or "2,4" or "3,4,6"
 
@@ -186,7 +186,7 @@ RSpec の基礎的なところを
 
 (3) Two numbers, comma delimited, returns the sum
 
-(4) Three numbers, delimited either way, returns the sum
+(4) Three numbers, comma delimited, returns the sum
 </small>
 
 ---
