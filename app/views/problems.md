@@ -95,9 +95,9 @@ gemの作り方:
 - [Bundlerでgemを作る](http://ja.asciicasts.com/episodes/245-new-gem-with-bundler)
 - [gemパッケージの作り方メモ。](http://yukihir0.hatenablog.jp/entry/20130107/1357557569)の1-9まで
 
-### 休憩:haltを便利メソッドに切り出す
+### 小休憩(1) haltを便利メソッドに切り出す
 
-小休憩です。簡単な問題をやってみましょう :)
+ここからしばらく、小休憩です。簡単な問題をやってみましょう :)
 
 app.rb内に以下のような箇所がたくさんあります。
 
@@ -130,6 +130,37 @@ helpers do
   end
 end
 ```
+
+### 小休憩(2) Sinatra組み込みのhelperメソッドを使う
+
+APIのレスポンスを出力するのに、以下のようにcontent-typeとJSONへの変換を行っている箇所がいくつもあるかと思います。
+
+```ruby
+content_type :json
+JSON.dump(formatter(todos.as_json, :camel))
+```
+
+毎回、content_typeを指定したり、JSON.dumpを呼び出すのは非常に面倒なので、Sinatra::JSONというHelperを使ってリファクタリングをしましょう。
+
+#### ヒント
+
+##### 1.
+
+sinatra/jsonは、sinatra-contribというgemに含まれています。
+
+### 小休憩(3)
+
+`put '/api/todos/:id'`と`post '/api/todos'`では、request.bodyを受け取ってJSONに変換するのに全く同じ処理をしています。
+
+非常に無駄なので、これを直してください。
+
+### 小休憩(4)
+
+formatterのCC値。Stringのグローバル汚染。汚いので直してください。
+
+### camelCase <=> snake_case変換を行うmiddlewareを作る (1)
+
+ほげほげ
 
 ## おまけ問題
 

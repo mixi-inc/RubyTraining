@@ -1,7 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/activerecord'
 require 'sinatra/reloader'
-require 'sinatra/json'
 require 'json'
 require 'haml'
 require 'redcarpet'
@@ -11,7 +10,6 @@ require_relative 'models/todo'
 
 class Mosscow < Sinatra::Base
   register Sinatra::ActiveRecordExtension
-  helpers Sinatra::JSON
 
   set :static, true
   set :public_folder, 'public'
@@ -115,7 +113,7 @@ EOS
     todos = Todo.all
 
     content_type :json
-    json formatter(todos.as_json, :camel)
+    JSON.dump(formatter(todos.as_json, :camel))
   end
 
   delete '/api/todos/:id' do
