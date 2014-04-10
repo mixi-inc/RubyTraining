@@ -25,7 +25,7 @@ class Mosscow < Sinatra::Base
   end
 
   before do
-    ActiveRecord::Base.establish_connection(ENV['RACK_ENV'])
+    ActiveRecord::Base.establish_connection(ENV['RACK_ENV'].to_sym)
     content_type 'text/html'
   end
 

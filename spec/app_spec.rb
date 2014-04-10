@@ -53,9 +53,9 @@ describe 'app.rb' do
         last_response.status.should eq 400
         response_body = JSON.parse(last_response.body)
 
-        if !response_body['message']['task_title'].nil?
+        if response_body['message']['task_title']
           response_body['message']['task_title'][0].should eq message
-        elsif !response_body['message']['order'].nil?
+        elsif response_body['message']['order']
           response_body['message']['order'][0].should eq message
         else
           response_body['message'].should eq message
