@@ -10,7 +10,6 @@ desc 'run Rspec specs'
 task :spec do
   ENV['RACK_ENV'] ||= 'test'
   # sh 'rubocop'
-  sh 'rake db:drop'
-  sh 'rake db:migrate'
+  sh 'rake db:schema:load'
   sh 'rspec'
 end
