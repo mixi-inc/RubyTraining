@@ -148,10 +148,28 @@ describe 'app.rb' do
 
   context 'GET /error' do
     it 'returns 500' do
-      pending('turn this on after you have done with middleware')
+      pending('get rid of this line after you create middleware')
       proc {
         get '/error'
       }.should raise_error(RuntimeError)
+    end
+  end
+
+  describe 'to_camel' do
+    it 'convert snake_case into camelCase' do
+      pending('fix this case depending on your #to_camel method')
+      %w(_camel_case camel_case camel___case camel_case_).each do |word|
+        word.to_camel.should eq 'camelCase'
+      end
+    end
+  end
+
+  describe 'to_snake' do
+    it 'convert camelCase into snake_case' do
+      pending('fix this case depending on your #to_snake method')
+      'snakeCase'.to_snake.should eq 'snake_case'
+      'SnakeCase'.to_snake.should eq 'snake_case'
+      'SNAKECase'.to_snake.should eq 'snake_case'
     end
   end
 

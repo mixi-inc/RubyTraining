@@ -27,22 +27,6 @@ class Mosscow < Sinatra::Base
     content_type 'text/html'
   end
 
-  module CamelSnakeConverter
-    def to_camel
-      gsub(/_+([a-z])/){ |matched| matched.tr('_', '').upcase }
-      .sub(/^(.)/){ |matched| matched.downcase }
-      .sub(/_$/, '')
-    end
-
-    def to_snake
-      gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-      .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-      .tr('-', '_')
-      .downcase
-    end
-  end
-  String.send(:include, CamelSnakeConverter)
-
   get '/problems' do
     haml :problems
   end

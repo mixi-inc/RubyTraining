@@ -173,7 +173,7 @@ rescue => e
 end
 ```
 
-こういったコピペコードが増えていくと、変更に弱くなるので、`parse_request`というhelperメソッドを作成し、処理をこのメソッドにまとめてください。
+こういったコピペコードが増えていくと、変更に弱くなるので、`parse_request`というhelperメソッドを作成し、処理をこのメソッドにまとめてみましょう。
 
 #### ヒント
 
@@ -183,8 +183,27 @@ Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思�
 
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (1)
 
-`String#to_camel`, `String#to_snake`は、それぞれスネークケース、キャメルケースを相互に変換するためのメソッドです。
-これを利用して、`request.body.read`で受け取るパラメータのキーをスネークケースで受け取り、出力として返すJSONのキーをキャメルケースで返すようにコードを修正してください。
+これから、いくつかのステップに分けて、middlewareをもう一つ作ります。
+
+今度は何をしたいかというと、JSONのキーは全てキャメルケースで、rubyのハッシュのキーは全てスネークケースで扱えるようにします。
+
+まずは、キャメルケース、スネークケースの変換が行える必要があるので、`to_camel`, `to_snake`という変換のためのメソッドを作成してください。
+
+(今回は、既にテストケースがあるので、テストケースが満たされるのであれば、実装方法は問いません。)
+
+#### ヒント
+
+##### 1.
+
+正規表現で頑張ってください^^
+
+##### 2.
+
+実装にはいくつも方法があるかとおもいますが、今回は、helperメソッドを作成するか、`String`クラスを拡張してみましょう。
+
+### camelCase <=> snake_case変換を行うmiddlewareを作る (2)
+
+(1)で作成した`#to_camel`, `#to_snake`を利用して、`request.body.read`で受け取るパラメータのキーをスネークケースで受け取り、出力として返すJSONのキーをキャメルケースで返すようにコードを修正してください。
 
 #### ヒント
 
@@ -192,15 +211,15 @@ Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思�
 
 再帰を使うと、比較的簡単に書くことができます。
 
-### camelCase <=> snake_case変換を行うmiddlewareを作る (2)
+### camelCase <=> snake_case変換を行うmiddlewareを作る (3)
 
 (1)で行った処理をmiddlewareに切り出してください。テストも同様です。
 
-### camelCase <=> snake_case変換を行うmiddlewareを作る (3)
+### camelCase <=> snake_case変換を行うmiddlewareを作る (4)
 
 例外を吸収するmiddlewareを作る (3)でやったように、切り出したmiddlewareをgem化し、自分のリポジトリに公開、それを参照するように変更してください。
 
-### camelCase <=> snake_case変換を行うmiddlewareを作る (4)
+### camelCase <=> snake_case変換を行うmiddlewareを作る (5)
 
 `String#to_camel`, `String#to_snake`はグローバルな名前空間を汚染しているため、あまりお行儀が良いとは言えません。
 ruby 2.1.0にある[Refinements](http://qiita.com/yustoris/items/77fd309178dcdd13b5cd)という機能を使って、グローバルな名前空間を汚染しないように書き換えてみましょう。

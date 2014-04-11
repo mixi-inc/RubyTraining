@@ -1,8 +1,10 @@
 require 'rack/camel_snake'
 
 describe 'Integration Test' do
+  pending('get rid of this line after your create Rack camel <-> snake converting module')
+
   let(:snake_expected){ { 'is_done' => true, 'order' => 1, 'task_title' => 'hoge' } }
-  let(:camel_expected){ { 'isDone' => true, 'order' => 1, 'taskTitle' => 'hoge' }   }
+  let(:camel_expected){ { 'isDone'  => true, 'order' => 1, 'taskTitle'  => 'hoge' } }
 
   def post_todo(body)
     post '/api/todos', JSON.dump(body), 'CONTENT_TYPE' => 'application/json'
@@ -22,6 +24,10 @@ describe 'Integration Test' do
     it 'returns 200' do
       get '/api/todos'
       last_response.status.should eq 200
+      JSON.parse(last_response.body).each do |todo|
+        todo['isDone'].should_not be_nil
+        todo['taskTitle'].should_not be_nil
+      end
     end
   end
 
