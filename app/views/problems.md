@@ -2,6 +2,7 @@
 
 ## 便利なリファレンス
 
+- [今回の研修プレゼン資料](http://junsumida.github.io/mosscow/slides/)
 - [Sinatra Documentation](http://www.sinatrarb.com/intro-jp.html)
 - [RSpec 2.14 Built-in Matchers](https://www.relishapp.com/rspec/rspec-expectations/v/2-14/docs/built-in-matchers)
 - [Better Specs](http://betterspecs.org/jp/)
