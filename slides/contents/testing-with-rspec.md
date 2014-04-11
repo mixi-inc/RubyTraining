@@ -274,7 +274,7 @@ F
 Failures:
 
   1) StringCalculator#add when argument is empty
-     Failure/Error: it { expect(calc.calculate("")).to eq 0 }
+     Failure/Error: it { expect(calc.add("")).to eq 0 }
      NameError:
        undefined local variable or method `calc' for #<RSpec::Core::ExampleGroup::Nested_1::Nested_1::Nested_1:0x007f9aac051880>
      # ./spec/string_calculator_spec.rb:6:in `block (4 levels) in <top (required)>'
@@ -668,6 +668,17 @@ expect(actual).to equal(expected)
 
 ---
 
+### Types/classes
+
+```
+expect(actual).to be_an_instance_of(expected) 
+expect(actual).to be_a(expected)
+expect(actual).to be_an(expected)
+expect(actual).to be_a_kind_of(expected)
+```
+
+---
+
 ### Comparisons
 
 ```
@@ -676,29 +687,6 @@ expect(actual).to be >= expected
 expect(actual).to be <= expected
 expect(actual).to be <  expected
 expect(actual).to be_within(delta).of(expected)
-```
-
----
-
-### Regular expressions
-
-```
-expect(actual).to match(/expression/)
-```
-
-<small>
-Note : The new expect syntax no longer supports the =~ matcher.
-</small>
-
----
-
-### Types/classes
-
-```
-expect(actual).to be_an_instance_of(expected) 
-expect(actual).to be_a(expected)
-expect(actual).to be_an(expected)
-expect(actual).to be_a_kind_of(expected)
 ```
 
 ---
@@ -712,6 +700,18 @@ expect(actual).to be_falsy
 expect(actual).to be false
 expect(actual).to be_nil
 ```
+
+---
+
+### Regular expressions
+
+```
+expect(actual).to match(/expression/)
+```
+
+<small>
+Note : The new expect syntax no longer supports the =~ matcher.
+</small>
 
 ---
 
@@ -815,6 +815,8 @@ end
 
 注意
 
+`let` は 遅延評価なのに対し
+
 `let!` は before hook で評価される
 
 [lib/rspec/core/memoized_helpers.rb#L299](https://github.com/rspec/rspec-core/blob/master/lib/rspec/core/memoized_helpers.rb#L299)
@@ -841,7 +843,9 @@ end
 
 https://www.relishapp.com/rspec/rspec-core/v/2-14/docs/hooks/before-and-after-hooks
 
-example 毎に実行したい場合はこの hook を使う
+example / esample group 毎の前後に
+
+実行したい場合はこの hook を使う
 
 ---
 
