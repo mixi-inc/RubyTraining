@@ -41,29 +41,7 @@ class Mosscow < Sinatra::Base
       .downcase
     end
   end
-
   String.send(:include, CamelSnakeConverter)
-
-  helpers do
-
-    def formatter(args, format)
-      if format == :camel
-        converter = lambda{ |key| key = key.to_camel if key.is_a?(String); key }
-      elsif format == :snake
-        converter = lambda{ |key| key = key.to_snake if key.is_a?(String); key }
-      end
-
-      case args
-        when Hash
-          args.reduce({}){ |hash, (key, value)| hash.merge(converter.call(key) => formatter(value, format)) }
-        when Array
-          args.reduce([]){ |array, value| array << formatter(value, format) }
-        else
-          args
-      end
-    end
-
-  end
 
   get '/problems' do
     haml :problems
@@ -113,7 +91,7 @@ EOS
     todos = Todo.all
 
     content_type :json
-    JSON.dump(formatter(todos.as_json, :camel))
+    JSON.dump(todos.as_json)
   end
 
   delete '/api/todos/:id' do
@@ -133,7 +111,7 @@ EOS
     todo = Todo.where(id: params[:id]).first
 
     begin
-      params = formatter(JSON.parse(request.body.read), :snake)
+      params = JSON.parse(request.body.read)
     rescue => e
       p e.backtrace unless ENV['RACK_ENV'] == 'test'
       halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: 'set valid JSON for request raw body.')
@@ -145,7 +123,7 @@ EOS
       todo.save!
       response.status = 200
       content_type :json
-      JSON.dump(formatter(todo.as_json, :camel))
+      JSON.dump(todo.as_json)
     else
       halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: todo.errors.messages)
     end
@@ -153,7 +131,7 @@ EOS
 
   post '/api/todos' do
     begin
-      params = formatter(JSON.parse(request.body.read), :snake)
+      params = JSON.parse(request.body.read)
     rescue => e
       p e.backtrace unless ENV['RACK_ENV'] == 'test'
       halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: 'set valid JSON for request raw body.')
@@ -166,7 +144,7 @@ EOS
       todo.save!
       response.status = 201
       content_type :json
-      JSON.dump(formatter(todo.as_json, :camel))
+      JSON.dump(todo.as_json)
     else
       halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: todo.errors.messages)
     end

@@ -172,7 +172,22 @@ formatterのCC値。Stringのグローバル汚染。汚いので直してくだ
 
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (1)
 
-ほげほげ
+`String#to_camel`, `String#to_snake`は、それぞれスネークケース、キャメルケースを相互に変換するためのメソッドです。
+これを利用して、`request.body.read`で受け取るパラメータのキーをスネークケースで受け取り、出力として返すJSONのキーをキャメルケースで返すようにコードを修正してください。
+
+#### ヒント
+
+##### 1.
+
+再帰を適切に使うと、比較的簡単に書くことができます。
+
+### camelCase <=> snake_case変換を行うmiddlewareを作る (2)
+
+(1)で行った処理をmiddlewareに切り出してください。テストも同様です。
+
+### camelCase <=> snake_case変換を行うmiddlewareを作る (3)
+
+例外を吸収するmiddlewareを作る (3)でやったように、切り出したmiddlewareをgem化し、自分のリポジトリに公開、それを参照するように変更してください。
 
 ## おまけ問題
 
