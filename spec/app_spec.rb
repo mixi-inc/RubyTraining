@@ -14,8 +14,8 @@ describe 'app.rb' do
   context 'GET /' do
     it 'returns hello message' do
       get '/'
-      last_response.status.should eq 200
-      last_response.body.should eq 'Hello, Moscow!'
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to eq 'Hello, Moscow!'
     end
   end
 
@@ -26,8 +26,8 @@ describe 'app.rb' do
     it 'returns json object' do
       get '/api/todos'
 
-      last_response.status.should eq 200
-      JSON.parse(last_response.body).should have(1).items
+      expect(last_response.status).to eq 200
+      expect(JSON.parse(last_response.body)).to have(1).items
     end
   end
 
@@ -39,38 +39,42 @@ describe 'app.rb' do
       end
 
       it 'returns status 201' do
-        last_response.status.should eq 201
-        JSON.parse(last_response.body).should include(expected)
+        expect(last_response.status).to eq 201
+        expect(JSON.parse(last_response.body)).to include expected
       end
     end
 
-    shared_examples_for 'invalid case' do |params, message|
-      before do
-        post '/api/todos', params
+    context 'given invalid parameters' do
+      it 'returns 400 and error message given nil' do
+        post 'api/todos', nil
+
+        expect(last_response.status).to eq 400
+        expect(JSON.parse(last_response.body)['message']).to eq 'set valid JSON for request raw body.'
       end
 
-      # TODO: これ汚いので、なんとかする
-      it 'and returns 400 and error message' do
-        last_response.status.should eq 400
+      it 'returns 400 and error message given {"moge":fuge}' do
+        post 'api/todos', '{"moge":fuge}'
+
+        expect(last_response.status).to eq 400
+        expect(JSON.parse(last_response.body)['message']).to eq 'set valid JSON for request raw body.'
+      end
+
+      it 'returns 400 and error message given {}' do
+        post 'api/todos', '{}'
+
+        expect(last_response.status).to eq 400
+
         response_body = JSON.parse(last_response.body)
-
-        if response_body['message']['task_title']
-          response_body['message']['task_title'][0].should eq message
-        elsif response_body['message']['order']
-          response_body['message']['order'][0].should eq message
-        else
-          response_body['message'].should eq message
-        end
+        expect(response_body['message']['task_title'][0]).to eq 'set appropriate parameters.'
+        expect(response_body['message']['is_done'][0]).to    eq 'must be false or true.'
       end
-    end
 
-    [
-      [ nil,            'set valid JSON for request raw body.'],
-      ['{"moge":fuge}', 'set valid JSON for request raw body.'],
-      ['{}',            'set appropriate parameters.'         ],
-      ['{"is_done":false, "order":"str", "task_title":"hoge"}', 'must be an integer.'  ]
-    ].each do |params, message|
-      context("given #{params}"){ it_should_behave_like 'invalid case', params, message }
+      it 'returns 400 and error message given {"is_done":false, "order":"str", "task_title":"hoge"}' do
+        post 'api/todos', '{"is_done":false, "order":"str", "task_title":"hoge"}'
+
+        expect(last_response.status).to eq 400
+        expect(JSON.parse(last_response.body)['message']['order'][0]).to eq 'must be an integer.'
+      end
     end
 
   end
@@ -87,11 +91,11 @@ describe 'app.rb' do
       end
 
       it 'returns status 200' do
-        last_response.status.should eq 200
+        expect(last_response.status).to eq 200
       end
 
       it 'updates todo' do
-        JSON.parse(last_response.body).should include updated
+        expect(JSON.parse(last_response.body)).to include updated
       end
     end
 
@@ -107,7 +111,7 @@ describe 'app.rb' do
       it 'returns 204' do
         delete "/api/todos/#{id}"
 
-        last_response.status.should eq 204
+        expect(last_response.status).to eq 204
       end
     end
 
@@ -118,7 +122,7 @@ describe 'app.rb' do
 
       it 'returns 500' do
         delete "/api/todos/#{id}"
-        last_response.status.should eq 500
+        expect(last_response.status).to eq 500
       end
     end
   end
@@ -149,9 +153,9 @@ describe 'app.rb' do
   context 'GET /error' do
     it 'returns 500' do
       pending('get rid of this line after you create middleware')
-      proc {
-        get '/error'
-      }.should raise_error(RuntimeError)
+      expect(
+          proc { get '/error' }
+      ).to raise_error(RuntimeError)
     end
   end
 
@@ -159,7 +163,7 @@ describe 'app.rb' do
     it 'convert snake_case into camelCase' do
       pending('fix this case depending on your #to_camel method')
       %w(_camel_case camel_case camel___case camel_case_).each do |word|
-        word.to_camel.should eq 'camelCase'
+        expect(word.to_camel).to eq 'camelCase'
       end
     end
   end
@@ -167,9 +171,9 @@ describe 'app.rb' do
   describe 'to_snake' do
     it 'convert camelCase into snake_case' do
       pending('fix this case depending on your #to_snake method')
-      'snakeCase'.to_snake.should eq 'snake_case'
-      'SnakeCase'.to_snake.should eq 'snake_case'
-      'SNAKECase'.to_snake.should eq 'snake_case'
+      expect('snakeCase'.to_snake).to eq 'snake_case'
+      expect('SnakeCase'.to_snake).to eq 'snake_case'
+      expect('SNAKECase'.to_snake).to eq 'snake_case'
     end
   end
 
