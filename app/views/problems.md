@@ -160,15 +160,11 @@ class App < Sinatra::Base
 end
 ```
 
-### 小休憩(3)
+### 小休憩(3) リファクタリング (request.bodyの受け取り)
 
-`put '/api/todos/:id'`と`post '/api/todos'`では、request.bodyを受け取ってJSONに変換するのに全く同じ処理をしています。
+`put '/api/todos/:id'`と`post '/api/todos'`では、request.bodyを受け取ってJSONを変換するのに全く同じ処理をしています。
 
 非常に無駄なので、これを直してください。
-
-### 小休憩(4)
-
-formatterのCC値。Stringのグローバル汚染。汚いので直してください。
 
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (1)
 
