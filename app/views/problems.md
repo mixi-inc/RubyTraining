@@ -95,7 +95,7 @@ gemの作り方:
 - [Bundlerでgemを作る](http://ja.asciicasts.com/episodes/245-new-gem-with-bundler)
 - [gemパッケージの作り方メモ。](http://yukihir0.hatenablog.jp/entry/20130107/1357557569)の1-9まで
 
-### 小休憩(1) haltを便利メソッドに切り出す
+### 小休憩(1) リファクタリング (haltを便利メソッドに切り出す)
 
 ここからしばらく、小休憩です。簡単な問題をやってみましょう :)
 
@@ -131,7 +131,7 @@ helpers do
 end
 ```
 
-### 小休憩(2) Sinatra組み込みのhelperメソッドを使う
+### 小休憩(2) リファクタリング (Sinatra組み込みのhelperメソッドを使う)
 
 APIのレスポンスを出力するのに、以下のようにcontent-typeとJSONへの変換を行っている箇所がいくつもあるかと思います。
 
@@ -160,11 +160,26 @@ class App < Sinatra::Base
 end
 ```
 
-### 小休憩(3) リファクタリング (request.bodyの受け取り)
+### 小休憩(3) リファクタリング (parse_requestの作成)
 
-`put '/api/todos/:id'`と`post '/api/todos'`では、request.bodyを受け取ってJSONを変換するのに全く同じ処理をしています。
+`put '/api/todos/:id'`と`post '/api/todos'`では、request.bodyからJSONを受け取って解釈/エラーハンドリングを行うために、以下のような全く同じ処理があります。
 
-非常に無駄なので、これを直してください。
+```ruby
+begin
+  params = JSON.parse(request.body.read)
+rescue => e
+  p e.backtrace unless ENV['RACK_ENV'] == 'test'
+  halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: 'set valid JSON for request raw body.')
+end
+```
+
+こういったコピペコードが増えていくと、変更に弱くなるので、`parse_request`というhelperメソッドを作成し、処理をこのメソッドにまとめてください。
+
+#### ヒント
+
+##### 1.
+
+Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思うので、そこをもう一度みてみましょう。
 
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (1)
 
@@ -175,7 +190,7 @@ end
 
 ##### 1.
 
-再帰を適切に使うと、比較的簡単に書くことができます。
+再帰を使うと、比較的簡単に書くことができます。
 
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (2)
 
@@ -184,6 +199,11 @@ end
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (3)
 
 例外を吸収するmiddlewareを作る (3)でやったように、切り出したmiddlewareをgem化し、自分のリポジトリに公開、それを参照するように変更してください。
+
+### camelCase <=> snake_case変換を行うmiddlewareを作る (4)
+
+`String#to_camel`, `String#to_snake`はグローバルな名前空間を汚染しているため、あまりお行儀が良いとは言えません。
+ruby 2.1.0にある[Refinements](http://qiita.com/yustoris/items/77fd309178dcdd13b5cd)という機能を使って、グローバルな名前空間を汚染しないように書き換えてみましょう。
 
 ## おまけ問題
 
