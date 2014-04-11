@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/junsumida/rack-camel_snake.git
-  revision: 30fe850ac9101e7574e91d53060bb0b15123c8a5
+  revision: 184f617523f9cb9a13639f41b13a3877357203e1
   specs:
     rack-camel_snake (0.2.0)
       oj

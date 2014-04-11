@@ -23,7 +23,7 @@ describe 'Integration Test' do
   context 'GET /api/todos' do
     it 'returns 200' do
       get '/api/todos'
-      last_response.status.should eq 200
+      expect(last_response.status).to eq 200
     end
   end
 
@@ -31,8 +31,8 @@ describe 'Integration Test' do
     it 'returns 201' do
       post_todo(camel_expected)
 
-      last_response.status.should eq 201
-      JSON.parse(last_response.body).should include camel_expected
+      expect(last_response.status).to eq 201
+      expect(JSON.parse(last_response.body)).to include camel_expected
     end
   end
 
@@ -41,7 +41,7 @@ describe 'Integration Test' do
     it 'returns 204' do
       put '/api/todos/1', JSON.dump(updated), 'CONTENT_TYPE' => 'application/json'
 
-      JSON.parse(last_response.body).should include updated
+      expect(JSON.parse(last_response.body)).to include updated
     end
   end
 
@@ -50,7 +50,7 @@ describe 'Integration Test' do
       post_todo(camel_expected)
 
       delete '/api/todos/2'
-      last_response.status.should eq 204
+      expect(last_response.status).to eq 204
     end
   end
 
@@ -59,8 +59,8 @@ describe 'Integration Test' do
     it 'returns 500' do
       get '/error'
 
-      last_response.status.should eq 500
-      JSON.parse(last_response.body).should eq expected
+      expect(last_response.status).to eq 500
+      expect(JSON.parse(last_response.body)).to eq expected
     end
   end
 

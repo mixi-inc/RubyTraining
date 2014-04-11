@@ -14,8 +14,8 @@ describe 'app.rb' do
   context 'GET /' do
     it 'returns hello message' do
       get '/'
-      last_response.status.should eq 200
-      last_response.body.should eq 'Hello, Moscow!'
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to eq 'Hello, Moscow!'
     end
   end
 
@@ -26,8 +26,8 @@ describe 'app.rb' do
     it 'returns json object' do
       get '/api/todos'
 
-      last_response.status.should eq 200
-      JSON.parse(last_response.body).should have(1).items
+      expect(last_response.status).to eq 200
+      expect(JSON.parse(last_response.body)).to have(1).items
     end
   end
 
@@ -39,8 +39,8 @@ describe 'app.rb' do
       end
 
       it 'returns status 201' do
-        last_response.status.should eq 201
-        JSON.parse(last_response.body).should include(expected)
+        expect(last_response.status).to eq 201
+        expect(JSON.parse(last_response.body)).to include(expected)
       end
     end
 
@@ -50,8 +50,8 @@ describe 'app.rb' do
       end
 
       it 'and returns 400 and error message' do
-        last_response.status.should eq 400
-        last_response.body.should match(message)
+        expect(last_response.status).to eq 400
+        expect(last_response.body).to match(message)
       end
     end
 
@@ -78,11 +78,11 @@ describe 'app.rb' do
       end
 
       it 'returns status 200' do
-        last_response.status.should eq 200
+        expect(last_response.status).to eq 200
       end
 
       it 'updates todo' do
-        JSON.parse(last_response.body).should include updated
+        expect(JSON.parse(last_response.body)).to include updated
       end
     end
 
@@ -98,7 +98,7 @@ describe 'app.rb' do
       it 'returns 204' do
         delete "/api/todos/#{id}"
 
-        last_response.status.should eq 204
+        expect(last_response.status).to eq 204
       end
     end
 
@@ -119,7 +119,7 @@ describe 'app.rb' do
     shared_examples_for 'errors' do |status|
       it "returns #{status}" do
         get "/#{status}"
-        last_response.status.should eq status
+        expect(last_response.status).to eq status
       end
     end
 
@@ -130,9 +130,9 @@ describe 'app.rb' do
 
   context 'GET /error' do
     it 'returns 500' do
-      proc {
+      expect(proc {
         get '/error'
-      }.should raise_error(RuntimeError)
+      }).to raise_error(RuntimeError)
     end
   end
 
