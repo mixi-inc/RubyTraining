@@ -188,9 +188,7 @@ Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思�
 
 今度は何をしたいかというと、JSONのキーは全てキャメルケースで、rubyのハッシュのキーは全てスネークケースで扱えるようにします。
 
-まずは、キャメルケース、スネークケースの変換が行える必要があるので、`to_camel`, `to_snake`という変換のためのメソッドを作成してください。
-
-(今回は、既にテストケースがあるので、テストケースが満たされるのであれば、実装方法は問いません。)
+まずは、キャメルケース、スネークケースの変換が行える必要があるので、`to_camel`, `to_snake`という変換のためのメソッドを作成してください。(今回は、既にテストケースがあるので、テストケースが満たされるのであれば、実装方法は問いません。)
 
 #### ヒント
 
@@ -205,6 +203,15 @@ Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思�
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (2)
 
 (1)で作成した`#to_camel`, `#to_snake`を利用して、`request.body.read`で受け取るパラメータのキーをスネークケースで受け取り、出力として返すJSONのキーをキャメルケースで返すようにコードを修正してください。
+
+既に`/spec/integration/mosscow_integration_spec.rb`という名前の結合テストがあるので、作成したミドルウェアに合わせて、テストが動作するようにしてください。
+
+```ruby
+  # please get rid of this 'broken:true' after you create Rack camel <-> snake converting middleware
+  context 'when api called', broken:true do
+```
+
+上の行の、`, broken:true`を削除するか、`false`をセットすると、テストが動くようになります。
 
 #### ヒント
 
