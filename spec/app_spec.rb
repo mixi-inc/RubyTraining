@@ -66,7 +66,7 @@ describe 'app.rb' do
 
         response_body = JSON.parse(last_response.body)
         expect(response_body['message']['task_title'][0]).to eq 'set appropriate parameters.'
-        expect(response_body['message']['is_done'][0]).to    eq 'must be false or true.'
+        expect(response_body['message']['is_done'][0]).to eq 'must be false or true.'
       end
 
       it 'returns 400 and error message given {"is_done":false, "order":"str", "task_title":"hoge"}' do
