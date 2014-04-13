@@ -2,7 +2,7 @@
 
 ---
 
-## これからやること
+### ここでやること
 
 - RSpecの概要
   - TDD / BDD
@@ -629,10 +629,7 @@ http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax
 - 詳しくはリンク先のコメント
 
 ```
-it { should be_empty } # still keep
-it "returns empty" do
-  [].should be_emplty # not recommended
-end
+it { should be_empty } # still keep one-liner syntax
 ```
 
 ---

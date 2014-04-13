@@ -2,7 +2,7 @@
 
 ---
 
-### これからやること
+### ここでやること
 
 - gemの概要
 - bundlerの概要
@@ -43,6 +43,24 @@ $ gem help
 https://rubygems.org/
 
 https://www.ruby-toolbox.com/
+</small>
+
+---
+
+### 補足
+
+
+インストール時のドキュメント生成を省略したい
+
+**.gemrc**
+
+```
+gem: --no-rdoc --no-ri # インストール時に rdoc, ri を生成しない
+:verbose: true         # 詳細メッセージを表示する
+```
+
+<small>参考
+http://blog.64p.org/entry/2013/02/16/122130
 </small>
 
 ---
