@@ -1,13 +1,13 @@
 # 2014 Ruby研修 実習
 
-実習では、Sinatra上に構築されたToDoアプリケーションのAPIを修正をしつつ、いくつかの機能をmiddlewareとして切り出してもらいます。
-コードも壊れてぐちゃぐちゃの状態になっているので、リファクタリングしつつ進めるという形をとっています。
+実習では、Sinatra上に構築されたToDoアプリケーションのAPIを修正をしつつ、いくつかの機能をRackのミドルウェアとして切り出してもらいます。
+コードは壊れてぐちゃぐちゃの状態になっていますが、テストを予め用意してあるので、基本的に、テストに沿って修正とリファクタリングを行っていくという形をとっています。
 
 Rubyが得意だという方は、是非、ヒントを見ずに頑張ってみてください。Rubyそんなに得意じゃないよという方は、便利な資料をまとめているので、ヒントと併せて活用しながら進めてみてください。
 
 ## 便利なリファレンス
 
-- [今回の研修プレゼン資料](http://junsumida.github.io/mosscow/slides/)
+- [今回の研修プレゼン資料](http://mixi-inc.github.io/RubyTraining/slides/)
 - [Sinatra Documentation](http://www.sinatrarb.com/intro-jp.html)
 - [RSpec 2.14 Built-in Matchers](https://www.relishapp.com/rspec/rspec-expectations/v/2-14/docs/built-in-matchers)
 - [Better Specs](http://betterspecs.org/jp/)
@@ -71,18 +71,35 @@ hamlの場合の話ですが、`app/views/foobar.haml`のようにhamlファイ�
 
 `/error`, `DELETE /api/todos`では、処理が失敗した時に例外が投げられていますが、ほとんど同じ処理が重複しています。この処理を特定のメソッドに切り出してみましょう。
 
+さらに、jsonで`{"message": "unexpected error"}`というレスポンスを返すようにしてください。
+
 #### ヒント
 
 ##### 1.
 
-blockとyieldをつかうと綺麗にかけます。<br>
-忘れてしまった時は、CodeAcademyの15講を参照してみてください :)
+一例ですが、block, yieldとbegin-rescue-endを組み合わせると書きやすいです。
+blockとyieldについて忘れてしまった場合は、CodeAcademyの15講を参照してみてください :)
+
+##### 2.
+
+明示的に`nil`を返している箇所で、代わりにjsonを返しましょう。
+
+```
+return nil
+```
 
 ### 例外を吸収するmiddlewareを作る (2)
 
 (1)で作成したメソッドによって、同じ処理で例外を投げることができるようになりましたが、まだ予想外の箇所で例外が投げられた場合にそれをキャッチすることはできません。<br>
 Sinatra上の全ての例外をキャッチできるように、(1)で行っている処理をRackのmiddlewareを作成して、処理をすべてそちらに切り出してみましょう。
-既に結合テストが`spec/integration/mosscow_integration_spec.rb`が定義されているので、
+
+既に結合テストが`spec/integration/mosscow_integration_spec.rb`が定義されているので、まずはテストが動くように変更しましょう。
+
+その際、以下のようにpendingされている箇所を忘れずに削除してください。
+
+```ruby
+pending('delete this line after you create Rack error catching module')
+```
 
 #### ヒント
 
@@ -209,9 +226,9 @@ Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思�
 
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (1)
 
-ここからが本番です！これから、また、いくつかのステップに分けて、middlewareをもう一つ作ってもらいます。
+さて、ここからが本番です！これから、いくつかのステップに分けて、middlewareをもう一つ作ってもらいます。
 
-今度は何をするかというと、JSONのキーは全てキャメルケースで、Rubyのハッシュのキーは全てスネークケースで扱えるようにします。つまり、Ajax requestで送られてくるJSONのキーを、Ruby内ではスネークケースで扱えるようにし、Sinatra側から送り返すJSONのresponseのキーは、キャメルケースに変換します。
+今回作成するミドルウェアでは、request.bodyで受け取るJSONのキーをスネークケースに変換し、response.bodyで送り返すJSONのキーをキャメルケースに変換を行います。
 
 まずは、キャメルケース、スネークケースの変換ができる必要があるので、`to_camel`, `to_snake`という変換のためのメソッドを作成してください。(今回は、既にテストケースがあるので、テストケースが満たされるのであれば、実装方法は問いません。)
 
@@ -227,31 +244,28 @@ Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思�
 
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (2)
 
-(1)で作成した`#to_camel`, `#to_snake`を利用して、`request.body.read`で受け取るパラメータのキーをスネークケースで受け取り、出力として返すJSONのキーをキャメルケースで返すようにコードを修正しましょう:。
+(1)で作成した`#to_camel`, `#to_snake`を利用して、`request.body.read`で受け取るパラメータのキーをスネークケースで受け取り、出力として返すJSONのキーをキャメルケースで返すようにコードを修正しましょう。
 
-既に`/spec/integration/mosscow_integration_spec.rb`という名前の結合テストがあるので、作成したミドルウェアに合わせて、テストが動作するようにしてください。
+![](/images/camel_snake.png)
+
+例外を吸収するmiddlewareを作る (2)で使用した結合テストにテストケースが既に追加してあるので、下記の変更を加えて、テストが動作するようにしてください。
 
 ```ruby
-  # please get rid of this 'broken:true' after you create Rack camel <-> snake converting middleware
+  # Please delete 'broken:true' after you create Rack camel <-> snake converting middleware
   context 'when api called', broken:true do
 ```
 
-上の行の、`, broken:true`を削除するか、`false`をセットすると、テストが動くようになります。
+上の行の、`, broken:true`を削除するか、`false`をセットし、ミドルウェアをテストに組み込むと動くようになります。
 
 #### ヒント
 
 ##### 1.
 
-TODO:
-例外を吸収するmiddlewareを作る (2)で、既に結合テストにmiddlewareを組み込むには、
+再帰を使うと比較的簡単にできます。[JSONの仕様](http://www.json.org/)を確認するとやりやすいかもしれません。
 
-```ruby
-require 'rack/camel_snake'
+##### 2.
 
-def app
-    @app ||= Rack::CamelSnake.new(Mosscow)
-end
-```
+今回の場合は、末尾再帰最適化は考えなくて大丈夫です。
 
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (3)
 

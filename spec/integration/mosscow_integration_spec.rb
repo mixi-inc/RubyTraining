@@ -16,7 +16,7 @@ describe 'Integration Test' do
     @app ||= Mosscow
   end
 
-  # please get rid of this 'broken:true' after you create Rack camel <-> snake converting middleware
+  # Please delete 'broken:true' after you create Rack camel <-> snake converting middleware
   context 'when api called', broken:true do
     context 'GET /api/todos' do
       it 'returns 200' do
@@ -62,7 +62,7 @@ describe 'Integration Test' do
 
     context 'GET /error' do
       it 'returns 500 and error messages' do
-        pending('get rid of this pending line after you create Rack error catching module')
+        pending('delete this line after you create Rack error catching module')
 
         get '/error'
 
@@ -76,7 +76,7 @@ describe 'Integration Test' do
       end
 
       it 'returns 500 and error messages' do
-        pending('get rid of this pending line after you create Rack error catching module')
+        pending('delete this line after you create Rack error catching module')
 
         delete '/api/todos/hoge'
 
