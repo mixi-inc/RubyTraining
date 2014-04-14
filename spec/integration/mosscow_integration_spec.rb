@@ -58,12 +58,27 @@ describe 'Integration Test' do
   end
 
   context 'For Rack error catching modules' do
+    let(:expected){ { 'message' => 'unexpected error' } }
+
     context 'GET /error' do
-      let(:expected){ { 'message' => 'unexpected error' } }
-      it 'returns 500' do
-        pending('get rid of this line after you create Rack error catching module')
+      it 'returns 500 and error messages' do
+        pending('get rid of this pending line after you create Rack error catching module')
 
         get '/error'
+
+        expect(last_response.status).to eq 500
+        expect(JSON.parse(last_response.body)).to eq expected
+      end
+    end
+    context 'DELETE /api/todos and an error happens' do
+      before do
+        Todo.any_instance.stub(:destroy){ fail }
+      end
+
+      it 'returns 500 and error messages' do
+        pending('get rid of this pending line after you create Rack error catching module')
+
+        delete '/api/todos/hoge'
 
         expect(last_response.status).to eq 500
         expect(JSON.parse(last_response.body)).to eq expected

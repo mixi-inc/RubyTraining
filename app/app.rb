@@ -61,8 +61,7 @@ EOS
       fail
     rescue
       response.status = 500
-      content_type :json
-      JSON.dump(message: 'unexpected error')
+      return nil
     end
   end
 
@@ -84,8 +83,7 @@ EOS
       todo.destroy
     rescue
       response.status = 500
-      content_type :json
-      return JSON.dump(message: 'unexpected error')
+      return nil
     end
     response.status = 204
     nil

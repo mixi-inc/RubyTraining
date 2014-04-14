@@ -152,7 +152,7 @@ describe 'app.rb' do
 
   context 'GET /error' do
     it 'returns 500' do
-      pending('get rid of this line after you create middleware')
+      pending('get rid of this pending line after you create Rack error catching module')
       expect(
           proc { get '/error' }
       ).to raise_error(RuntimeError)

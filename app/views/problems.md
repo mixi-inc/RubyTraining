@@ -1,4 +1,9 @@
-# 2014 Ruby 研修
+# 2014 Ruby研修 実習
+
+実習では、Sinatra上に構築されたToDoアプリケーションのAPIを修正をしつつ、いくつかの機能をmiddlewareとして切り出してもらいます。
+コードも壊れてぐちゃぐちゃの状態になっているので、リファクタリングしつつ進めるという形をとっています。
+
+Rubyが得意だという方は、是非、ヒントを見ずに頑張ってみてください。Rubyそんなに得意じゃないよという方は、便利な資料をまとめているので、ヒントと併せて活用しながら進めてみてください。
 
 ## 便利なリファレンス
 
@@ -11,7 +16,9 @@
 
 ### 404を表示するページ
 
-`/404`にアクセスすると、Not Foundと表示されますが、実際には静的なhtmlへredirectしているだけです。これをSinatraのhaltを使って、正しいHTTP statusを返すよう修正しましょう。
+まずは、簡単な問題を2つほどやってみましょう。
+
+`/404`にアクセスすると、Not Foundと表示されますが、実際には静的なhtmlへredirectしているだけです。これをSinatraの`halt`メソッドを使って、正しいHTTP statusを返すよう修正しましょう。
 
 #### ヒント
 
@@ -75,6 +82,7 @@ blockとyieldをつかうと綺麗にかけます。<br>
 
 (1)で作成したメソッドによって、同じ処理で例外を投げることができるようになりましたが、まだ予想外の箇所で例外が投げられた場合にそれをキャッチすることはできません。<br>
 Sinatra上の全ての例外をキャッチできるように、(1)で行っている処理をRackのmiddlewareを作成して、処理をすべてそちらに切り出してみましょう。
+既に結合テストが`spec/integration/mosscow_integration_spec.rb`が定義されているので、
 
 #### ヒント
 
@@ -85,6 +93,19 @@ Rack/middlewareについて:
 - [第25回　Rackとは何か（3）ミドルウェアのすすめ](http://gihyo.jp/dev/serial/01/ruby/0025)
 - [Rack Middleware](http://asciicasts.com/episodes/151-rack-middleware)
 - [A Quick Introduction to Rack](http://rubylearning.com/blog/a-quick-introduction-to-rack/)
+
+##### 2.
+
+結合テストにmiddlewareを組み込むには、切り出したミドルウェアをまず`require`します。
+次に、`#app`で定義されているアプリケーションをミドルウェアでDecorateします。
+
+```ruby
+require 'rack/server_errors'
+
+def app
+    @app ||= Rack::ServerErrors.new(Mosscow)
+end
+```
 
 ### 例外を吸収するmiddlewareを作る (3)
 
@@ -167,7 +188,7 @@ end
 
 ### 小休憩(3) リファクタリング (parse_requestの作成)
 
-`put '/api/todos/:id'`と`post '/api/todos'`では、request.bodyからJSONを受け取って解釈/エラーハンドリングを行うために、以下のような全く同じ処理があります。
+`put '/api/todos/:id'`と`post '/api/todos'`では、request.bodyからJSONを受け取ってparse/エラーハンドリングを行うために、以下のような全く同じ処理を行っています。
 
 ```ruby
 begin
@@ -188,11 +209,11 @@ Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思�
 
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (1)
 
-これから、また、いくつかのステップに分けて、middlewareをもう一つ作ります。
+ここからが本番です！これから、また、いくつかのステップに分けて、middlewareをもう一つ作ってもらいます。
 
-今度は何をするかというと、JSONのキーは全てキャメルケースで、rubyのハッシュのキーは全てスネークケースで扱えるようにします。つまり、Ajax requestで送られてくるJSONのキーを、Ruby内ではスネークケースで扱えるようにし、Sinatra側から送り返すJSONのresponseのキーは、キャメルケースに変換します。
+今度は何をするかというと、JSONのキーは全てキャメルケースで、Rubyのハッシュのキーは全てスネークケースで扱えるようにします。つまり、Ajax requestで送られてくるJSONのキーを、Ruby内ではスネークケースで扱えるようにし、Sinatra側から送り返すJSONのresponseのキーは、キャメルケースに変換します。
 
-まずは、キャメルケース、スネークケースの変換が行える必要があるので、`to_camel`, `to_snake`という変換のためのメソッドを作成してください。(今回は、既にテストケースがあるので、テストケースが満たされるのであれば、実装方法は問いません。)
+まずは、キャメルケース、スネークケースの変換ができる必要があるので、`to_camel`, `to_snake`という変換のためのメソッドを作成してください。(今回は、既にテストケースがあるので、テストケースが満たされるのであれば、実装方法は問いません。)
 
 #### ヒント
 
@@ -202,7 +223,7 @@ Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思�
 
 ##### 2.
 
-実装にはいくつも方法があるかとおもいますが、今回は、helperメソッドを作成するか、`String`クラスを拡張してみましょう。
+いくつも実装は方法はありますが、思いつかない場合は、helperメソッドを作成するか、`String`クラスを拡張してみましょう。
 
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (2)
 
@@ -222,7 +243,15 @@ Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思�
 ##### 1.
 
 TODO:
-ここに結合テストの requireとか他のやつを書く
+例外を吸収するmiddlewareを作る (2)で、既に結合テストにmiddlewareを組み込むには、
+
+```ruby
+require 'rack/camel_snake'
+
+def app
+    @app ||= Rack::CamelSnake.new(Mosscow)
+end
+```
 
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (3)
 
