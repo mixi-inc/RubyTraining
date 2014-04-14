@@ -1,7 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/activerecord'
 require 'sinatra/reloader'
-require 'sinatra/json'
 require 'json'
 require 'haml'
 require 'redcarpet'
@@ -11,7 +10,6 @@ require_relative 'models/todo'
 
 class Mosscow < Sinatra::Base
   register Sinatra::ActiveRecordExtension
-  helpers Sinatra::JSON
 
   set :static, true
   set :public_folder, 'public'
@@ -27,15 +25,6 @@ class Mosscow < Sinatra::Base
   before do
     ActiveRecord::Base.establish_connection(ENV['RACK_ENV'].to_sym)
     content_type 'text/html'
-  end
-
-  helpers do
-    def parse_request(request)
-      JSON.parse(request.body.read)
-    rescue => e
-      p e.backtrace unless ENV['RACK_ENV'] == 'test'
-      halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: 'set valid JSON for request raw body.')
-    end
   end
 
   get '/problems' do
@@ -72,8 +61,7 @@ EOS
       fail
     rescue
       response.status = 500
-      content_type :json
-      JSON.dump(message: 'unexpected error')
+      return nil
     end
   end
 
@@ -84,7 +72,9 @@ EOS
 
   get '/api/todos' do
     todos = Todo.all
-    json todos
+
+    content_type :json
+    JSON.dump(todos.as_json)
   end
 
   delete '/api/todos/:id' do
@@ -93,8 +83,7 @@ EOS
       todo.destroy
     rescue
       response.status = 500
-      content_type :json
-      return JSON.dump(message: 'unexpected error')
+      return nil
     end
     response.status = 204
     nil
@@ -102,27 +91,42 @@ EOS
 
   put '/api/todos/:id' do
     todo = Todo.where(id: params[:id]).first
-    params = parse_request(request)
+
+    begin
+      params = JSON.parse(request.body.read)
+    rescue => e
+      p e.backtrace unless ENV['RACK_ENV'] == 'test'
+      halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: 'set valid JSON for request raw body.')
+    end
+
     todo.is_done = params['is_done']
     todo.task_title = params['task_title']
     if todo.valid?
       todo.save!
       response.status = 200
-      json todo
+      content_type :json
+      JSON.dump(todo.as_json)
     else
       halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: todo.errors.messages)
     end
   end
 
   post '/api/todos' do
-    params = parse_request(request)
+    begin
+      params = JSON.parse(request.body.read)
+    rescue => e
+      p e.backtrace unless ENV['RACK_ENV'] == 'test'
+      halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: 'set valid JSON for request raw body.')
+    end
+
     todo = Todo.new(task_title: params['task_title'],
                     is_done: params['is_done'],
                     order: params['order'])
     if todo.valid?
       todo.save!
       response.status = 201
-      json todo
+      content_type :json
+      JSON.dump(todo.as_json)
     else
       halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: todo.errors.messages)
     end

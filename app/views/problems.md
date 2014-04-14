@@ -1,7 +1,13 @@
-# 2014 Ruby 研修
+# 2014 Ruby研修 実習
+
+実習では、Sinatra上に構築されたToDoアプリケーションのAPIを修正をしつつ、いくつかの機能をRackのミドルウェアとして切り出してもらいます。
+コードは壊れてぐちゃぐちゃの状態になっていますが、テストを予め用意してあるので、基本的に、テストに沿って修正とリファクタリングを行っていくという形をとっています。
+
+Rubyが得意だという方は、是非、ヒントを見ずに頑張ってみてください。Rubyそんなに得意じゃないよという方は、便利な資料をまとめているので、ヒントと併せて活用しながら進めてみてください。
 
 ## 便利なリファレンス
 
+- [今回の研修プレゼン資料](http://mixi-inc.github.io/RubyTraining/slides/)
 - [Sinatra Documentation](http://www.sinatrarb.com/intro-jp.html)
 - [RSpec 2.14 Built-in Matchers](https://www.relishapp.com/rspec/rspec-expectations/v/2-14/docs/built-in-matchers)
 - [Better Specs](http://betterspecs.org/jp/)
@@ -10,13 +16,15 @@
 
 ### 404を表示するページ
 
-`/404`にアクセスすると、Not Foundと表示されますが、実際には静的なhtmlへredirectしているだけです。これを修正してください。
+まずは、簡単な問題を2つほどやってみましょう。
+
+`/404`にアクセスすると、Not Foundと表示されますが、実際には静的なhtmlへredirectしているだけです。これをSinatraの`halt`メソッドを使って、正しいHTTP statusを返すよう修正しましょう。
 
 #### ヒント
 
 ##### 1.
 
-既存のテストコードは、HTTPステータスコード 302を期待していますが、404を期待するように修正してください。
+既存のテストコードは、HTTPステータスコード 302を期待していますが、404を期待するように修正しましょう。
 
 ```ruby
 context 'given 404' do
@@ -29,17 +37,18 @@ end
 
 ##### 2.
 
-redirectではなく、Sinatraの強制終了を行うようにしてください。
+redirectではなく、[Sinatraのhalt](http://www.sinatrarb.com/intro.html#Halting)を使ってみましょう。
 
 ### 500を表示するページ
 
-`/500`にアクセスすると、500と表示されますがコード中では、ヒアドキュメントで直書きされたHTMLを返しているだけで、HTTPステータスコード 200を返しています。これを修正してください。
+`/500`にアクセスすると、500と表示されますが、実際には、ヒアドキュメントで直書きされたHTMLを返しているだけで、HTTPステータスコードも200を返しています。
+正しいHTTP statusをテンプレートを使って返すように修正しましょう。
 
 #### ヒント
 
 ##### 1.
 
-既存のテストコードは、HTTPステータスコード 200を期待していますが、500を期待するように修正してください。
+既存のテストコードは、HTTPステータスコード 200を期待していますが、500を期待するように修正しましょう。
 
 ```ruby
 context 'given 500' do
@@ -52,24 +61,45 @@ end
 
 ##### 2.
 
-ヒアドキュメントを使うのではなく、テンプレートを使うようにしてください。
+ヒアドキュメントを使うのではなく、`halt`とテンプレートを使うようにしましょう。<br>
+hamlの場合の話ですが、`app/views/foobar.haml`のようにhamlファイルを作成すると、`haml(:foobar)`で呼び出すことができます。
 
 
 ### 例外を吸収するmiddlewareを作る (1)
 
-`/error`, `DELETE /api/todos`では、処理が失敗した時に例外が投げられていますが、ほとんど同じ処理が重複しています。この処理を特定のメソッドに切り出してください。
+これから、何ステップかに分けて、例外を吸収するRackのミドルウェアを作成します。
+
+`/error`, `DELETE /api/todos`では、処理が失敗した時に例外が投げられていますが、ほとんど同じ処理が重複しています。この処理を特定のメソッドに切り出してみましょう。
+
+さらに、jsonで`{"message": "unexpected error"}`というレスポンスを返すようにしてください。
 
 #### ヒント
 
 ##### 1.
 
-blockとyieldをつかうと綺麗にかけます。<br>
-忘れちゃった時は、CodeAcademyの15講をみてね^^
+一例ですが、block, yieldとbegin-rescue-endを組み合わせると書きやすいです。
+blockとyieldについて忘れてしまった場合は、CodeAcademyの15講を参照してみてください :)
+
+##### 2.
+
+明示的に`nil`を返している箇所で、代わりにjsonを返しましょう。
+
+```
+return nil
+```
 
 ### 例外を吸収するmiddlewareを作る (2)
 
-　(1)で作成したメソッドによって、同じ処理で例外を投げることができるようになりましたが、まだ予想外の箇所で例外が投げられた場合にそれをキャッチすることはできません。<br>
-　Sinatra上の全ての例外をキャッチできるように、(1)で行っている処理をRackのmiddlewareとして書き換えてください。
+(1)で作成したメソッドによって、同じ処理で例外を投げることができるようになりましたが、まだ予想外の箇所で例外が投げられた場合にそれをキャッチすることはできません。<br>
+Sinatra上の全ての例外をキャッチできるように、(1)で行っている処理をRackのmiddlewareを作成して、処理をすべてそちらに切り出してみましょう。
+
+既に結合テストが`spec/integration/mosscow_integration_spec.rb`が定義されているので、まずはテストが動くように変更しましょう。
+
+その際、以下のようにpendingされている箇所を忘れずに削除してください。
+
+```ruby
+pending('delete this line after you create Rack error catching module')
+```
 
 #### ヒント
 
@@ -81,10 +111,23 @@ Rack/middlewareについて:
 - [Rack Middleware](http://asciicasts.com/episodes/151-rack-middleware)
 - [A Quick Introduction to Rack](http://rubylearning.com/blog/a-quick-introduction-to-rack/)
 
+##### 2.
+
+結合テストにmiddlewareを組み込むには、切り出したミドルウェアをまず`require`します。
+次に、`#app`で定義されているアプリケーションをミドルウェアでDecorateします。
+
+```ruby
+require 'rack/server_errors'
+
+def app
+    @app ||= Rack::ServerErrors.new(Mosscow)
+end
+```
+
 ### 例外を吸収するmiddlewareを作る (3)
 
-　(2)で例外を自動でキャッチする便利モジュールを作成しましたが、このままでは他のプロジェクトから使うことができません。
-　作成したmiddlewareをgemとして切り出し、自分のリポジトリに新しく追加し、Gemfileの参照先をそちらに向けてください。
+(2)で例外を自動でキャッチする便利モジュールを作成しましたが、このままでは他のプロジェクトから使うことができません。
+作成したmiddlewareをgemとして切り出し、自分のリポジトリに新しく追加し、そちらを参照するようにGemfileを設定しましょう。
 
 #### ヒント
 
@@ -95,9 +138,9 @@ gemの作り方:
 - [Bundlerでgemを作る](http://ja.asciicasts.com/episodes/245-new-gem-with-bundler)
 - [gemパッケージの作り方メモ。](http://yukihir0.hatenablog.jp/entry/20130107/1357557569)の1-9まで
 
-### 休憩:haltを便利メソッドに切り出す
+### 小休憩(1) リファクタリング (haltを便利メソッドに切り出す)
 
-小休憩です。簡単な問題をやってみましょう :)
+ここからしばらく、小休憩です。簡単な問題をやってみましょう :)
 
 app.rb内に以下のような箇所がたくさんあります。
 
@@ -115,7 +158,7 @@ halt 400, {'Content-Type' => 'application/json'}, JSON.dump(message: todo.errors
 
 まずは `response.status = ...` となっている箇所を `halt` で書き直してください。
 
-次に、毎回 `JSON.dump` とか `content_type :json` って書くの面倒なので、JSON専用の `halt`, `json_halt` ヘルパーを作ってみてください。
+次に、毎回 `JSON.dump` とか `content_type :json` と書くのは面倒なので、JSON専用の `halt`, `json_halt` ヘルパーを作ってみましょう。
 
 #### ヒント
 
@@ -130,6 +173,112 @@ helpers do
   end
 end
 ```
+
+### 小休憩(2) リファクタリング (Sinatra組み込みのhelperメソッドを使う)
+
+APIのレスポンスを出力するのに、以下のようにcontent-typeとJSONへの変換を行っている箇所がいくつもあるかと思います。
+
+```ruby
+content_type :json
+JSON.dump(formatter(todos.as_json, :camel))
+```
+
+毎回、content_typeを指定したり、JSON.dumpを呼び出すのは非常に面倒なので、Sinatra::JSONというHelperを使ってリファクタリングをしましょう。
+
+#### ヒント
+
+##### 1.
+
+sinatra/jsonは、sinatra-contribというgemに含まれています。
+
+##### 2.
+
+下記のようにすると`json`メソッドが使えるようになります。
+
+```ruby
+require 'sinatra/json' # 読み込み
+
+class App < Sinatra::Base
+  helpers Sinatra::JSON # 使えるように
+end
+```
+
+### 小休憩(3) リファクタリング (parse_requestの作成)
+
+`put '/api/todos/:id'`と`post '/api/todos'`では、request.bodyからJSONを受け取ってparse/エラーハンドリングを行うために、以下のような全く同じ処理を行っています。
+
+```ruby
+begin
+  params = JSON.parse(request.body.read)
+rescue => e
+  p e.backtrace unless ENV['RACK_ENV'] == 'test'
+  halt 400, { 'Content-Type' => 'application/json' }, JSON.dump(message: 'set valid JSON for request raw body.')
+end
+```
+
+こういったコピペコードが増えていくと、変更に弱くなるので、`parse_request`というhelperメソッドを作成し、処理をこのメソッドにまとめてみましょう。
+
+#### ヒント
+
+##### 1.
+
+Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思うので、そこをもう一度みてみましょう。
+
+### camelCase <=> snake_case変換を行うmiddlewareを作る (1)
+
+さて、ここからが本番です！これから、いくつかのステップに分けて、middlewareをもう一つ作ってもらいます。
+
+今回作成するミドルウェアでは、request.bodyで受け取るJSONのキーをスネークケースに変換し、response.bodyで送り返すJSONのキーをキャメルケースに変換を行います。
+
+まずは、キャメルケース、スネークケースの変換ができる必要があるので、`to_camel`, `to_snake`という変換のためのメソッドを作成してください。(今回は、既にテストケースがあるので、テストケースが満たされるのであれば、実装方法は問いません。)
+
+#### ヒント
+
+##### 1.
+
+正規表現(`gsub`や`sub`等)を使いましょう。
+
+##### 2.
+
+いくつも実装は方法はありますが、思いつかない場合は、helperメソッドを作成するか、`String`クラスを拡張してみましょう。
+
+### camelCase <=> snake_case変換を行うmiddlewareを作る (2)
+
+(1)で作成した`#to_camel`, `#to_snake`を利用して、`request.body.read`で受け取るパラメータのキーをスネークケースで受け取り、出力として返すJSONのキーをキャメルケースで返すようにコードを修正しましょう。
+
+![](/images/camel_snake.png)
+
+例外を吸収するmiddlewareを作る (2)で使用した結合テストにテストケースが既に追加してあるので、下記の変更を加えて、テストが動作するようにしてください。
+
+```ruby
+  # Please delete 'broken:true' after you create Rack camel <-> snake converting middleware
+  context 'when api called', broken:true do
+```
+
+上の行の、`, broken:true`を削除するか、`false`をセットし、ミドルウェアをテストに組み込むと動くようになります。
+
+#### ヒント
+
+##### 1.
+
+再帰を使うと比較的簡単にできます。[JSONの仕様](http://www.json.org/)を確認するとやりやすいかもしれません。
+
+##### 2.
+
+今回の場合は、末尾再帰最適化は考えなくて大丈夫です。
+
+### camelCase <=> snake_case変換を行うmiddlewareを作る (3)
+
+(1)で行った処理をmiddlewareに切り出してみましょう。テストも同様に移行しましょう。
+
+### camelCase <=> snake_case変換を行うmiddlewareを作る (4)
+
+例外を吸収するmiddlewareを作る (3)でやったように、切り出したmiddlewareをgem化し、自分のリポジトリに公開、それを参照するように変更しましょう。
+
+### camelCase <=> snake_case変換を行うmiddlewareを作る (5)
+
+もし、`String`を拡張して`String#to_camel`, `String#to_snake`を実装している場合は、グローバルな名前空間を汚染しているため、あまりお行儀が良いとは言えません。
+ruby 2.1.0にある[Refinements](http://qiita.com/yustoris/items/77fd309178dcdd13b5cd)という機能を使って、グローバルな名前空間を汚染しないように書き換えてみましょう。
 
 ## おまけ問題
 
