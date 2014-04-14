@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/junsumida/rack-camel_snake.git
-  revision: 184f617523f9cb9a13639f41b13a3877357203e1
+  revision: d34cdebda35f6a1c73c2c6e8a549c713565c4474
   specs:
     rack-camel_snake (0.2.0)
       oj
 
 GIT
   remote: https://github.com/junsumida/rack-server_errors.git
-  revision: 04e677890e3f4624120aac13fad7d7bf400e8a8b
+  revision: df9c6c2b57200f563f823b95d635f76d66ef0177
   specs:
     rack-server_errors (0.0.1)
 
@@ -46,7 +46,7 @@ GEM
     mime-types (2.2)
     minitest (5.3.2)
     multi_json (1.9.2)
-    oj (2.7.2)
+    oj (2.7.3)
     parser (2.1.7)
       ast (~> 1.1)
       slop (~> 3.4, >= 3.4.5)
