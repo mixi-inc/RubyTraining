@@ -29,7 +29,6 @@ RubyTrainig
 
 [![Build Status](https://travis-ci.org/mixi-inc/RubyTraining.svg?branch=master)](https://travis-ci.org/mixi-inc/RubyTraining)
 [![Code Climate](https://codeclimate.com/github/mixi-inc/RubyTraining.png)](https://codeclimate.com/github/mixi-inc/RubyTraining)
-[![Coverage Status](https://coveralls.io/repos/junsumida/mosscow/badge.png?branch=master)](https://coveralls.io/r/junsumida/mosscow?branch=master)
 
 ※ これらのサービスを利用したい場合は、fork 後に各サービスでリポジトリを sync/add して badge を更新してください。
 
