@@ -1,93 +1,37 @@
-Moss Cow
-=====================
-[![Build Status](https://travis-ci.org/junsumida/mosscow.png?branch=master)](https://travis-ci.org/junsumida/mosscow)
-[![Code Climate](https://codeclimate.com/github/junsumida/mosscow.png)](https://codeclimate.com/github/junsumida/mosscow)
-[![Coverage Status](https://coveralls.io/repos/junsumida/mosscow/badge.png?branch=master)](https://coveralls.io/r/junsumida/mosscow?branch=master)
+RubyTrainig
+===========
 
-![](http://1funny.com/wp-content/uploads/2012/05/moscow.jpg)
+![](docs/img/RubyTrainingLogo.png)
 
-# 開発のはじめかた
+## Document Index
 
-## 環境のセットアップ
-このリポジトリをローカルに git clone してください。
+- [開発環境のセットアップ](docs/setup.md)
 
-```
-$ git clone git@github.com:junsumida/mosscow.git
-$ cd mosscow
-```
+- [スライド資料（Github Pages）](http://mixi-inc.github.io/RubyTraining/slides)
 
-このプロジェクトでは [bundler](http://bundler.io/) を利用してライブラリを管理しています。（最近のほとんどのRubyアプリケーションは bundler を使って管理されています）
+#### スライド資料 Index
 
-まずは bundler を利用してプロジェクトが依存しているライブラリをインストールします。
+|内容|ページ|markdown|
+|:--:|:----:|:------:|
+| トップページ   | [slides/#](http://mixi-inc.github.io/RubyTraining/slides/#) | [introduction.md](https://github.com/mixi-inc/RubyTraining/blob/gh-pages/slides/contents/introduction.md) |
+| この研修の目標 | [slides/#1](http://mixi-inc.github.io/RubyTraining/slides/#/1) | - |
+| 研修でやること | [slides/#2](http://mixi-inc.github.io/RubyTraining/slides/#/2) | - |
+| 開発環境の確認 | [slides/#4](http://mixi-inc.github.io/RubyTraining/slides/#/4) | [preparation.md](https://github.com/mixi-inc/RubyTraining/blob/gh-pages/slides/contents/preparation.md) |
+| Rubyの基礎 	   | [slides/#5](http://mixi-inc.github.io/RubyTraining/slides/#/5) | [lets-ruby.md](https://github.com/mixi-inc/RubyTraining/blob/gh-pages/slides/contents/lets-ruby.md) |
+| gem/bundler    | [slides/#6](http://mixi-inc.github.io/RubyTraining/slides/#/6) | [about-activerecord.md](https://github.com/mixi-inc/RubyTraining/blob/gh-pages/slides/contents/about-activerecord.md) |
+| RspecとTDD     | [slides/#7](http://mixi-inc.github.io/RubyTraining/slides/#/7) | [about-gem-bundler](https://github.com/mixi-inc/RubyTraining/blob/gh-pages/slides/contents/about-gem-and-bundler.md) |
+| Rackの基礎     | [slides/#9](http://mixi-inc.github.io/RubyTraining/slides/#/9) | [about-rack.md](https://github.com/mixi-inc/RubyTraining/blob/gh-pages/slides/contents/about-rack.md) |
+| ActiveRecordの基礎 | [slides/#10](http://mixi-inc.github.io/RubyTraining/slides/#/10) | [about-activerecord.md](https://github.com/mixi-inc/RubyTraining/blob/gh-pages/slides/contents/about-activerecord.md) |
 
-```
-$ gem install bundler  # 必要に応じて
-$ bundle install
-```
+※ markdown ドキュメントは reveal.js で表示するためのものなので、可読性はあまり良くありません。
 
-このプロジェクトでは ruby-2.1.0 のバージョンを指定しているので、それ以外のRubyでは bundle install できません。
-ruby-2.1.0 が入っていない場合は rbenv を使ってインストールしてください。
+## Badges
 
-bundle install が終わったら、テストを実行して通ることを確認してください。
-このプロジェクトでは `rake` コマンドで全てのテストを実行できます。
+[![Build Status](https://travis-ci.org/mixi-inc/RubyTraining.svg?branch=master)](https://travis-ci.org/mixi-inc/RubyTraining)
+[![Code Climate](https://codeclimate.com/github/mixi-inc/RubyTraining.png)](https://codeclimate.com/github/mixi-inc/RubyTraining)
 
-```
-$ bundle exec rake
-…
-Finished in 0.13644 seconds
-17 examples, 0 failures, 1 pending
-$
-```
+※ これらのサービスを利用したい場合は、fork 後に各サービスでリポジトリを sync/add して badge を更新してください。
 
-## データベースのセットアップ
-このプロジェクトではデータベースとしてSQLiteを使用しています。以下のコマンドで開発用のDBにサンプルデータを読み込んでください。
-
-```
-$ bundle exec rake db:migrate
-$ bundle exec rake db:seed
-```
-
-## 開発用サーバの起動
-以下のコマンドでサーバを起動し、[http://localhost:9292/](http://localhost:9292/) にアクセスしてみてください。
-
-```
-$ bundle exec rackup -p 9292
-```
-
-## サンプルアプリケーションの確認
-サンプルアプリケーションのシンプルなTODOアプリが [http://localhost:9292/todos/index.html](http://localhost:9292/todos/index.html) で動いています。
-
-TODOの閲覧・新規作成・削除が正しく行えること、これらを行ってもコンソールにエラーログが出ていないことを確認してください。
-
-## 次は…？
-別の資料に続きます or ここに文章が増えます
-
-## おまけ
-
-### rubocop (コーディング規約適用ツール)
-
-[rubocop](https://github.com/bbatsov/rubocop)というコーディング規約の適用ツールがあります。
-(日本語だと、[こちらのQiitaの記事](http://qiita.com/yaotti/items/4f69a145a22f9c8f8333)が参考になります。)
-
-コマンドラインから直接実行する場合は、
-
-```
-# チェックのみ
-rubocop
-
-# 自動訂正付き
-rubocop -a
-```
-
-のようにすると実行可能です。
-
-デフォルトではオフにしていますが、`pull-request`中で使いたい場合は、
-config.ruの中の以下のコメントアウトを解除してください。
-
-```ruby
-  ENV['RACK_ENV'] ||= 'test'
-  # sh 'rubocop'
-  sh 'rspec'
-```
-
-
+- [https://travis-ci.org/](https://travis-ci.org/)
+- [https://codeclimate.com/](https://codeclimate.com/)
+- [https://coveralls.io/](https://coveralls.io/)
