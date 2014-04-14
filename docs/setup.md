@@ -88,15 +88,6 @@ rubocop -a
 
 のようにすると実行可能です。
 
-デフォルトではオフにしていますが、`pull-request`中で使いたい場合は、
-config.ruの中の以下のコメントアウトを解除してください。
-
-```ruby
-  ENV['RACK_ENV'] ||= 'test'
-  # sh 'rubocop'
-  sh 'rspec'
-```
-
 ### Mosscow is Moss Cow
 
 ![moss cow](img/mosscow.png)
