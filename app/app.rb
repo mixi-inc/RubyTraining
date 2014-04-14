@@ -42,7 +42,7 @@ class Mosscow < Sinatra::Base
   end
 
   get '/404' do
-    halt 404, haml(:not_found)
+    halt 404, "Not Found: ああみつかりませんすいませんすいません:(；ﾞﾟ'ωﾟ')::(；ﾞﾟ'ωﾟ'):"
   end
 
   get '/500' do
