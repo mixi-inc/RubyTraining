@@ -247,7 +247,7 @@ Sinatraのhelperメソッドの作成方法は、小休憩(1)でやったと思�
 
 ##### 1.
 
-正規表現(`gsub`や`sub`等)と、`downcase`、`upcase`等を組み合わせてみましょう。
+正規表現を使った置換（gsubやsub）と、`downcase`、`upcase`等を組み合わせてみましょう。
 
 ##### 2.
 
