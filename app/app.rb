@@ -5,7 +5,6 @@ require 'json'
 require 'haml'
 require 'redcarpet'
 
-# require all models
 require_relative 'models/todo'
 
 class Mosscow < Sinatra::Base
