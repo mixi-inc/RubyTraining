@@ -7,7 +7,7 @@
 - ActiveRecordの概要
   - ActiveRecordとは？
   - 「設定より規約」
-- 簡単チュートリアル
+- コードで紹介
   - Modelの作り方
   - CRUC操作
   - Validations
