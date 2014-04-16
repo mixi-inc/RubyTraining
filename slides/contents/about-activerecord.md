@@ -9,7 +9,7 @@
   - 「設定より規約」
 - コードで紹介
   - Modelの作り方
-  - CRUC操作
+  - CRUD操作
   - Validations
   - Migrations
   
@@ -305,7 +305,7 @@ CREATE TABLE "users" (
   - 「設定より規約」
 - 簡単チュートリアル
   - Modelの作り方
-  - CRUC操作
+  - CRUD操作
   - Validations
   - Migrations
 
