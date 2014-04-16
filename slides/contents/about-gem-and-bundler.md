@@ -99,7 +99,7 @@ bundler利用するアプリつくる
 ```
 $ mkdir -p path/to/app
 $ cd path/to/app
-$ budnel init
+$ bundle init
 ```
 
 ここで生成される `Gemfile` に
