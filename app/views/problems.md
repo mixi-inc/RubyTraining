@@ -1,16 +1,19 @@
 # 2014 Ruby研修 実習
 
-実習では、Sinatra上に構築されたToDoアプリケーションのAPIを修正をしつつ、いくつかの機能をRackのミドルウェアとして切り出してもらいます。
+実習では、Sinatra上に構築されたToDoアプリケーションのAPIを修正をしつつ、いくつかの機能をRackのミドルウェア化し、gemとして切り出してもらいます。
 コードは壊れて散乱した状態になっていますが、テストを予め用意してあるので、基本的には、テストに沿って修正とリファクタリングを行っていくと完成します。
 
 Rubyが得意だという方は、是非、ヒントを見ずに頑張ってみてください。Rubyはそんなに得意じゃないかなという方は、下に便利なリファレンスをまとめているので、ヒントと併せて活用しながら進めてみてください。
 
 ## 便利なリファレンス
 
+- https://www.google.co.jp/search?q=Ruby
 - [今回の研修プレゼン資料](http://mixi-inc.github.io/RubyTraining/slides/)
 - [Sinatra Documentation](http://www.sinatrarb.com/intro-jp.html)
 - [RSpec 2.14 Built-in Matchers](https://www.relishapp.com/rspec/rspec-expectations/v/2-14/docs/built-in-matchers)
 - [Better Specs](http://betterspecs.org/jp/)
+- [Bundlerでgemを作る](http://ja.asciicasts.com/episodes/245-new-gem-with-bundler)
+- [知って得する！５５のRubyのトリビアな記法](http://melborne.github.io/2013/03/04/ruby-trivias-you-should-know-4/)
 
 ## 問題
 
