@@ -66,7 +66,7 @@ EOS
 
   get '/' do
     content_type 'text/plain'
-    'Hello, Moscow!'
+    'Hello, Mosscow!'
   end
 
   get '/api/todos' do

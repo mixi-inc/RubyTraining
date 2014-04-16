@@ -23,7 +23,6 @@ gem 'sinatra-contrib'
 gem 'sqlite3'
 gem 'haml'
 gem 'redcarpet'
-gem 'rack-camel_snake', :git => 'https://github.com/junsumida/rack-camel_snake.git'
 
 # Test requirements
 group :development, :test do
