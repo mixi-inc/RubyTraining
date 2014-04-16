@@ -101,6 +101,39 @@ Orderクラスは `orders` テーブル
 
 ---
 
+サンプルコード用意しました
+
+```bash
+$ ce /path/to/workspace
+$ git clone https://github.com/luckypool/activerecord-example.git
+$ cd activerecord-example
+$ bundle install
+```
+
+---
+
+### やってみよう
+
+```
+$ rake db:migrate
+```
+
+```
+$ bundle exec ruby crud.rb
+```
+<small>
+pryが起動しますので `step` や `next` で進めていきましょう
+</small>
+<small>
+`tail -f db/database.log` したり `sqlite3 db/sample.sqlite3` でデータ覗いてみましょう
+</small>
+
+---
+
+### 補足
+
+---
+
 ### Modelの作り方
 
 `users` テーブルがあったとして、
