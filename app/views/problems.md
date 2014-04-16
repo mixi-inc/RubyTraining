@@ -3,7 +3,7 @@
 実習では、Sinatra上に構築されたToDoアプリケーションのAPIを修正をしつつ、いくつかの機能をRackのミドルウェア化し、gemとして切り出してもらいます。
 コードは壊れて散乱した状態になっていますが、テストを予め用意してあるので、基本的には、テストに沿って修正とリファクタリングを行っていくと完成します。
 
-Rubyが得意だという方は、是非、ヒントを見ずに頑張ってみてください。Rubyはそんなに得意じゃないかなという方は、下に便利なリファレンスをまとめているので、ヒントと併せて活用しながら進めてみてください。
+Rubyが得意だという方は、是非、ヒントを見ずに頑張ってみてください。Rubyはそんなに得意じゃないかなという方は、下に便利なリファレンスをまとめてあるので、ヒントと併せて活用しながら進めてみてください。
 
 ## 便利なリファレンス
 
@@ -98,7 +98,7 @@ return nil
 
 (1)で作成したメソッドによって、同じ処理で例外を投げることができるようになりました。ですがまだ、予想外の箇所で例外が投げられた場合にキャッチすることができません。
 
-Sinatra上の全ての例外をキャッチできるように、Rackのミドルウェアを作成して、(1)で行っている処理をすべて切り出してみましょう。
+ToDoアプリ上の全ての例外をキャッチできるように、Rackのミドルウェアを作成して、(1)で行っている処理をすべて切り出してみましょう。
 
 既に結合テストが`spec/integration/mosscow_integration_spec.rb`に定義されているので、まずはこのテストが動くように変更しましょう。
 
@@ -112,11 +112,11 @@ pending('delete this line after you create Rack error catching module')
 
 ##### 1.
 
-Rack/middlewareについて:
+Rack/Rackミドルウェアについて参考になる記事:
 
 - [第25回　Rackとは何か（3）ミドルウェアのすすめ](http://gihyo.jp/dev/serial/01/ruby/0025)
-- [Rack Middleware](http://asciicasts.com/episodes/151-rack-middleware)
 - [A Quick Introduction to Rack](http://rubylearning.com/blog/a-quick-introduction-to-rack/)
+- [Rack Middleware](http://asciicasts.com/episodes/151-rack-middleware)
 
 ##### 2.
 
@@ -143,7 +143,6 @@ end
 gemの作り方:
 
 - [Bundlerでgemを作る](http://ja.asciicasts.com/episodes/245-new-gem-with-bundler)
-- [gemパッケージの作り方メモ。](http://yukihir0.hatenablog.jp/entry/20130107/1357557569)の1-9まで
 
 ##### 2.
 
@@ -228,7 +227,7 @@ rescue => e
 end
 ```
 
-こういったコピペコードが増えていくと、変更に弱くなってしまうので、`parse_request`というヘルパーメソッドを作成し、処理をこのメソッドにまとめてみましょう。
+こういったコピペコードが増えていくと、変更に弱くなってしまいます。`parse_request`というヘルパーメソッドを作成し、処理をこのメソッドにまとめてみましょう。
 
 #### ヒント
 
@@ -274,7 +273,7 @@ Sinatraのヘルパーメソッドの作成方法は、小休憩(1)でやった�
 
 ##### 1.
 
-再帰を使うと比較的簡単にできます。[JSONの仕様](http://www.json.org/)を確認するとやりやすいかもしれません。
+再帰を使うと比較的簡単にできます。[JSONの仕様](http://www.json.org/)を確認しておくと、よりやりやすいかもしれません。
 
 ##### 2.
 
@@ -291,7 +290,7 @@ Sinatraのヘルパーメソッドの作成方法は、小休憩(1)でやった�
 ### camelCase <=> snake_case変換を行うmiddlewareを作る (5)
 
 もし、`String`を拡張して`String#to_camel`, `String#to_snake`を実装している場合は、グローバルな名前空間を汚染しているため、あまりお行儀が良いとは言えません。
-ruby 2.1.0にある[Refinements](http://qiita.com/yustoris/items/77fd309178dcdd13b5cd)という機能を使って、グローバルな名前空間を汚染しないように書き換えてみましょう。
+ruby 2.1.0で正式に追加された[Refinements](http://docs.ruby-lang.org/ja/2.1.0/method/Module/i/refine.html)という機能を使って、グローバルな名前空間を汚染しないように書き換えてみましょう。
 
 ## おまけ問題
 
