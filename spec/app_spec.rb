@@ -145,14 +145,15 @@ describe 'app.rb' do
     context 'given 500' do
       it 'returns 200' do
         get '/500'
-        last_response.status = 200;
+        last_response.status = 200
       end
     end
   end
 
   context 'GET /error' do
     it 'returns 500' do
-      pending('get rid of this pending line after you create Rack error catching module')
+      pending('delete this line after you create Rack error catching module')
+
       expect(
           proc { get '/error' }
       ).to raise_error(RuntimeError)
@@ -162,6 +163,7 @@ describe 'app.rb' do
   describe 'to_camel' do
     it 'convert snake_case into camelCase' do
       pending('fix this case depending on your #to_camel method')
+
       %w(_camel_case camel_case camel___case camel_case_).each do |word|
         expect(word.to_camel).to eq 'camelCase'
       end
@@ -171,6 +173,7 @@ describe 'app.rb' do
   describe 'to_snake' do
     it 'convert camelCase into snake_case' do
       pending('fix this case depending on your #to_snake method')
+
       expect('snakeCase'.to_snake).to eq 'snake_case'
       expect('SnakeCase'.to_snake).to eq 'snake_case'
       expect('SNAKECase'.to_snake).to eq 'snake_case'
