@@ -11,3 +11,5 @@ vendor/gems/*
 
 /.bundle/
 coverage/*
+
+slides/node_modules
