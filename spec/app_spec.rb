@@ -15,7 +15,7 @@ describe 'app.rb' do
     it 'returns hello message' do
       get '/'
       expect(last_response.status).to eq 200
-      expect(last_response.body).to eq 'Hello, Moscow!'
+      expect(last_response.body).to eq 'Hello, Mosscow!'
     end
   end
 
