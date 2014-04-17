@@ -30,5 +30,7 @@ group :development, :test do
   gem 'rack-test', :require => 'rack/test'
   gem 'coveralls', require: false
   gem 'rubocop', require: false
+  gem 'guard'
+  gem 'guard-rake'
 end
 
