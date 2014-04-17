@@ -32,5 +32,6 @@ group :development, :test do
   gem 'rubocop', require: false
   gem 'guard'
   gem 'guard-rake'
+  gem 'terminal-notifier-guard'
 end
 
