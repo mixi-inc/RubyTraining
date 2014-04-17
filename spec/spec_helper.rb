@@ -1,10 +1,6 @@
-require 'coveralls'
-
 require 'rspec'
 require 'rack/test'
 
-Coveralls.wear!
-# load code after this line
 require File.join(File.dirname(__FILE__), '..', 'app', 'app.rb')
 
 RSpec.configure do |config|
