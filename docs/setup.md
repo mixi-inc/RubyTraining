@@ -97,6 +97,17 @@ config.ruの中の以下のコメントアウトを解除してください。
   sh 'rspec'
 ```
 
+### Guard
+
+Guard を利用してファイルを保存するタイミングで自動的にテストを回すことができます。
+別の Shell を起動して以下のコマンドを実行してください。
+
+```
+  bundle exec guard
+```
+
+`/app`配下、`/spec`配下の`.rb`ファイルが変更されるたびに、`Rakefile`にて定義されたテストが実行されます。
+   
 ### Mosscow is Moss Cow
 
 ![moss cow](img/mosscow.png)
