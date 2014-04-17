@@ -131,21 +131,21 @@ describe 'app.rb' do
     context 'given 400' do
       it 'returns 400' do
         get '/400'
-        last_response.status = 400
+        expect(last_response.status).to eq 400
       end
     end
 
     context 'given 404' do
-      it 'returns 302' do
-        get '/302'
-        last_response.status = 302
+      it 'returns 404' do
+        get '/404'
+        expect(last_response.status).to eq 302
       end
     end
 
     context 'given 500' do
       it 'returns 200' do
         get '/500'
-        last_response.status = 200
+        expect(last_response.status).to eq 200
       end
     end
   end
