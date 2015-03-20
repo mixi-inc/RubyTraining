@@ -1,6 +1,6 @@
 describe 'Integration Test' do
-  let(:snake_expected){ { 'is_done' => true, 'order' => 1, 'task_title' => 'hoge' } }
-  let(:camel_expected){ { 'isDone'  => true, 'order' => 1, 'taskTitle'  => 'hoge' } }
+  let(:snake_expected) { { 'is_done' => true, 'order' => 1, 'task_title' => 'hoge' } }
+  let(:camel_expected) { { 'isDone'  => true, 'order' => 1, 'taskTitle'  => 'hoge' } }
 
   def post_todo(body)
     post '/api/todos', JSON.dump(body), 'CONTENT_TYPE' => 'application/json'
@@ -17,7 +17,7 @@ describe 'Integration Test' do
   end
 
   # Please delete 'broken:true' after you create Rack camel <-> snake converting middleware
-  context 'when api called', broken:true do
+  context 'when api called', broken: true do
     context 'GET /api/todos' do
       it 'returns 200' do
         get '/api/todos'
@@ -39,7 +39,7 @@ describe 'Integration Test' do
     end
 
     context 'PUT /api/todos/:id' do
-      let(:updated){ { 'isDone' => false, 'order' => 1, 'taskTitle' => 'moge' } }
+      let(:updated) { { 'isDone' => false, 'order' => 1, 'taskTitle' => 'moge' } }
       it 'returns 204' do
         put '/api/todos/1', JSON.dump(updated), 'CONTENT_TYPE' => 'application/json'
 
@@ -58,7 +58,7 @@ describe 'Integration Test' do
   end
 
   context 'For Rack error catching modules' do
-    let(:expected){ { 'message' => 'unexpected error' } }
+    let(:expected) { { 'message' => 'unexpected error' } }
 
     context 'GET /error' do
       it 'returns 500 and error messages' do
@@ -72,7 +72,7 @@ describe 'Integration Test' do
     end
     context 'DELETE /api/todos and an error happens' do
       before do
-        Todo.any_instance.stub(:destroy){ fail }
+        Todo.any_instance.stub(:destroy) { fail }
       end
 
       it 'returns 500 and error messages' do

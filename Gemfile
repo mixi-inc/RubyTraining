@@ -33,5 +33,6 @@ group :development, :test do
   gem 'guard'
   gem 'guard-rake'
   gem 'terminal-notifier-guard'
+  gem 'guard-rubocop'
 end
 

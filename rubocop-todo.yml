@@ -22,34 +22,3 @@ Documentation:
 # Offense count: 24
 LineLength:
   Max: 116
-
-# Offense count: 1
-LiteralInCondition:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAsExpressionSeparator.
-Semicolon:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-SpaceAfterColon:
-  Enabled: false
-
-# Offense count: 7
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-SpaceBeforeBlockBraces:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-SpaceInsideBrackets:
-  Enabled: false
-
-# Offense count: 1
-# Configuration parameters: MaxLineLength.
-WhileUntilModifier:
-  Enabled: false
