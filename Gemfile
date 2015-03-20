@@ -26,7 +26,7 @@ gem 'redcarpet'
 
 # Test requirements
 group :development, :test do
-  gem 'rspec', '~> 2.14.1'
+  gem 'rspec', '~> 3.0'
   gem 'rack-test', :require => 'rack/test'
   gem 'coveralls', require: false
   gem 'rubocop', require: false
