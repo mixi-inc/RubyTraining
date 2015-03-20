@@ -1,9 +1,9 @@
-#require 'coveralls'
+# require 'coveralls'
 
 require 'rspec'
 require 'rack/test'
 
-#Coveralls.wear! # uncomment when you want to use Coveralls
+# Coveralls.wear! # uncomment when you want to use Coveralls
 # load code after this line
 require File.join(File.dirname(__FILE__), '..', 'app', 'app.rb')
 
