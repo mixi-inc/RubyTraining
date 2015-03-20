@@ -72,7 +72,7 @@ describe 'Integration Test' do
     end
     context 'DELETE /api/todos and an error happens' do
       before do
-        Todo.any_instance.stub(:destroy) { fail }
+        allow_any_instance_of(Todo).to receive(:destroy).and_raise
       end
 
       it 'returns 500 and error messages' do

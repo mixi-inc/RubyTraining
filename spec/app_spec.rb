@@ -23,11 +23,15 @@ describe 'app.rb' do
     before do
       post '/api/todos', JSON.dump(expected)
     end
+
+    let(:expected_body) do
+      expected.merge('id' => 1)
+    end
+
     it 'returns json object' do
       get '/api/todos'
-
       expect(last_response.status).to eq 200
-      expect(JSON.parse(last_response.body)).to have(1).items
+      expect(JSON.parse(last_response.body)).to include(expected_body)
     end
   end
 
@@ -117,7 +121,7 @@ describe 'app.rb' do
 
     context 'suppose AR.destroy fails' do
       before do
-        Todo.any_instance.stub(:destroy) { fail }
+        allow_any_instance_of(Todo).to receive(:destroy).and_raise
       end
 
       it 'returns 500' do
