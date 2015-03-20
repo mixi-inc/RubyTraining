@@ -2,8 +2,8 @@ require 'json'
 require_relative 'spec_helper'
 
 describe 'app.rb' do
-  let(:updated){  { 'is_done' => false, 'order' => 1, 'task_title' => 'fuga' } }
-  let(:expected){ { 'is_done' => true,  'order' => 1, 'task_title' => 'hoge' } }
+  let(:updated) {  { 'is_done' => false, 'order' => 1, 'task_title' => 'fuga' } }
+  let(:expected) { { 'is_done' => true,  'order' => 1, 'task_title' => 'hoge' } }
 
   include Rack::Test::Methods
 
@@ -117,7 +117,7 @@ describe 'app.rb' do
 
     context 'suppose AR.destroy fails' do
       before do
-        Todo.any_instance.stub(:destroy){ fail }
+        Todo.any_instance.stub(:destroy) { fail }
       end
 
       it 'returns 500' do

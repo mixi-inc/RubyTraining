@@ -13,10 +13,10 @@ class ParamConverter
 
   def parse_query_string(query)
     result = {}
-    query.split('&').each{|param|
+    query.split('&').each do |param|
       key, value = param.split('=')
       result[key.to_sym] = value
-    }
+    end
     result
   end
 end
@@ -30,7 +30,7 @@ class SampleApp
     [
       200,
       { 'Content-Type' => 'text/html' },
-      [ body, "\n" ]
+      [body, "\n"]
     ]
   end
 end
