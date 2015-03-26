@@ -1,4 +1,5 @@
-# RubyTraining
+RubyTraining
+============
 
 ここでは、
 
@@ -25,13 +26,18 @@ Rubyはそんなに得意じゃないかなという方は、下記のリファ�
 - [Bundlerでgemを作る](http://ja.asciicasts.com/episodes/245-new-gem-with-bundler)
 - [知って得する！５５のRubyのトリビアな記法](http://melborne.github.io/2013/03/04/ruby-trivias-you-should-know-4/)
 
-## 問題
 
-### 404を表示するページ
+簡単な問題
+----------
 
 まずは、簡単な問題を2つほどやってみましょう。
 
-`/404` にアクセスすると、Not Foundと表示されますが、HTTPステータスコードは 302 です（テキストファイルへ redirect しているためです）。これを Sinatra の `halt` メソッドを使って、正しいHTTPステータスコードを返すよう修正しましょう。
+### 404を表示するページ
+
+`/404` にアクセスすると、Not Foundと表示されます。
+
+しかし、HTTPステータスコードは 302 です（テキストファイルへ redirect しているためです）。
+これを Sinatra の `halt` メソッドを使って、正しいHTTPステータスコードを返すよう修正しましょう。
 
 #### ヒント
 
@@ -54,8 +60,12 @@ redirectではなく、[Sinatraのhalt](http://www.sinatrarb.com/intro.html#Halt
 
 ### 500を表示するページ
 
-`/500` にアクセスすると 500 と表示されますが、実際には、ヒアドキュメントで直書きされたHTMLを返しているだけで、HTTPステータスコードも 200 を返しています。
-正しいHTTPステータスコードを返すように修正しましょう。今回は、htmlを返すのに [Haml](http://haml.info/) テンプレートを使ってみてください。
+`/500` にアクセスすると 500 と表示されます。
+
+しかし、HTTPステータスコードも 200 を返しています（ヒアドキュメントで直書きされたHTMLを返しているためです）。
+正しいHTTPステータスコードを返すように修正しましょう。
+
+今回は、htmlを返すのに [Haml](http://haml.info/) テンプレートを使ってみてください。
 
 #### ヒント
 
@@ -74,34 +84,93 @@ end
 
 ##### 2.
 
-ヒアドキュメントを使うのではなく `halt` とテンプレートを使うようにしましょう。<br>
+ヒアドキュメントを使うのではなく `halt` とテンプレートを使うようにしましょう。
 
 [Haml](http://haml.info/) はRuby界隈で主に使われている html markup 方式です。<br>
 `app/views/foobar.haml` のように haml ファイルを作成すると、 `haml(:foobar)` で呼び出すことができます。
 
+ex.) `GET /400` では `app/views/bad_request.haml` を利用しています
 
-### 例外を吸収するmiddlewareを作る (1)
 
-これから、何ステップかに分けて、例外を吸収するRackのミドルウェアを作成します。
+### リファクタリング (haltを便利メソッドに切り出す)
 
-`/error`, `DELETE /api/todos` では、処理が失敗した時に例外処理として 500 を返しています。
+app.rb内に以下のような箇所がたくさんあります。
 
-1. まずはこの共通の処理を特定のメソッドに切り出してみましょう。
-2. さらに、jsonで `{"message": "unexpected error"}` というレスポンスを返すようにしてください。
+```ruby
+response.status = 200
+content_type :json
+JSON.dump({ foo: 'bar' })
+```
+
+これは `halt` を使ってもっと短く書くことができます。
+
+例えば、app.rb にも以下のように記述されている箇所があります。
+
+```ruby
+halt 400, {'Content-Type' => 'application/json'}, JSON.dump(message: todo.errors.messages)
+```
+
+まずは `response.status = ...` となっている箇所を `halt` で書き直しましょう！
+
+次に、重複処理は、JSON専用の `halt`, `json_halt` ヘルパーを作ってみましょう。
 
 #### ヒント
 
 ##### 1.
 
-一例ですが `block`, `yield` と `begin-rescue-end` を組み合わせると書きやすいです。
-bloc kと yield について忘れてしまった場合は、Rubyリファレンスの[yieldの項目](http://docs.ruby-lang.org/ja/2.1.0/doc/spec=2fcall.html#yield)や、
+Sinatraのヘルパーメソッドは以下のように定義することができます。
+
+```ruby
+helpers do
+  def bar(name)
+    "#{name}bar"
+  end
+end
+```
+
+
+例外を吸収するmiddleware (準備編)
+---------------------------------
+
+これから、何ステップかに分けて、例外を吸収するRackのミドルウェアを作成し、 gem にします。
+まずは gem に切り出す準備をしましょう :)
+
+### 例外を吸収するmiddlewareを作る (1)
+
+`/error`, `DELETE /api/todos` では、処理が失敗した時に例外処理として 500 を返しています。
+
+- まずはこ resque で行っている処理を特定のメソッドに切り出してみましょう。
+- さらに、jsonで `{"message": "unexpected error"}` というレスポンスを返すようにしてください。
+
+#### ヒント
+
+##### 1.
+
+
+```ruby
+def resque_sample
+  yield
+resque
+  halt 200, '何か起きたけど救われた'
+end
+```
+
+```ruby
+get '/error' do
+  resque_sample do
+    fail
+  end
+end
+```
+
+blockと yield について忘れてしまった場合は、Rubyリファレンスの[yieldの項目](http://docs.ruby-lang.org/ja/2.1.0/doc/spec=2fcall.html#yield)や、
 [ブロック付きメソッド呼び出し](http://docs.ruby-lang.org/ja/2.1.0/doc/spec=2fcall.html#block)の項目を参照してみてください。
 
 ##### 2.
 
 明示的に `nil` を返している箇所で、代わりにjsonを返してあげましょう。
 
-```
+```ruby
 return nil
 ```
 
@@ -142,61 +211,12 @@ def app
 end
 ```
 
-### 例外を吸収するmiddlewareを作る (3)
+リファクタリング
+---------------
 
-(2)で例外を自動でキャッチする便利ミドルウェアを作成しましたが、このままでは他のプロジェクトから使うことはできません。
-作成したミドルウェアをgemとして切り出し、自分のGithubリポジトリに新しく追加、そちらを参照するようにGemfileを設定してみましょう。
+gem にするまえに休憩がてらリファクタリングしましょう :)
 
-#### ヒント
-
-##### 1.
-
-gemの作り方について参考になる記事:
-
-- [Bundlerでgemを作る](http://ja.asciicasts.com/episodes/245-new-gem-with-bundler)
-
-##### 2.
-
-ミドルウェアをgem化した後に何か更新をかけた場合は、本体側で`bundle update`するのを忘れずに。
-
-
-### 小休憩(1) リファクタリング (haltを便利メソッドに切り出す)
-
-ここからしばらく、小休憩です。簡単な問題をいくつかやってみましょう! :)
-
-app.rb内に以下のような箇所がたくさんあります。
-
-```ruby
-response.status = 500
-content_type :json
-JSON.dump({message: 'unexpected error'})
-```
-
-これは `halt` を使ってもっと短く書くことができます。例えば、app.rb にも以下のように記述されている箇所があります。
-
-```ruby
-halt 400, {'Content-Type' => 'application/json'}, JSON.dump(message: todo.errors.messages)
-```
-
-まずは `response.status = ...` となっている箇所を `halt` で書き直してください。
-
-次に、毎回 `JSON.dump` とか `content_type :json` と書くのは面倒なので、JSON専用の `halt`, `json_halt` ヘルパーを作ってみましょう。
-
-#### ヒント
-
-##### 1.
-
-Sinatraのヘルパーメソッドは以下のように定義することができます。
-
-```ruby
-helpers do
-  def bar(name)
-    "#{name}bar"
-  end
-end
-```
-
-### 小休憩(2) リファクタリング (Sinatra組み込みのヘルパーメソッドを使う)
+### Sinatra組み込みのヘルパーメソッドを使う
 
 APIのレスポンスを出力するのに、以下のようにContent-Typeの指定とJSONへの変換を行っている箇所がいくつもあるかと思います。
 
@@ -225,7 +245,7 @@ class App < Sinatra::Base
 end
 ```
 
-### 小休憩(3) リファクタリング (parse_requestの作成)
+### parse_requestの作成
 
 `put '/api/todos/:id'`と`post '/api/todos'`では、request.bodyからJSONを受け取ってparse/エラーハンドリングを行うために、以下のような全く同じ処理を行っています。
 
@@ -244,11 +264,36 @@ end
 
 ##### 1.
 
-Sinatraのヘルパーメソッドの作成方法は、小休憩(1)でやったと思うので、そこをもう一度確認してみましょう。
+Sinatraのヘルパーメソッドの作成方法をもう一度確認してみましょう :)
 
-### camelCase <=> snake_case変換を行うmiddlewareを作る (1)
+
+例外を吸収するmiddleware (gem化編)
+--------------------------------
+
+### 例外を吸収するmiddlewareを作る (3)
+
+(2)で例外を自動でキャッチする便利ミドルウェアを作成しましたが、このままでは他のプロジェクトから使うことはできません。
+作成したミドルウェアをgemとして切り出し、自分のGithubリポジトリに新しく追加、そちらを参照するようにGemfileを設定してみましょう。
+
+#### ヒント
+
+##### 1.
+
+gemの作り方について参考になる記事:
+
+- [Bundlerでgemを作る](http://ja.asciicasts.com/episodes/245-new-gem-with-bundler)
+
+##### 2.
+
+ミドルウェアをgem化した後に何か更新をかけた場合は、本体側で`bundle update`するのを忘れずに。
+
+
+camelCase <=> snake_case変換を行うmiddleware (総集編)
+-----------------------------------------------------
 
 さて、ここからが本番です！これから、いくつかのステップに分けて、Rackのミドルウェアをもう一つ作り、それをgem化してもらいます。
+
+### camelCase <=> snake_case変換を行うmiddleware (1)
 
 今回は、以下の図のようなrequest.bodyで受け取るJSONのキーをスネークケースに変換し、response.bodyで送り返すJSONのキーをキャメルケースに変換するミドルウェアを作成します。
 
@@ -267,7 +312,7 @@ Sinatraのヘルパーメソッドの作成方法は、小休憩(1)でやった�
 
 実装方法はいくつもありますが、思いつかない場合は、ヘルパーメソッドを作成するか、`String`クラスを拡張してみましょう。
 
-### camelCase <=> snake_case変換を行うmiddlewareを作る (2)
+### camelCase <=> snake_case変換を行うmiddleware (2)
 
 (1)で作成した`to_camel`, `to_snake`を利用して、`request.body.read`で受け取るパラメータのキーをスネークケースで受け取り、出力として返すJSONのキーをキャメルケースで返すようにコードを修正しましょう。
 
@@ -290,15 +335,15 @@ Sinatraのヘルパーメソッドの作成方法は、小休憩(1)でやった�
 
 今回の場合は、末尾再帰最適化は考えなくて構いません。
 
-### camelCase <=> snake_case変換を行うmiddlewareを作る (3)
+### camelCase <=> snake_case変換を行うmiddleware (3)
 
 (1)で行った処理をミドルウェアに切り出してみましょう。テストも同様に移行しましょう。
 
-### camelCase <=> snake_case変換を行うmiddlewareを作る (4)
+### camelCase <=> snake_case変換を行うmiddleware (4)
 
 例外を吸収するmiddlewareを作る (3)で行ったように、切り出したミドルウェアをgem化し、自分のリポジトリに公開、それを参照するように変更しましょう。
 
-### camelCase <=> snake_case変換を行うmiddlewareを作る (5)
+### camelCase <=> snake_case変換を行うmiddleware (5)
 
 もし、`String`を拡張して`String#to_camel`, `String#to_snake`を実装している場合は、グローバルな名前空間を汚染しているため、あまりお行儀が良いとは言えません。
 ruby 2.1.0で正式に追加された[Refinements](http://docs.ruby-lang.org/ja/2.1.0/method/Module/i/refine.html)という機能を使って、書き換えてみましょう。
