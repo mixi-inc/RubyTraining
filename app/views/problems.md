@@ -21,7 +21,7 @@ Rubyはそんなに得意じゃないかなという方は、下記のリファ�
 
 - [https://www.google.co.jp/search?q=Ruby](https://www.google.co.jp/search?q=Ruby)
 - [今回の研修プレゼン資料](http://mixi-inc.github.io/RubyTraining/slides/)
-- [Sinatra Documentation](http://www.sinatrarb.com/intro-jp.html)
+- [Sinatra Documentation](http://www.sinatrarb.com/documentation.html)
 - Relish: RSpec
   - [RSpec Core 3.0](https://relishapp.com/rspec/rspec-core/v/3-0/docs/)
   - [RSpec Expectations 3.0](https://relishapp.com/rspec/rspec-expectations/v/3-0/docs/)
