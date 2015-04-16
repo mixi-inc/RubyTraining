@@ -1,15 +1,19 @@
 RubyTraining
 ============
 
-ここでは、
+## はじめに
 
-- Sinatra上に構築されたToDoアプリケーションのAPIの改修と、
-- いくつかの機能をRackミドルウェアとしてリファクタリングを行い、
-- そして、そのミドルウェアを最終的にgemとして切り出します
+Sinatra上に構築されたToDoアプリケーションが用意されています。
+このアプリケーションに対して、
+**(1) APIのバグ修正・リファクタリング、**
+**(2) Rackミドルウェアとして切り出し、**
+**(3) そのミドルウェアのgem化、**
+を行います。
 
-用意されたコードは壊れて散乱した状態になっています。
-しかし、予めテストコードを用意していますので、
-そのテストに沿って修正とリファクタリングを行っていけば、課題を得道筋になるようになっています。
+ただし、
+初期状態のコードはいい感じに散乱した状態です。
+しかし、なぜかしっかりとテストコードも用意されています。
+そのテストに沿って修正とリファクタリングを行うことが、課題を得く道筋になるようになっています。
 
 Rubyはそんなに得意じゃないかなという方は、下記のリファレンスやヒントを併せて活用してみてください。
 
@@ -30,7 +34,7 @@ Rubyはそんなに得意じゃないかなという方は、下記のリファ�
 簡単な問題
 ----------
 
-まずは、簡単な問題を2つほどやってみましょう。
+まずは、簡単な問題をやってみましょう。
 
 ### 404を表示するページ
 
@@ -43,19 +47,18 @@ Rubyはそんなに得意じゃないかなという方は、下記のリファ�
 
 ##### 1.
 
-既存のテストコードは、HTTPステータスコード 302を期待していますが、404を期待するように修正しましょう。
+既存のテストコードは、skip されています。
+skipをはずして404を期待するよう動作に修正しましょう。
 
-```ruby
-context 'given 404' do
-  it 'returns 302' do
-    get '/302'
-    last_response.status = 302
-  end
-end
+```
+1) app.rb GET /400, 404, 500 given 404 returns 404
+     # 問題を解くときに削除してね
+     # ./spec/app_spec.rb:145
 ```
 
 ##### 2.
 
+`GET /400` の実装を参考に、
 redirectではなく、[Sinatraのhalt](http://www.sinatrarb.com/intro.html#Halting)を使ってみましょう。
 
 ### 500を表示するページ
@@ -71,20 +74,18 @@ redirectではなく、[Sinatraのhalt](http://www.sinatrarb.com/intro.html#Halt
 
 ##### 1.
 
-既存のテストコードは、HTTPステータスコード 200を期待していますが、500を期待するように修正しましょう。
+既存のテストコードは、skip されています。
+skipをはずして404を期待するよう動作に修正しましょう。
 
-```ruby
-context 'given 500' do
-  it 'returns 200' do
-    get '/500'
-    last_response.status = 200;
-  end
-end
+```
+2) app.rb GET /400, 404, 500 given 500 returns 500
+     # 「500を表示するページ」を解くにはこの行を削除してね
+     # ./spec/app_spec.rb:170
 ```
 
 ##### 2.
 
-ヒアドキュメントを使うのではなく `halt` とテンプレートを使うようにしましょう。
+ヒアドキュメントを使うのではなくhamlテンプレートを使ってみましょう。
 
 [Haml](http://haml.info/) はRuby界隈で主に使われている html markup 方式です。<br>
 `app/views/foobar.haml` のように haml ファイルを作成すると、 `haml(:foobar)` で呼び出すことができます。
@@ -94,25 +95,22 @@ ex.) `GET /400` では `app/views/bad_request.haml` を利用しています
 
 ### リファクタリング (haltを便利メソッドに切り出す)
 
-app.rb内に以下のような箇所がたくさんあります。
+`/api/*` APIの例外処理として `500` や `400` を返している箇所がほぼ同じ処理をしています。
 
 ```ruby
-response.status = 200
-content_type :json
-JSON.dump({ foo: 'bar' })
+response.status = 500
+return nil
 ```
 
-これは `halt` を使ってもっと短く書くことができます。
+- これらは単に `halt 500` とまとめてしまいましょう。
 
-例えば、app.rb にも以下のように記述されている箇所があります。
+また
 
 ```ruby
 halt 400, {'Content-Type' => 'application/json'}, JSON.dump(message: todo.errors.messages)
 ```
 
-まずは `response.status = ...` となっている箇所を `halt` で書き直しましょう！
-
-次に、重複処理は、JSON専用の `halt`, `json_halt` ヘルパーを作ってみましょう。
+これらはJSON専用の `json_halt` ヘルパーを作って重複処理をまとめてみましょう
 
 #### ヒント
 
@@ -146,9 +144,19 @@ end
 
 ##### 1.
 
+明示的に `nil` を返している箇所で、代わりにjsonを返してあげましょう。
+
+※ 先のリファクタリングでつくった json_halt を利用してみましょう
 
 ```ruby
-def resque_sample
+json_halt 500, message: 'unexpected error'
+```
+
+##### 2.
+
+
+```ruby
+def do_safety
   yield
 resque
   halt 200, '何か起きたけど救われた'
@@ -157,7 +165,7 @@ end
 
 ```ruby
 get '/error' do
-  resque_sample do
+  do_safety do
     fail
   end
 end
@@ -166,19 +174,11 @@ end
 blockと yield について忘れてしまった場合は、Rubyリファレンスの[yieldの項目](http://docs.ruby-lang.org/ja/2.1.0/doc/spec=2fcall.html#yield)や、
 [ブロック付きメソッド呼び出し](http://docs.ruby-lang.org/ja/2.1.0/doc/spec=2fcall.html#block)の項目を参照してみてください。
 
-##### 2.
-
-明示的に `nil` を返している箇所で、代わりにjsonを返してあげましょう。
-
-```ruby
-return nil
-```
-
 ### 例外を吸収するmiddlewareを作る (2)
 
 (1)で作成したメソッドによって、同じ処理で例外を投げることができるようになりました。ですがまだ、予想外の箇所で例外が投げられた場合にキャッチすることができません。
 
-ToDoアプリ上の全ての例外をキャッチできるように、Rackのミドルウェアを `app/middleware` 以下に作成して、(1)で行っている処理を切り出してください。
+ToDoアプリ上の全ての例外をキャッチできるように、Rackのミドルウェアを `app/middlewares/server_error.rb` に作成して、(1)で行っている処理を切り出してください。
 
 既に結合テストが `spec/integration/mosscow_integration_spec.rb` に定義されているので、まずはこのテストが動くように変更を加えましょう。
 
@@ -198,18 +198,36 @@ Rack/Rackミドルウェアについて参考になる記事:
 - [A Quick Introduction to Rack](http://rubylearning.com/blog/a-quick-introduction-to-rack/)
 - [Rack Middleware](http://asciicasts.com/episodes/151-rack-middleware)
 
+
+(1) で作った `do_safety` メソッドでやっていることがミドルウェアの `call` メソッドにそのまま置き換えられそうですね :)
+
+また `Mosscow` 自体は例外を投げるようになってしまうので 500 と返す spec は下記のように置き換えましょう。
+
+```ruby
+it 'raises RuntimeError' do
+  expect { delete "/api/todos/#{id}" }.to raise_error(RuntimeError)
+end
+```
+
 ##### 2.
 
 結合テストにmiddlewareを組み込むには、切り出したミドルウェアをまず`require`します。
 次に、`#app`で定義されているアプリケーションをミドルウェアでDecorateします。
 
 ```ruby
-require 'rack/server_errors'
+require_relative '../../app/middlewares/server_errors'
 
 def app
-    @app ||= Rack::ServerErrors.new(Mosscow)
+  @app ||= Rack::ServerErrors.new(Mosscow)
 end
 ```
+
+実際には `config.ru` を編集し、 `app/app.rb` の下記のコメントアウトを外してみましょう
+
+```ruby
+# set :show_exceptions, false # uncomment here when you do NOT want to see a backtrace
+```
+
 
 リファクタリング
 ---------------
