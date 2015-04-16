@@ -34,6 +34,11 @@ $ bundle install
 このプロジェクトでは ruby-2.1.0 のバージョンを指定しているので、それ以外のRubyでは bundle install できません。
 ruby-2.1.0 が入っていない場合は rbenv を使ってインストールしてください。
 
+また、必要に応じてオプションを使用してください。
+
+- ex.) `bundle install --path vendor/gems --jobs 4`
+
+
 ### テスト実行
 
 bundle install が終わったら、テストを実行して通ることを確認してください。
@@ -107,6 +112,8 @@ Guard を利用してファイルを保存するタイミングで自動的に�
 ```
 
 `/app`配下、`/spec`配下の`.rb`ファイルが変更されるたびに、`Rakefile`にて定義されたテストが実行されます。
+
+また、 rubocop も自動でかけられます。
    
 ### Mosscow is Moss Cow
 

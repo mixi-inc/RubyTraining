@@ -114,7 +114,6 @@ describe 'app.rb' do
     context 'given valid parameters' do
       it 'returns 204' do
         delete "/api/todos/#{id}"
-
         expect(last_response.status).to eq 204
       end
     end
@@ -140,16 +139,39 @@ describe 'app.rb' do
     end
 
     context 'given 404' do
+      let(:expected_body) do
+        File.read('public/404.txt')
+      end
       it 'returns 404' do
+        pending('「404を表示するページ」を解くにはこの行を削除してね')
         get '/404'
-        expect(last_response.status).to eq 302
+        expect(last_response.status).to eq 404
+        expect(last_response.body).to eq expected_body
       end
     end
 
     context 'given 500' do
-      it 'returns 200' do
+      let(:expected_body) do
+        <<-EOS.gsub(/^\s+/, '')
+          <html>
+            <head>
+              <title>500 Internal Server Error</title>
+            </head>
+            <body>
+              <h1>Internal Server Error</h1>
+              <img src='images/500.jpg'>
+              <p>
+              なんかだめでしたすみませんすみません:(；ﾞﾟ'ωﾟ')::(；ﾞﾟ'ωﾟ'):
+              </p>
+            </body>
+          </html>
+        EOS
+      end
+      it 'returns 500' do
+        pending('「500を表示するページ」を解くにはこの行を削除してね')
         get '/500'
-        expect(last_response.status).to eq 200
+        expect(last_response.status).to eq 500
+        expect(last_response.body.gsub(/^\s+/, '')).to eq expected_body
       end
     end
   end
@@ -157,10 +179,7 @@ describe 'app.rb' do
   context 'GET /error' do
     it 'returns 500' do
       pending('delete this line after you create Rack error catching module')
-
-      expect(
-          proc { get '/error' }
-      ).to raise_error(RuntimeError)
+      expect { get '/error' }.to raise_error(RuntimeError)
     end
   end
 
