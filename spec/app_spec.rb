@@ -171,7 +171,7 @@ describe 'app.rb' do
         skip('「500を表示するページ」を解くにはこの行を削除してね')
         get '/500'
         expect(last_response.status).to eq 500
-        expect(last_response.body.gsub(/^s+/, '')).to eq expected_body
+        expect(last_response.body.gsub(/^\s+/, '')).to eq expected_body
       end
     end
   end
