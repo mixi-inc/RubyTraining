@@ -143,7 +143,7 @@ describe 'app.rb' do
         File.read('public/404.txt')
       end
       it 'returns 404' do
-        skip('「404を表示するページ」を解くにはこの行を削除してね')
+        pending('「404を表示するページ」を解くにはこの行を削除してね')
         get '/404'
         expect(last_response.status).to eq 404
         expect(last_response.body).to eq expected_body
@@ -168,7 +168,7 @@ describe 'app.rb' do
         EOS
       end
       it 'returns 500' do
-        skip('「500を表示するページ」を解くにはこの行を削除してね')
+        pending('「500を表示するページ」を解くにはこの行を削除してね')
         get '/500'
         expect(last_response.status).to eq 500
         expect(last_response.body.gsub(/^\s+/, '')).to eq expected_body
@@ -179,10 +179,7 @@ describe 'app.rb' do
   context 'GET /error' do
     it 'returns 500' do
       pending('delete this line after you create Rack error catching module')
-
-      expect(
-          proc { get '/error' }
-      ).to raise_error(RuntimeError)
+      expect { get '/error' }.to raise_error(RuntimeError)
     end
   end
 
