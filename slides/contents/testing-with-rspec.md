@@ -698,6 +698,10 @@ expect(actual).to be false
 expect(actual).to be_nil
 ```
 
+<small>
+オススメしない → [RSpec: be true & be_true Are Different!](http://www.bengribaudo.com/blog/2014/01/17/2674/rspec-be-true-be_true-are-different)
+</small
+
 ---
 
 ### Regular expressions
